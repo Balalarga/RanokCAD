@@ -1,0 +1,10 @@
+{
+	"BaseDir": "Assets",
+	"Resources": [
+		{
+			"Path": "some.json",
+			"Tag": "some",
+			"Type": "Json"
+		}
+	]
+}

@@ -1,0 +1,40 @@
+﻿{#
+"Objects":
+[
+    {
+        "FunctionCode": "code",
+        "Color":
+        {
+            "r": 1,
+            "g": 1,
+            "b": 1,
+            "a": 1
+        }
+    }
+]
+
+
+#}
+#version 420 core
+
+out vec4 __color;
+
+// Base RFunctions
+float _rv_Or(float a, float b)
+{
+        return a + b + sqrt(pow(a, 2) + pow(b, 2));
+}
+float _rv_And(float a, float b)
+{
+        return a + b - sqrt(pow(a, 2) + pow(b, 2));
+}
+// Base RFunctions
+
+## for Object in Objects
+
+## endfor
+
+void main()
+{
+    __color = vec4(1, 1, 1, 1);
+}

@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RanokCAD", "RanokCAD\RanokCAD.vcxproj", "{23F2CF71-6E8E-4162-9C89-8EE96F8C5BC0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenglWrap", "OpenglWrap\OpenglWrap.vcxproj", "{25EA6E68-F6D8-478A-A5A2-0AD5580B7BE1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceManager", "ResourceManager\ResourceManager.vcxproj", "{8F69468E-A878-4B75-875C-5C9BB7ADA5B0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RanokLang", "RanokLang\RanokLang.vcxproj", "{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{23F2CF71-6E8E-4162-9C89-8EE96F8C5BC0}.Debug|x64.ActiveCfg = Debug|x64
+		{23F2CF71-6E8E-4162-9C89-8EE96F8C5BC0}.Debug|x64.Build.0 = Debug|x64
+		{23F2CF71-6E8E-4162-9C89-8EE96F8C5BC0}.Debug|x86.ActiveCfg = Debug|Win32
+		{23F2CF71-6E8E-4162-9C89-8EE96F8C5BC0}.Debug|x86.Build.0 = Debug|Win32
+		{23F2CF71-6E8E-4162-9C89-8EE96F8C5BC0}.Release|x64.ActiveCfg = Release|x64
+		{23F2CF71-6E8E-4162-9C89-8EE96F8C5BC0}.Release|x64.Build.0 = Release|x64
+		{23F2CF71-6E8E-4162-9C89-8EE96F8C5BC0}.Release|x86.ActiveCfg = Release|Win32
+		{23F2CF71-6E8E-4162-9C89-8EE96F8C5BC0}.Release|x86.Build.0 = Release|Win32
+		{25EA6E68-F6D8-478A-A5A2-0AD5580B7BE1}.Debug|x64.ActiveCfg = Debug|x64
+		{25EA6E68-F6D8-478A-A5A2-0AD5580B7BE1}.Debug|x64.Build.0 = Debug|x64
+		{25EA6E68-F6D8-478A-A5A2-0AD5580B7BE1}.Debug|x86.ActiveCfg = Debug|Win32
+		{25EA6E68-F6D8-478A-A5A2-0AD5580B7BE1}.Debug|x86.Build.0 = Debug|Win32
+		{25EA6E68-F6D8-478A-A5A2-0AD5580B7BE1}.Release|x64.ActiveCfg = Release|x64
+		{25EA6E68-F6D8-478A-A5A2-0AD5580B7BE1}.Release|x64.Build.0 = Release|x64
+		{25EA6E68-F6D8-478A-A5A2-0AD5580B7BE1}.Release|x86.ActiveCfg = Release|Win32
+		{25EA6E68-F6D8-478A-A5A2-0AD5580B7BE1}.Release|x86.Build.0 = Release|Win32
+		{8F69468E-A878-4B75-875C-5C9BB7ADA5B0}.Debug|x64.ActiveCfg = Debug|x64
+		{8F69468E-A878-4B75-875C-5C9BB7ADA5B0}.Debug|x64.Build.0 = Debug|x64
+		{8F69468E-A878-4B75-875C-5C9BB7ADA5B0}.Debug|x86.ActiveCfg = Debug|Win32
+		{8F69468E-A878-4B75-875C-5C9BB7ADA5B0}.Debug|x86.Build.0 = Debug|Win32
+		{8F69468E-A878-4B75-875C-5C9BB7ADA5B0}.Release|x64.ActiveCfg = Release|x64
+		{8F69468E-A878-4B75-875C-5C9BB7ADA5B0}.Release|x64.Build.0 = Release|x64
+		{8F69468E-A878-4B75-875C-5C9BB7ADA5B0}.Release|x86.ActiveCfg = Release|Win32
+		{8F69468E-A878-4B75-875C-5C9BB7ADA5B0}.Release|x86.Build.0 = Release|Win32
+		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Debug|x64.ActiveCfg = Debug|x64
+		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Debug|x64.Build.0 = Debug|x64
+		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Debug|x86.ActiveCfg = Debug|Win32
+		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Debug|x86.Build.0 = Debug|Win32
+		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Release|x64.ActiveCfg = Release|x64
+		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Release|x64.Build.0 = Release|x64
+		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Release|x86.ActiveCfg = Release|Win32
+		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A2CE8742-B41E-4345-A351-FF7C98E7FC39}
+	EndGlobalSection
+EndGlobal
