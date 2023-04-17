@@ -1,6 +1,5 @@
 ﻿#include "FrameBuffer.h"
-
-#include <GL/glew.h>
+#include "gl/glew.h"
 
 FrameBuffer::FrameBuffer(const Texture& texture) : _texture(texture)
 {

@@ -1,0 +1,28 @@
+#version 330
+
+out vec4 oColor;
+
+float _rv_Or(float a, float b)
+{
+	return a + b + sqrt(pow(a, 2) + pow(b, 2));
+}
+float _rv_And(float a, float b)
+{
+	return a + b - sqrt(pow(a, 2) + pow(b, 2));
+}
+
+## for Object in Objects
+## if existsIn(Object, "Functions")
+## for Function in Object.Functions
+{{Function.ReturnType}} {{Function.Name}}({% if existsIn(Function, "Args") %}{% for Arg in Function.Args %}{% endfor %}{% endif %})
+{{Function.Body}}
+## endfor
+## endif
+{{Object.Main.ReturnType}} ObjectFunc{{loop.index}}({% for Arg in Object.Main.Args %}{{Arg.Type}} {{Arg.Name}}{% if Arg.Count != 0 %}[{{Arg.Count}}]{% endif %}{% if not loop.is_last %},{% endif %}{% endfor %})
+{{Object.Main.Body}}
+## endfor
+
+void main()
+{
+    color = vec4(1.0);
+}

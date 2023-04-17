@@ -5,6 +5,8 @@
 
 RanokCADApp::RanokCADApp() : Application({.renderRate = 165, .updateRate = 100}), widget({800, 600}, 3)
 {
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
 	GetInputManager()->Add(SDL_SCANCODE_ESCAPE, [](Window& window, const KeyState& state) { window.Close(); });
 	widget.Init();
 }
@@ -20,6 +22,8 @@ void RanokCADApp::Render()
 
 void RanokCADApp::RenderImGui()
 {
+	ImGui::DockSpaceOverViewport();
+
 	ImGui::Begin("Window");
 	widget.DrawGui();
 	ImGui::End();

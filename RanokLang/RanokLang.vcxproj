@@ -22,6 +22,7 @@
     <ClCompile Include="Source\ActionNode.cpp" />
     <ClCompile Include="Source\ActionTree.cpp" />
     <ClCompile Include="Source\Generators\IGenerator.cpp" />
+    <ClCompile Include="Source\Generators\MultiObjectShaderGenerator.cpp" />
     <ClCompile Include="Source\Generators\OpenclGenerator.cpp" />
     <ClCompile Include="Source\Generators\ShaderGenerator.cpp" />
     <ClCompile Include="Source\HardcodedConstructions.cpp" />
@@ -32,15 +33,13 @@
     <ClInclude Include="Source\ActionNode.h" />
     <ClInclude Include="Source\ActionTree.h" />
     <ClInclude Include="Source\Generators\IGenerator.h" />
+    <ClInclude Include="Source\Generators\MultiObjectShaderGenerator.h" />
     <ClInclude Include="Source\Generators\OpenclGenerator.h" />
     <ClInclude Include="Source\Generators\ShaderGenerator.h" />
     <ClInclude Include="Source\HardcodedConstructions.h" />
     <ClInclude Include="Source\Lexer.h" />
     <ClInclude Include="Source\Parser.h" />
     <ClInclude Include="Source\Token.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Templates\Shader.tmpl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
