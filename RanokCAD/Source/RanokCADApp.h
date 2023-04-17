@@ -1,18 +1,16 @@
 ﻿#pragma once
 
 #include "Application.h"
-#include "Graphics/FboWidget.h"
+#include "Modules/IModule.h"
 
 class RanokCADApp: public Application
 {
 public:
 	RanokCADApp();
 
-	void Render() override;
-
 	void RenderImGui() override;
 
-	void Update(float delta) override;
 
-	FboWidget widget;
+private:
+	std::shared_ptr<IModule> _activeModule;
 };

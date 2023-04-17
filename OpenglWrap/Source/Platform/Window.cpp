@@ -8,6 +8,8 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_sdl2.h"
 
+size_t Window::sWindowDefaultFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_HIDDEN;
+
 Window::Window(Params params) : _params(std::move(params))
 {
 	assert(SDL_Init(_params.Subsystems) == 0);

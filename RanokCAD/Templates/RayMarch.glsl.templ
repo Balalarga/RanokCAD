@@ -2,13 +2,19 @@
 
 out vec4 oColor;
 
+uniform vec2 uResolution = vec2(800, 600);
+
+#define MAX_STEPS 100.0
+#define MAX_DIST 100.0
+#define SURFACE_DIST 0.01
+
 float _rv_Or(float a, float b)
 {
-	return a + b + sqrt(pow(a, 2) + pow(b, 2));
+	return a + b + sqrt(pow(a, 2) + pow(b, 2.0));
 }
 float _rv_And(float a, float b)
 {
-	return a + b - sqrt(pow(a, 2) + pow(b, 2));
+	return a + b - sqrt(pow(a, 2.0) + pow(b, 2.0));
 }
 
 ## for Object in Objects
@@ -22,7 +28,43 @@ float _rv_And(float a, float b)
 {{Object.Main.Body}}
 ## endfor
 
+struct ObjectHit
+{
+    float dist;
+    vec3 color;
+};
+
+ObjectHit GetDist(vec3 p)
+{
+    ObjectHit hit = ObjectHit(100000.0, vec3(0.05, 0.05, 0.05));
+## for Object in Objects
+    hit.dist = min(hit.dist, ObjectFunc{{loop.index}}(float[](p.x, p.y, p.z)));
+## endfor
+    hit.color = vec3(0.2, 0.05, 0.05);
+    return hit;
+}
+
+vec3 RayMarch(vec3 ro, vec3 rd)
+{
+    ObjectHit lastHit;
+    float dO = 0; //Distance Origin
+    for (int i = 0; i < MAX_STEPS; ++i)
+    {
+        vec3 p = ro + rd * dO;
+        lastHit = GetDist(p); // ds is Distance Scene
+        dO += lastHit.dist;
+        if(dO > MAX_DIST || lastHit.dist < SURFACE_DIST)
+            break;
+    }
+    return lastHit.color;
+}
+
 void main()
 {
-    color = vec4(1.0);
+    vec2 uv = (gl_FragCoord.xy - 0.5*uResolution.xy) / uResolution.y;
+    vec3 ro = vec3(0.0, 1.0, 0.0); // Ray Origin/ Camera
+    vec3 rd = normalize(vec3(uv.x, uv.y, 1.0));
+
+    //oColor = vec4(RayMarch(ro, rd), 1.0);
+    oColor = vec4(0.1, 0.1, 0.1, 0.1);
 }

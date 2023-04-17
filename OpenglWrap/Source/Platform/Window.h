@@ -11,6 +11,7 @@ class Window: public RenderTarget
 {
 	friend class InputManager;
 public:
+	static size_t sWindowDefaultFlags;
 	struct Params
 	{
 		std::string Title = "Window";
@@ -18,8 +19,7 @@ public:
 		SDL_Point Size = {1280, 720};
 		SDL_Point Pos = {SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED};
 		bool IsFullScreen = false;
-		SDL_WindowFlags Flags =
-			static_cast<SDL_WindowFlags>(SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_HIDDEN);
+		size_t Flags = sWindowDefaultFlags;
 
 		const char* imguiGlVersion = "#version 330";
 	};

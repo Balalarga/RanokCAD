@@ -134,7 +134,10 @@
     <ClCompile Include="RanokCAD.cpp" />
     <ClCompile Include="Source\Graphics\FboWidget.cpp" />
     <ClCompile Include="Source\Graphics\ImGuiWidget.cpp" />
+    <ClCompile Include="Source\Graphics\RayMarchWidget.cpp" />
     <ClCompile Include="Source\Graphics\TextEditorWidget.cpp" />
+    <ClCompile Include="Source\Modules\DevelopmentModule.cpp" />
+    <ClCompile Include="Source\Modules\IModule.cpp" />
     <ClCompile Include="Source\RanokCADApp.cpp" />
     <ClCompile Include="Source\RanokResources.cpp" />
   </ItemGroup>
@@ -161,7 +164,10 @@
   <ItemGroup>
     <ClInclude Include="Source\Graphics\FboWidget.h" />
     <ClInclude Include="Source\Graphics\ImGuiWidget.h" />
+    <ClInclude Include="Source\Graphics\RayMarchWidget.h" />
     <ClInclude Include="Source\Graphics\TextEditorWidget.h" />
+    <ClInclude Include="Source\Modules\DevelopmentModule.h" />
+    <ClInclude Include="Source\Modules\IModule.h" />
     <ClInclude Include="Source\RanokCADApp.h" />
     <ClInclude Include="Source\RanokResources.h" />
   </ItemGroup>

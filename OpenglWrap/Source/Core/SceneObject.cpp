@@ -4,10 +4,8 @@
 
 #include "Material.h"
 
-SceneObject::SceneObject(LaidVramBuffer buffer, std::shared_ptr<Material> material, bool bAutoInit):
-	_buffer(std::move(buffer)),
-	_material(std::move(material)),
-	_drawType(GL_TRIANGLES)
+SceneObject::SceneObject(LaidVramBuffer buffer, std::shared_ptr<Material> material, bool bAutoInit) :
+	_buffer(std::move(buffer)), _material(std::move(material)), _drawType(GL_TRIANGLES)
 {
 	if (bAutoInit)
 		SceneObject::Init();
@@ -31,7 +29,6 @@ bool SceneObject::Init()
 
 void SceneObject::Render()
 {
-	UpdateMatrix();
 	glBindVertexArray(GetHandle());
 	glDrawArrays(_drawType, 0, _buffer.GetCount());
 }

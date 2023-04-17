@@ -1,13 +1,11 @@
 ﻿#include "Shader.h"
 
+#include <iostream>
 #include <vector>
 
 #include "GL/glew.h"
 
-
-Shader::Shader(Type type, std::string_view code):
-	_type(type),
-	_code(code)
+Shader::Shader(Type type, std::string_view code) : _type(type), _code(code)
 {
 }
 
@@ -57,14 +55,10 @@ int Shader::GetGlType(Type type)
 {
 	switch (type)
 	{
-		case Type::Vertex:
-			return GL_VERTEX_SHADER;
-		case Type::Fragment:
-			return GL_FRAGMENT_SHADER;
-		case Type::Geometry:
-			return GL_GEOMETRY_SHADER;
-		case Type::Count:
-			break;
+		case Type::Vertex: return GL_VERTEX_SHADER;
+		case Type::Fragment: return GL_FRAGMENT_SHADER;
+		case Type::Geometry: return GL_GEOMETRY_SHADER;
+		case Type::Count: break;
 	}
 	return GL_NONE;
 }
@@ -80,6 +74,7 @@ bool Shader::HasError() const
 
 		std::vector<GLchar> errorLog(maxLength);
 		glGetShaderInfoLog(GetHandle(), maxLength, &maxLength, errorLog.data());
+		std::cout << errorLog.data() << std::endl;
 		// Process log
 		return true;
 	}

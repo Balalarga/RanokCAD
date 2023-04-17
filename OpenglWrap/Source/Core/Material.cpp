@@ -11,18 +11,21 @@ Material::Material(ShaderKit kit, bool bAutoInit)
 	_shaders[static_cast<size_t>(Shader::Type::Geometry)] = std::move(kit.geometryShader);
 
 	if (bAutoInit)
-		Init();
+		Material::Init();
 }
 
 Material::Material(ShaderSourceKit kit, bool bAutoInit)
 {
-	_shaders[static_cast<size_t>(Shader::Type::Vertex)] = std::make_shared<Shader>(Shader::Type::Vertex, kit.vertexShader);
-	_shaders[static_cast<size_t>(Shader::Type::Fragment)] = std::make_shared<Shader>(Shader::Type::Fragment, kit.fragmentShader);
+	_shaders[static_cast<size_t>(Shader::Type::Vertex)] =
+		std::make_shared<Shader>(Shader::Type::Vertex, kit.vertexShader);
+	_shaders[static_cast<size_t>(Shader::Type::Fragment)] =
+		std::make_shared<Shader>(Shader::Type::Fragment, kit.fragmentShader);
 	if (!kit.geometryShader.empty())
-		_shaders[static_cast<size_t>(Shader::Type::Fragment)] = std::make_shared<Shader>(Shader::Type::Geometry, kit.geometryShader);
+		_shaders[static_cast<size_t>(Shader::Type::Fragment)] =
+			std::make_shared<Shader>(Shader::Type::Geometry, kit.geometryShader);
 
 	if (bAutoInit)
-		Init();
+		Material::Init();
 }
 
 Material::~Material()
@@ -32,7 +35,6 @@ Material::~Material()
 
 void Material::SetupUniforms()
 {
-
 }
 
 void Material::SetShader(std::shared_ptr<Shader> shader)
@@ -53,7 +55,8 @@ void Material::SetUniform(const std::string& name, const UniformValue& value)
 	if (loc < 0)
 		return;
 
-	std::visit([&loc]<typename T0>(T0&& arg)
+	std::visit(
+		[&loc]<typename T0>(T0&& arg)
 		{
 			using T = std::decay_t<T0>;
 			if constexpr (std::is_same_v<T, unsigned>)
@@ -83,7 +86,7 @@ bool Material::Init()
 	if (!VramHandle::Init())
 		return false;
 
-	for (const std::shared_ptr<Shader>& shader: _shaders)
+	for (const std::shared_ptr<Shader>& shader : _shaders)
 	{
 		if (shader)
 		{

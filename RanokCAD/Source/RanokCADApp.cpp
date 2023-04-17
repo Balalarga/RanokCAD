@@ -1,37 +1,25 @@
 ﻿#include "RanokCADApp.h"
 
-#include "Core/RenderApi.h"
+#include "Modules/DevelopmentModule.h"
 #include "imgui.h"
 
-RanokCADApp::RanokCADApp() : Application({.renderRate = 165, .updateRate = 100}), widget({800, 600}, 3)
+RanokCADApp::RanokCADApp() :
+	Application({.renderRate = 165,
+				 .updateRate = 100,
+				 .windowInitializer = {.Flags = Window::sWindowDefaultFlags | SDL_WINDOW_RESIZABLE}}),
+	_activeModule(std::make_shared<DevelopmentModule>())
 {
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	GetInputManager()->Add(SDL_SCANCODE_ESCAPE, [](Window& window, const KeyState& state) { window.Close(); });
-	widget.Init();
-}
-
-void RanokCADApp::Render()
-{
-	RenderApi::PushTarget(&widget);
-	RenderApi::ClearColor({1.f, 1.f, 1.f, 1.f});
-	RenderApi::PopTarget();
-
-	Application::Render();
 }
 
 void RanokCADApp::RenderImGui()
 {
 	ImGui::DockSpaceOverViewport();
 
-	ImGui::Begin("Window");
-	widget.DrawGui();
-	ImGui::End();
+	if (_activeModule)
+		_activeModule->DrawGui();
 
 	Application::RenderImGui();
-}
-
-void RanokCADApp::Update(float delta)
-{
-	Application::Update(delta);
 }
