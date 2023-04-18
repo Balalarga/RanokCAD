@@ -72,8 +72,8 @@ def main(s[3])
 	if (!_material->Init())
 	{
 		std::cout << "error\n";
-		std::cout << env.render_file(path.string(), objects) << std::endl;
 	}
+	std::cout << env.render_file(path.string(), objects) << std::endl;
 	_obj->Init();
 }
 
