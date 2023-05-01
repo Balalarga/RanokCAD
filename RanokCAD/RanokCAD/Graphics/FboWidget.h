@@ -1,0 +1,42 @@
+﻿#pragma once
+#include <vector>
+
+#include "ImGuiWidget.h"
+#include "OpenglWrap/Core/FrameBuffer.h"
+
+class FboWidget: public FrameBuffer, public ImGuiWidget
+{
+public:
+	using FrameBuffer::FrameBuffer;
+	virtual ~FboWidget();
+
+	bool SetRenderingTexture(int type);
+
+	void DrawGui() override;
+
+	void Bind() override;
+
+	template<class... TArgs>
+	bool AddRenderingTexture(int type, TArgs&&... args)
+	{
+		if (!AddTexture(type, std::forward<TArgs>(args)...))
+			return false;
+
+		_textureDrawType = type;
+		return true;
+	}
+
+	void SetRenderingBuffers(const std::vector<GLenum>& buffers)
+	{
+		_renderingBuffers = buffers;
+	}
+
+	const std::vector<GLenum>& GetRenderingBuffers() const
+	{
+		return _renderingBuffers;
+	}
+
+private:
+	int _textureDrawType = GL_MAX_COLOR_ATTACHMENTS;
+	std::vector<GLenum> _renderingBuffers;
+};

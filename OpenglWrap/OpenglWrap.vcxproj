@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <PublicIncludeDirectories>;$(ProjectDir)Source;$(ProjectDir)ImGui;$(SolutionDir)ThirdParty\glew-2.1.0\include;</PublicIncludeDirectories>
+    <PublicIncludeDirectories>;$(ProjectDir);$(SolutionDir)ThirdParty\glew-2.1.0\include;</PublicIncludeDirectories>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)ThirdParty\glew-2.1.0\lib\Release\x64;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);GLEW_BUILD=GLEW_STATIC;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)../..//build/native/include/;%(AdditionalIncludeDirectories);$(ProjectDir)Source;$(ProjectDir)ImGui;$(SolutionDir)ThirdParty\glew-2.1.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)../..//build/native/include/;%(AdditionalIncludeDirectories);$(ProjectDir)i;$(SolutionDir)ThirdParty\glew-2.1.0\include;$(ProjectDir)ImGui/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -172,21 +172,7 @@
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="Source\Application.cpp" />
-    <ClCompile Include="Source\Core\FrameBuffer.cpp" />
-    <ClCompile Include="Source\Core\LaidVramBuffer.cpp" />
-    <ClCompile Include="Source\Core\Material.cpp" />
-    <ClCompile Include="Source\Core\RawPtrData.cpp" />
-    <ClCompile Include="Source\Core\RenderApi.cpp" />
-    <ClCompile Include="Source\Core\RenderTarget.cpp" />
-    <ClCompile Include="Source\Core\SceneObject.cpp" />
-    <ClCompile Include="Source\Core\Shader.cpp" />
-    <ClCompile Include="Source\Core\Texture.cpp" />
-    <ClCompile Include="Source\Core\Transformable.cpp" />
-    <ClCompile Include="Source\Core\VramBufferLayout.cpp" />
-    <ClCompile Include="Source\Core\VramHandle.cpp" />
-    <ClCompile Include="Source\Platform\InputManager.cpp" />
-    <ClCompile Include="Source\Platform\Window.cpp" />
+    <ClCompile Include="$(ProjectName)/**/*.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImGui\backends\imgui_impl_opengl3.h" />
@@ -198,22 +184,7 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
-    <ClInclude Include="Source\Application.h" />
-    <ClInclude Include="Source\Core\FrameBuffer.h" />
-    <ClInclude Include="Source\Core\LaidVramBuffer.h" />
-    <ClInclude Include="Source\Core\Material.h" />
-    <ClInclude Include="Source\Core\RawPtrData.h" />
-    <ClInclude Include="Source\Core\RenderApi.h" />
-    <ClInclude Include="Source\Core\RenderTarget.h" />
-    <ClInclude Include="Source\Core\SceneObject.h" />
-    <ClInclude Include="Source\Core\Shader.h" />
-    <ClInclude Include="Source\Core\Texture.h" />
-    <ClInclude Include="Source\Core\Transformable.h" />
-    <ClInclude Include="Source\Core\UniformValue.h" />
-    <ClInclude Include="Source\Core\VramBufferLayout.h" />
-    <ClInclude Include="Source\Core\VramHandle.h" />
-    <ClInclude Include="Source\Platform\InputManager.h" />
-    <ClInclude Include="Source\Platform\Window.h" />
+    <ClInclude Include="$(ProjectName)/**/*.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

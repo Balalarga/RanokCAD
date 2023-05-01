@@ -19,27 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\ActionNode.cpp" />
-    <ClCompile Include="Source\ActionTree.cpp" />
-    <ClCompile Include="Source\Generators\IGenerator.cpp" />
-    <ClCompile Include="Source\Generators\MultiObjectShaderGenerator.cpp" />
-    <ClCompile Include="Source\Generators\OpenclGenerator.cpp" />
-    <ClCompile Include="Source\Generators\ShaderGenerator.cpp" />
-    <ClCompile Include="Source\HardcodedConstructions.cpp" />
-    <ClCompile Include="Source\Lexer.cpp" />
-    <ClCompile Include="Source\Parser.cpp" />
+    <ClCompile Include="$(ProjectName)/**/*.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\ActionNode.h" />
-    <ClInclude Include="Source\ActionTree.h" />
-    <ClInclude Include="Source\Generators\IGenerator.h" />
-    <ClInclude Include="Source\Generators\MultiObjectShaderGenerator.h" />
-    <ClInclude Include="Source\Generators\OpenclGenerator.h" />
-    <ClInclude Include="Source\Generators\ShaderGenerator.h" />
-    <ClInclude Include="Source\HardcodedConstructions.h" />
-    <ClInclude Include="Source\Lexer.h" />
-    <ClInclude Include="Source\Parser.h" />
-    <ClInclude Include="Source\Token.h" />
+    <ClInclude Include="$(ProjectName)/**/*.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -104,7 +87,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <PublicIncludeDirectories>$(ProjectDir)Source;$(SolutionDir)ThirdParty\Inja;</PublicIncludeDirectories>
+    <PublicIncludeDirectories>;$(ProjectDir);$(SolutionDir)ThirdParty\Inja;</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -136,7 +119,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(SolutionDir)ThirdParty\Inja;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>;$(ProjectDir);$(SolutionDir)ThirdParty\Inja;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>

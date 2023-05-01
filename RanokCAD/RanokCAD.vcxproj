@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>;$(ProjectDir)Source;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>;$(ProjectDir);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -132,14 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RanokCAD.cpp" />
-    <ClCompile Include="Source\Graphics\FboWidget.cpp" />
-    <ClCompile Include="Source\Graphics\ImGuiWidget.cpp" />
-    <ClCompile Include="Source\Graphics\RayMarchWidget.cpp" />
-    <ClCompile Include="Source\Graphics\TextEditorWidget.cpp" />
-    <ClCompile Include="Source\Modules\DevelopmentModule.cpp" />
-    <ClCompile Include="Source\Modules\IModule.cpp" />
-    <ClCompile Include="Source\RanokCADApp.cpp" />
-    <ClCompile Include="Source\RanokResources.cpp" />
+    <ClCompile Include="$(ProjectName)/**/*.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenglWrap\OpenglWrap.vcxproj">
@@ -162,14 +155,7 @@
     <Content Include="Templates\RayMarch.glsl.templ" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Graphics\FboWidget.h" />
-    <ClInclude Include="Source\Graphics\ImGuiWidget.h" />
-    <ClInclude Include="Source\Graphics\RayMarchWidget.h" />
-    <ClInclude Include="Source\Graphics\TextEditorWidget.h" />
-    <ClInclude Include="Source\Modules\DevelopmentModule.h" />
-    <ClInclude Include="Source\Modules\IModule.h" />
-    <ClInclude Include="Source\RanokCADApp.h" />
-    <ClInclude Include="Source\RanokResources.h" />
+    <ClInclude Include="$(ProjectName)/**/*.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,9 +1,8 @@
 ﻿#include <iostream>
 
-#include "Generators/MultiObjectShaderGenerator.h"
-#include "RanokCADApp.h"
-#include "RanokResources.h"
-#include "ResourceManager.h"
+#include "RanokCAD/RanokCADApp.h"
+#include "RanokCAD/RanokResources.h"
+#include "RanokLang/Generators/MultiObjectShaderGenerator.h"
 
 int main(int argc, char** argv)
 {
