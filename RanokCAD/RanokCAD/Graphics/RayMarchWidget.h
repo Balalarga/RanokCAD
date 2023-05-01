@@ -4,6 +4,7 @@
 
 #include "FboWidget.h"
 
+class BoundingBox;
 class SceneObject;
 class Material;
 
@@ -26,5 +27,5 @@ protected:
 	std::shared_ptr<SceneObject> _obj;
 
 	std::shared_ptr<Material> _materialFwd;
-	std::shared_ptr<SceneObject> _objFwd;
+	std::shared_ptr<BoundingBox> _objFwd;
 };

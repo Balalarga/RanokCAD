@@ -1,5 +1,6 @@
 ﻿#include "RayMarchWidget.h"
 
+#include "BoundingBox.h"
 #include "ImGui/imgui.h"
 #include "OpenglWrap/Camera.h"
 #include "OpenglWrap/Core/Material.h"
@@ -85,15 +86,16 @@ uniform float MAX_DIST = 100.0;
 
 void main()
 {
-	oColor = vec4(1, 1, 1, gl_FragCoord.z);
+    float depth = gl_FragCoord.z / (MAX_DIST - MIN_DIST);
+	oColor = vec4(1, 1, 1, depth);
 }
 )";
 
 static std::vector<glm::vec3> shapeObjData{
 	{-1, -1, 0},
-	{-1, 1, 0.03},
-	{1, 1, 0.03},
-	{1, -1, -1},
+	{-1, 1, 0},
+	{1, 1, 0},
+	{1, -1, 0},
 };
 
 static Camera camera(60.f, 300.f / 200.f, 0.01f, 100.f);
@@ -103,10 +105,8 @@ RayMarchWidget::RayMarchWidget(glm::ivec2 size) :
 	_obj(std::make_shared<SceneObject>(LaidVramBuffer(RawPtrData(backObjData), VramBufferLayout().Float(2).Float(2)),
 									   _material)),
 	_materialFwd(std::make_shared<Material>(ShaderSourceKit{.vertexShader = shapeVsh, .fragmentShader = shapeFsh})),
-	_objFwd(std::make_shared<SceneObject>(LaidVramBuffer(RawPtrData(shapeObjData), VramBufferLayout().Float(3)),
-										  _materialFwd))
+	_objFwd(std::make_shared<BoundingBox>(glm::vec3(1, 1, 1), _materialFwd))
 {
-	_objFwd->SetDrawType(DrawType::Quads);
 	camera.Move({0, 0, -0.18});
 	camera.RequestMatrixUpdate();
 	AddRenderingTexture(GL_COLOR_ATTACHMENT0, size, 4);
@@ -188,14 +188,7 @@ void RayMarchWidget::Render()
 	_materialFwd->Bind();
 	_materialFwd->SetUniform("uResolution", GetSize());
 	_materialFwd->SetUniform("uMVP", camera.GetMatrix());
-
-	glEnable(GL_DEPTH_TEST);
-	glPolygonMode(GL_FRONT, GL_LINE);
-	glPolygonMode(GL_BACK, GL_LINE);
 	_objFwd->Render();
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_FILL);
-	glDisable(GL_DEPTH_TEST);
 	RenderApi::PopTarget();
 
 	RenderApi::PushTarget(this);
