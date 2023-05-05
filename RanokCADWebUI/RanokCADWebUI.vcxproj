@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RanodCADWebUI.cpp" />
+    <ClCompile Include="RanokWebUIApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RanokLang\RanokLang.vcxproj">
@@ -176,6 +177,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RanokWebUIApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
