@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceManager", "Resource
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RanokLang", "RanokLang\RanokLang.vcxproj", "{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JsInterface", "JsInterface", "{B58CBD7A-BDE7-4B68-A147-366832941D3F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RanokCADWebUI", "RanokCADWebUI\RanokCADWebUI.vcxproj", "{5F6BD977-C937-4C98-9D8A-D23700D3E1F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +53,14 @@ Global
 		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Release|x64.Build.0 = Release|x64
 		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Release|x86.ActiveCfg = Release|Win32
 		{A0DABFCA-ADFF-46A0-9E18-2DB4D702DCBB}.Release|x86.Build.0 = Release|Win32
+		{5F6BD977-C937-4C98-9D8A-D23700D3E1F8}.Debug|x64.ActiveCfg = Debug|x64
+		{5F6BD977-C937-4C98-9D8A-D23700D3E1F8}.Debug|x64.Build.0 = Debug|x64
+		{5F6BD977-C937-4C98-9D8A-D23700D3E1F8}.Debug|x86.ActiveCfg = Debug|Win32
+		{5F6BD977-C937-4C98-9D8A-D23700D3E1F8}.Debug|x86.Build.0 = Debug|Win32
+		{5F6BD977-C937-4C98-9D8A-D23700D3E1F8}.Release|x64.ActiveCfg = Release|x64
+		{5F6BD977-C937-4C98-9D8A-D23700D3E1F8}.Release|x64.Build.0 = Release|x64
+		{5F6BD977-C937-4C98-9D8A-D23700D3E1F8}.Release|x86.ActiveCfg = Release|Win32
+		{5F6BD977-C937-4C98-9D8A-D23700D3E1F8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

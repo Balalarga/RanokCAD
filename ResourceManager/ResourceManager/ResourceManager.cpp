@@ -5,6 +5,7 @@
 #include "FileUtils.h"
 #include "Resources/JsonResource.h"
 #include "Resources/Resource.h"
+#include "Resources/TextResource.h"
 #include "nlohmann/json.hpp"
 
 const std::string ResourceManager::sResourceRegistryName = "__ResourceRegistry";
@@ -25,6 +26,7 @@ ResourceManager::~ResourceManager()
 void ResourceManager::AddDefaultSupportedResources()
 {
 	AddSupportedResourceType<JsonResource>();
+	AddSupportedResourceType<TextResource>();
 }
 
 bool ResourceManager::InitFrom(const std::string& configPath)

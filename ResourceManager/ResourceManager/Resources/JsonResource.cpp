@@ -1,11 +1,5 @@
 ﻿#include "JsonResource.h"
 
-JsonResource::JsonResource(const ResourceDesc& desc):
-	Resource(desc)
-{
-
-}
-
 std::string JsonResource::GetResourceType()
 {
 	return "Json";

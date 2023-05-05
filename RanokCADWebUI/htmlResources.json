@@ -1,0 +1,10 @@
+{
+	"BaseDir": "Html",
+	"Resources": [
+		{
+			"Path": "index.html",
+			"Tag": "IndexPage",
+			"Type": "Text"
+		}
+	]
+}

@@ -7,7 +7,7 @@
 class JsonResource: public Resource
 {
 public:
-	JsonResource(const ResourceDesc& desc);
+	using Resource::Resource;
 
 	std::string GetResourceType() override;
 	const nlohmann::json& GetJson() const { return _json; }
