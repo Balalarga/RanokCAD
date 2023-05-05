@@ -8,7 +8,7 @@ RanokCADApp::RanokCADApp() :
 	Application({.renderRate = 165,
 				 .updateRate = 100,
 				 .windowInitializer = {.Flags = Window::sWindowDefaultFlags | SDL_WINDOW_RESIZABLE}}),
-	_activeModule(std::make_shared<DevelopmentModule>())
+	_activeModule(std::make_shared<DevelopmentModule>(*GetInputManager()))
 {
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 

@@ -10,7 +10,7 @@ class Material;
 class DevelopmentModule: public IModule
 {
 public:
-	DevelopmentModule();
+	DevelopmentModule(InputManager& inputManager);
 
 	void DrawGui() override;
 

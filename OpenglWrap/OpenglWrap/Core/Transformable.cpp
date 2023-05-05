@@ -37,6 +37,12 @@ void Transformable::Scale(const glm::vec3& scale)
 	bWasChange = true;
 }
 
+const glm::mat4& Transformable::GetUpdatedMatrix()
+{
+	RequestMatrixUpdate();
+	return _matrix;
+}
+
 void Transformable::RequestMatrixUpdate()
 {
 	if (!bWasChange)
@@ -49,9 +55,9 @@ void Transformable::RequestMatrixUpdate()
 glm::mat4 Transformable::UpdateMatrix() const
 {
 	auto m = translate(glm::mat4(1.f), _location);
-	m = rotate(m, _rotation.x, {1, 0, 0});
-	m = rotate(m, _rotation.y, {0, 1, 0});
-	m = rotate(m, _rotation.z, {0, 0, 1});
+	m = rotate(m, glm::radians(_rotation.x), {1, 0, 0});
+	m = rotate(m, glm::radians(_rotation.y), {0, 1, 0});
+	m = rotate(m, glm::radians(_rotation.z), {0, 0, 1});
 	m = scale(m, _scale);
 
 	return m;

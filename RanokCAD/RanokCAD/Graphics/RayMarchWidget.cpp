@@ -65,29 +65,34 @@ static std::string shapeVsh = R"(
 
 layout(location = 0) in vec3 position;
 
+layout(location = 0) out float vDepth;
+
 uniform mat4 uMVP = mat4(1);
+uniform vec3 uCameraPos;
+uniform float uCameraFov;
+uniform float uCameraNear;
+uniform float uCameraFar;
+
 
 void main()
 {
     gl_Position = uMVP * vec4(position, 1.0);
+
+	float invNear = 1/uCameraNear;
+	vDepth = (1/(position.z - uCameraPos.z) - invNear) / (1/uCameraFar - invNear);
 }
 )";
 
 static std::string shapeFsh = R"(
 #version 420
 
-out vec4 oColor;
+layout(location = 0) in float vDepth;
 
-uniform vec2 uResolution = vec2(300, 200);
-uniform vec3 uCameraPos = vec3(0.0, 0.0, 4.0);
-uniform float uFov = 60;
-uniform float MIN_DIST = 0.01;
-uniform float MAX_DIST = 100.0;
+layout(location = 0) out vec4 oColor;
 
 void main()
 {
-    float depth = gl_FragCoord.z / (MAX_DIST - MIN_DIST);
-	oColor = vec4(1, 1, 1, depth);
+	oColor = vec4(1, 1, 1, vDepth);
 }
 )";
 
@@ -95,20 +100,19 @@ static std::vector<glm::vec3> shapeObjData{
 	{-1, -1, 0},
 	{-1, 1, 0},
 	{1, 1, 0},
-	{1, -1, 0},
+	{1, -1, 2},
 };
 
-static Camera camera(60.f, 300.f / 200.f, 0.01f, 100.f);
-
 RayMarchWidget::RayMarchWidget(glm::ivec2 size) :
-	FboWidget(size), _material(std::make_shared<Material>(ShaderSourceKit{.vertexShader = backVsh})),
+	FboWidget(size),
+	_camera(60.f, size.x / size.y, 0.01f, 100.f),
+	_material(std::make_shared<Material>(ShaderSourceKit{.vertexShader = backVsh})),
 	_obj(std::make_shared<SceneObject>(LaidVramBuffer(RawPtrData(backObjData), VramBufferLayout().Float(2).Float(2)),
 									   _material)),
 	_materialFwd(std::make_shared<Material>(ShaderSourceKit{.vertexShader = shapeVsh, .fragmentShader = shapeFsh})),
-	_objFwd(std::make_shared<BoundingBox>(glm::vec3(1, 1, 1), _materialFwd))
+	_objFwd(std::make_shared<BoundingBox>(glm::vec3(3), _materialFwd))
 {
-	camera.Move({0, 0, -0.18});
-	camera.RequestMatrixUpdate();
+	_camera.Move({0, 0, -4});
 	AddRenderingTexture(GL_COLOR_ATTACHMENT0, size, 4);
 
 	MultiObjectShaderGenerator generator;
@@ -177,25 +181,31 @@ RayMarchWidget::~RayMarchWidget()
 
 void RayMarchWidget::UpdateCode(const std::string& fragmentCode)
 {
-	// _material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, fragmentCode));
+	_material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, fragmentCode));
 }
 
 void RayMarchWidget::Render()
 {
 	RenderApi::PushTarget(this);
-	RenderApi::ClearWithColor({0.05, 0.05, 0.2, 0.0});
-
+	RenderApi::ClearWithColor({0.05, 0.05, 0.2, 1.0});
 	_materialFwd->Bind();
-	_materialFwd->SetUniform("uResolution", GetSize());
-	_materialFwd->SetUniform("uMVP", camera.GetMatrix());
+	_materialFwd->SetUniform("uMVP", _camera.GetUpdatedMatrix());
+	_materialFwd->SetUniform("uCameraPos", _camera.GetLocation());
+	_materialFwd->SetUniform("uCameraFov", _camera.GetFov());
+	_materialFwd->SetUniform("uCameraNear", _camera.GetNear());
+	_materialFwd->SetUniform("uCameraFar", _camera.GetFar());
 	_objFwd->Render();
 	RenderApi::PopTarget();
 
 	RenderApi::PushTarget(this);
 	_material->Bind();
-	if (auto texture = GetTexture(GL_COLOR_ATTACHMENT0))
+	if (const auto texture = GetTexture(GL_COLOR_ATTACHMENT0))
 		texture->Bind();
 	_material->SetUniform("uResolution", GetSize());
+	_material->SetUniform("uCameraPos", _camera.GetLocation());
+	_material->SetUniform("uCameraFov", _camera.GetFov());
+	_material->SetUniform("uCameraNear", _camera.GetNear());
+	_material->SetUniform("uCameraFar", _camera.GetFar());
 	_obj->Render();
 	RenderApi::PopTarget();
 }

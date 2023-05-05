@@ -14,9 +14,9 @@ layout(location = 0) out vec4 oColor;
 uniform vec2 uResolution = vec2(800, 600);
 uniform sampler2D tForwardRendering;
 uniform vec3 uCameraPos = vec3(0.0, 0.0, 4.0);
-uniform float uFov = 60;
-uniform float MIN_DIST = 0.01;
-uniform float MAX_DIST = 100.0;
+uniform float uCameraFov = 60;
+uniform float uCameraNear = 0.01;
+uniform float uCameraFar = 100.0;
 
 const int MAX_MARCHING_STEPS = 1024;
 const float EPSILON = 0.0001;
@@ -206,7 +206,7 @@ vec3 phongIllumination(vec3 k_a, vec3 k_d, vec3 k_s, float alpha, vec3 p, vec3 e
     
     color += phongContribForLight(k_d, k_s, alpha, p, eye,
                                   light2Pos,
-                                  light2Intensity);    
+                                  light2Intensity);
     return color;
 }
 
@@ -215,27 +215,35 @@ float rand(vec2 co)
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+vec3 myRayDirection(vec2 size, vec2 fragCoord) {
+    vec2 xy = fragCoord - size / 2.0;
+    float z = size.y / tan(radians(uCameraFov) / 2.0);
+    return normalize(vec3(xy, -z));
+}
+
 void main()
 {
     vec4 fwdColor = texture(tForwardRendering, vUv);
 	vec2 uv = gl_FragCoord.xy / uResolution.xy;
     fwdColor = texture(tForwardRendering, uv);
 
-    vec3 dir = rayDirection(uFov, uResolution.xy, gl_FragCoord.xy);
-    vec3 eye = uCameraPos;
-    ObjectHit hit = shortestDistanceToSurface(eye, dir, MIN_DIST, MAX_DIST);
+    vec3 dir = myRayDirection(uResolution.xy, gl_FragCoord.xy);
+    vec3 eye = vec3(uCameraPos.x, uCameraPos.y, -uCameraPos.z);
+    ObjectHit hit = shortestDistanceToSurface(eye, dir, uCameraNear, uCameraFar);
 
     if (hit.miss)
     {
-        if (fwdColor.w > 0)
+        if (fwdColor.w < 1.0)
             oColor = vec4(fwdColor.xyz, 1.0);
         else
             oColor = vec4(0.1, 0.1, 0.1, 1.0);
 		return;
     }
 
-    float depth = hit.depth / (MAX_DIST - MIN_DIST);
-    if (depth < fwdColor.w)
+
+	float invNear = 1/uCameraNear;
+	float depth = (1/(hit.depth) - invNear) / (1/uCameraFar - invNear);
+    if (depth > fwdColor.w)
     {
         oColor = vec4(fwdColor.xyz, 1.0);
         return;

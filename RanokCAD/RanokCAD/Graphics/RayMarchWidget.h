@@ -3,6 +3,7 @@
 #include <string>
 
 #include "FboWidget.h"
+#include "OpenglWrap/Camera.h"
 
 class BoundingBox;
 class SceneObject;
@@ -21,8 +22,11 @@ public:
 
 	void DrawGui() override;
 
+	Camera& GetCamera() { return _camera; }
+
 
 protected:
+	Camera _camera;
 	std::shared_ptr<Material> _material;
 	std::shared_ptr<SceneObject> _obj;
 

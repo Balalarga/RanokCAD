@@ -70,22 +70,31 @@ void InputManager::HandleEvent()
 			break;
 			case SDL_MOUSEMOTION:
 			{
-				KeyState keys[5]{
-					e.motion.state & SDL_BUTTON_LMASK ? KeyState::Pressed : KeyState::Released,
-					e.motion.state & SDL_BUTTON_MMASK ? KeyState::Pressed : KeyState::Released,
-					e.motion.state & SDL_BUTTON_RMASK ? KeyState::Pressed : KeyState::Released,
-					e.motion.state & SDL_BUTTON_X1MASK ? KeyState::Pressed : KeyState::Released,
-					e.motion.state & SDL_BUTTON_X2MASK ? KeyState::Pressed : KeyState::Released,
-				};
-				OnMouseMove({e.motion.xrel, e.motion.yrel}, keys);
+				MouseState state;
+				state.pos = {e.motion.x, e.motion.y};
+				state.moved = {e.motion.xrel, e.motion.yrel};
+				state.keys[0] = e.motion.state & SDL_BUTTON_LMASK ? KeyState::Pressed : KeyState::Released;
+				state.keys[1] = e.motion.state & SDL_BUTTON_MMASK ? KeyState::Pressed : KeyState::Released;
+				state.keys[2] = e.motion.state & SDL_BUTTON_RMASK ? KeyState::Pressed : KeyState::Released;
+				state.keys[3] = e.motion.state & SDL_BUTTON_X1MASK ? KeyState::Pressed : KeyState::Released;
+				state.keys[4] = e.motion.state & SDL_BUTTON_X2MASK ? KeyState::Pressed : KeyState::Released;
+
+				for (const MouseMoveCallback& callback : _onMouseMoveCallbacks)
+					callback(_window, state);
 			}
 			break;
 			case SDL_MOUSEBUTTONDOWN:
 			{
-				OnMouseKey(static_cast<MouseKey>(e.button.button - 1),
-						   e.button.state == SDL_PRESSED ? KeyState::Pressed : KeyState::Repeated,
-						   {e.button.x, e.button.y},
-						   e.button.clicks);
+				for (const MouseKeyCallback& callback : _mouseKeyCallbacks[e.button.button - 1])
+					callback(_window,
+						static_cast<MouseKey>(e.button.button - 1),
+						e.button.state == SDL_PRESSED ? KeyState::Pressed : KeyState::Repeated,
+						{e.button.x, e.button.y},
+						e.button.clicks);
+			}
+			case SDL_MOUSEWHEEL:
+			{
+				// TODO
 			}
 			break;
 			default: break;
@@ -97,12 +106,6 @@ void InputManager::OnStateChange(SDL_Scancode code, KeyState state) const
 {
 	for (const KeyCallback& callback : _keyCallbacks[code])
 		callback(_window, state);
-}
-
-void InputManager::OnMouseMove(glm::vec2 delta, KeyState keys[5]) const
-{
-	for (const MouseMoveCallback& callback : _onMouseMoveCallbacks)
-		callback(_window, delta, keys);
 }
 
 void InputManager::OnMouseKey(const MouseKey& key, const KeyState& state, glm::ivec2 pos, int count) const

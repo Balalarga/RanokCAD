@@ -19,13 +19,19 @@ enum class MouseKey
 	X2
 };
 
+struct MouseState
+{
+	glm::vec2 pos;
+	glm::vec2 moved;
+	KeyState keys[5];
+};
 
 class InputManager
 {
 	friend class Window;
 public:
 	using KeyCallback = std::function<void(Window&, const KeyState&)>;
-	using MouseMoveCallback = std::function<void(Window&, glm::vec2, KeyState[5])>;
+	using MouseMoveCallback = std::function<void(Window&, const MouseState&)>;
 	using MouseKeyCallback = std::function<void(Window&, const MouseKey&, const KeyState&, glm::ivec2, int)>;
 
 	InputManager(Window& window);
@@ -41,7 +47,6 @@ public:
 
 protected:
 	void OnStateChange(SDL_Scancode code, KeyState state) const;
-	void OnMouseMove(glm::vec2 delta, KeyState keys[5]) const;
 	void OnMouseKey(const MouseKey&, const KeyState&, glm::ivec2, int) const;
 
 private:

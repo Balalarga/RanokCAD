@@ -22,6 +22,7 @@ public:
 	const glm::vec3& GetScale() const { return _scale; }
 
 	const glm::mat4& GetMatrix() const { return _matrix; }
+	const glm::mat4& GetUpdatedMatrix();
 	void RequestMatrixUpdate();
 
 protected:

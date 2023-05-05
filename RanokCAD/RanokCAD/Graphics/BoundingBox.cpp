@@ -10,11 +10,13 @@ static std::vector<glm::vec3> shapeObjData{
 };
 
 BoundingBox::BoundingBox(glm::vec3 scale, std::shared_ptr<Material> material) :
-	SceneObject(LaidVramBuffer(RawPtrData(shapeObjData), VramBufferLayout().Float(3)), std::move(material))
+	SceneObject(LaidVramBuffer(RawPtrData(&_boxVertices, 4, sizeof glm::vec3), VramBufferLayout().Float(3)), std::move(material)),
+	_boxVertices{{-scale.x, -scale.y, 0}, {-scale.x, scale.y, 0}, {scale.x, scale.y, 0}, {scale.x, -scale.y, 0}}
 {
 	SetDrawType(DrawType::Quads);
-	SetScale(scale);
-	RequestMatrixUpdate();
+	// TODO: Model matrix in shader
+	// SetScale(scale);
+	// RequestMatrixUpdate();
 }
 
 void BoundingBox::Render()
