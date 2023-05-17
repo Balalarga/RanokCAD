@@ -80,3 +80,9 @@ void Texture::Release()
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+void Texture::ReadPixels(void* pixels)
+{
+	Bind();
+	glReadPixels(0, 0, _size.x, _size.y, _outDataType, GL_UNSIGNED_BYTE, pixels);
+}

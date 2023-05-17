@@ -14,8 +14,6 @@ public:
 
 	void DrawGui() override;
 
-	void Bind() override;
-
 	template<class... TArgs>
 	bool AddRenderingTexture(int type, TArgs&&... args)
 	{
@@ -26,17 +24,7 @@ public:
 		return true;
 	}
 
-	void SetRenderingBuffers(const std::vector<GLenum>& buffers)
-	{
-		_renderingBuffers = buffers;
-	}
-
-	const std::vector<GLenum>& GetRenderingBuffers() const
-	{
-		return _renderingBuffers;
-	}
 
 private:
 	int _textureDrawType = GL_MAX_COLOR_ATTACHMENTS;
-	std::vector<GLenum> _renderingBuffers;
 };

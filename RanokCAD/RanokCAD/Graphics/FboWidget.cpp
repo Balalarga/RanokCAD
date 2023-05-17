@@ -21,10 +21,3 @@ void FboWidget::DrawGui()
 	if (Texture* texture = GetTexture(_textureDrawType))
 		ImGui::Image((void*)texture->GetHandle(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
 }
-
-void FboWidget::Bind()
-{
-	FrameBuffer::Bind();
-	if (!_renderingBuffers.empty())
-		glDrawBuffers(static_cast<int>(_renderingBuffers.size()), _renderingBuffers.data());
-}

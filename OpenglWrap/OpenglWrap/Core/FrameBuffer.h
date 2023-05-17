@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <map>
+#include <vector>
 
 #include "RenderTarget.h"
 #include "Texture.h"
@@ -22,6 +23,7 @@ public:
 	}
 
 	Texture* GetTexture(int type);
+
 	template<class... TArgs>
 	Texture* AddTexture(int type, TArgs&&... args)
 	{
@@ -33,6 +35,16 @@ public:
 			glFramebufferTexture2D(GL_FRAMEBUFFER, type, GL_TEXTURE_2D, it.first->second.GetHandle(), 0);
 
 		return &it.first->second;
+	}
+
+	void SetRenderingBuffers(const std::vector<GLenum>& buffers)
+	{
+		_renderingBuffers = buffers;
+	}
+
+	const std::vector<GLenum>& GetRenderingBuffers() const
+	{
+		return _renderingBuffers;
 	}
 
 
@@ -50,6 +62,7 @@ protected:
 
 
 private:
+	std::vector<GLenum> _renderingBuffers;
 	glm::ivec2 _size;
 	std::map<int, Texture> _textures;
 };

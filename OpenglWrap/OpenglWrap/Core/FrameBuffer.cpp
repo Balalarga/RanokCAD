@@ -16,6 +16,8 @@ FrameBuffer::~FrameBuffer()
 void FrameBuffer::Bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, GetHandle());
+	if (!_renderingBuffers.empty())
+		glDrawBuffers(static_cast<int>(_renderingBuffers.size()), _renderingBuffers.data());
 	glViewport(0, 0, _size.x, _size.y);
 }
 

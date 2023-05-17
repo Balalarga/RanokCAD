@@ -15,6 +15,8 @@ public:
 	void Bind(unsigned slot = 0) const;
 	static void Release();
 
+	void ReadPixels(void* pixels);
+
 	const glm::ivec2& GetSize() const
 	{
 		return _size;
