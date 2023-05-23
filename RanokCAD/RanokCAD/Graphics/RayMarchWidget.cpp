@@ -104,8 +104,7 @@ static std::vector<glm::vec3> shapeObjData{
 };
 
 RayMarchWidget::RayMarchWidget(glm::ivec2 size) :
-	FboWidget(size),
-	_camera(60.f, size.x / size.y, 0.01f, 100.f),
+	FboWidget(size), _camera(60.f, size.x / size.y, 0.1f, 100.f),
 	_material(std::make_shared<Material>(ShaderSourceKit{.vertexShader = backVsh})),
 	_obj(std::make_shared<SceneObject>(LaidVramBuffer(RawPtrData(backObjData), VramBufferLayout().Float(2).Float(2)),
 									   _material)),

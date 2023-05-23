@@ -1,4 +1,5 @@
 ﻿#include "Transformable.h"
+
 #include <glm/gtx/transform.hpp>
 
 void Transformable::SetLocation(const glm::vec3& loc)
@@ -52,7 +53,7 @@ void Transformable::RequestMatrixUpdate()
 	bWasChange = false;
 }
 
-glm::mat4 Transformable::UpdateMatrix() const
+glm::mat4 Transformable::UpdateMatrix()
 {
 	auto m = translate(glm::mat4(1.f), _location);
 	m = rotate(m, glm::radians(_rotation.x), {1, 0, 0});

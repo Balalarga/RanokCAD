@@ -1,5 +1,6 @@
 ﻿#include "Camera.h"
 
+#include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/transform.hpp>
 
 Camera::Camera(float fov, float aspect, float near, float far) : _fov(fov), _aspect(aspect), _near(near), _far(far)
@@ -8,13 +9,13 @@ Camera::Camera(float fov, float aspect, float near, float far) : _fov(fov), _asp
 	// RequestMatrixUpdate();
 }
 
-glm::mat4 Camera::UpdateMatrix() const
+glm::mat4 Camera::UpdateMatrix()
 {
-	auto m = translate(glm::mat4(1.f), GetLocation());
-	m = rotate(m, glm::radians(GetRotation().x), {1, 0, 0});
-	m = rotate(m, glm::radians(GetRotation().y), {0, 1, 0});
-	m = rotate(m, glm::radians(GetRotation().z), {0, 0, 1});
-	m = glm::perspective(_fov, _aspect, _near, _far) * m;
+	glm::mat4 projMat = glm::perspective(_fov, _aspect, _near, _far);
+	auto forwardVector = glm::rotate(_baseForwardVector, glm::radians(GetRotation().x), {1, 0, 0});
+	forwardVector = glm::rotate(forwardVector, glm::radians(GetRotation().y), {0, 1, 0});
+	forwardVector = glm::rotate(forwardVector, glm::radians(GetRotation().z), {0, 0, 1});
+	glm::mat4 viewMat = glm::lookAt(GetLocation(), GetLocation() + forwardVector, _upVector);
 
-	return m;
+	return projMat * viewMat;
 }

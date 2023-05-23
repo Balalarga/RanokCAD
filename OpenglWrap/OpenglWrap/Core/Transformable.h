@@ -2,7 +2,6 @@
 
 #include <glm/glm.hpp>
 
-
 class Transformable
 {
 public:
@@ -17,18 +16,33 @@ public:
 	void Rotate(const glm::vec3& rotation);
 	void Scale(const glm::vec3& scale);
 
-	const glm::vec3& GetLocation() const { return _location; }
-	const glm::vec3& GetRotation() const { return _rotation; }
-	const glm::vec3& GetScale() const { return _scale; }
+	const glm::vec3& GetLocation() const
+	{
+		return _location;
+	}
+	const glm::vec3& GetRotation() const
+	{
+		return _rotation;
+	}
+	const glm::vec3& GetScale() const
+	{
+		return _scale;
+	}
 
-	const glm::mat4& GetMatrix() const { return _matrix; }
+	const glm::mat4& GetMatrix() const
+	{
+		return _matrix;
+	}
 	const glm::mat4& GetUpdatedMatrix();
 	void RequestMatrixUpdate();
 
 protected:
-	virtual glm::mat4 UpdateMatrix() const;
+	virtual glm::mat4 UpdateMatrix();
 
-	glm::mat4& GetMutableMatrix() { return _matrix; }
+	glm::mat4& GetMutableMatrix()
+	{
+		return _matrix;
+	}
 
 
 private:
