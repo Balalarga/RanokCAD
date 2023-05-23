@@ -185,16 +185,16 @@ void RayMarchWidget::UpdateCode(const std::string& fragmentCode)
 
 void RayMarchWidget::Render()
 {
-	RenderApi::PushTarget(this);
-	RenderApi::ClearWithColor({0.05, 0.05, 0.2, 1.0});
-	_materialFwd->Bind();
-	_materialFwd->SetUniform("uMVP", _camera.GetUpdatedMatrix());
-	_materialFwd->SetUniform("uCameraPos", _camera.GetLocation());
-	_materialFwd->SetUniform("uCameraFov", _camera.GetFov());
-	_materialFwd->SetUniform("uCameraNear", _camera.GetNear());
-	_materialFwd->SetUniform("uCameraFar", _camera.GetFar());
-	_objFwd->Render();
-	RenderApi::PopTarget();
+	// RenderApi::PushTarget(this);
+	// RenderApi::ClearWithColor({0.05, 0.05, 0.2, 1.0});
+	// _materialFwd->Bind();
+	// _materialFwd->SetUniform("uMVP", _camera.GetUpdatedMatrix());
+	// _materialFwd->SetUniform("uCameraPos", _camera.GetLocation());
+	// _materialFwd->SetUniform("uCameraFov", _camera.GetFov());
+	// _materialFwd->SetUniform("uCameraNear", _camera.GetNear());
+	// _materialFwd->SetUniform("uCameraFar", _camera.GetFar());
+	// _objFwd->Render();
+	// RenderApi::PopTarget();
 
 	RenderApi::PushTarget(this);
 	_material->Bind();
