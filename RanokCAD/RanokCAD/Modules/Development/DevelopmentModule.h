@@ -4,6 +4,7 @@
 #include "../IModule.h"
 #include "ModelTree.h"
 
+struct ImVec2;
 class RayMarchWidget;
 class SceneObject;
 class Material;
@@ -14,6 +15,12 @@ public:
 	DevelopmentModule(InputManager& inInputManager);
 
 	void DrawGui() override;
+
+
+protected:
+	void DrawViewport();
+	void DrawTreeView();
+	void DrawModelPicker(const ImVec2& size);
 
 
 private:

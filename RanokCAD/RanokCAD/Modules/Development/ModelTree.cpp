@@ -1,34 +1,34 @@
 ﻿#include "ModelTree.h"
 
-#include <format>
 #include <utility>
 
 #include "ImGui/imgui.h"
 
-ModelTreeInfo::ModelTreeInfo(std::string name) : modelName(std::move(name)), isComplex(false)
+ModelTreeInfo::ModelTreeInfo(std::string name, std::string depthIds) :
+	modelName(std::move(name)), depthIds(std::move(depthIds)), isComplex(false)
 {
 }
 
-ModelTreeInfo::ModelTreeInfo(ModelOperations operation) : operation(operation), isComplex(true)
+ModelTreeInfo::ModelTreeInfo(ModelOperations operation, std::string depthIds) :
+	operation(operation), depthIds(std::move(depthIds)), isComplex(true)
 {
 }
 
 void ModelTreeInfo::DrawGui()
 {
-	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanFullWidth;
+	constexpr ImGuiPopupFlags popupFlags = ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems;
 
 	if (isOpened)
-
 		flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (!isComplex)
 	{
 		flags |= ImGuiTreeNodeFlags_Leaf;
-		isOpened = ImGui::TreeNodeEx(std::format("{}", modelName).c_str(), flags);
+		isOpened = ImGui::TreeNodeEx(std::format("{}##{}", modelName, depthIds).c_str(), flags);
 		if (isOpened)
 		{
-			if (ImGui::BeginPopupContextItem("Popup",
-											 ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
+			if (ImGui::BeginPopupContextItem("Popup", popupFlags))
 			{
 				if (ImGui::Selectable("Transform to Aggregation"))
 				{
@@ -38,39 +38,28 @@ void ModelTreeInfo::DrawGui()
 			}
 
 			for (ModelTreeInfo& child : children)
-			{
 				child.DrawGui();
-			}
+
 			ImGui::TreePop();
 		}
 	}
 	else
 	{
-		isOpened = ImGui::TreeNodeEx(operation == ModelOperations::Union ? "Union" : "Cross", flags);
+		isOpened = ImGui::TreeNodeEx(
+			std::format("{}##{}", operation == ModelOperations::Union ? "OR" : "AND", depthIds).c_str(), flags);
 		if (isOpened)
 		{
-			if (ImGui::BeginPopupContextItem("Popup",
-											 ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
+			if (ImGui::BeginPopupContextItem("Popup", popupFlags))
 			{
-				if (ImGui::Selectable("Add model"))
-				{
-				}
 				ImGui::EndPopup();
 			}
 
 			for (ModelTreeInfo& child : children)
-			{
 				child.DrawGui();
-			}
+
 			ImGui::TreePop();
 		}
 	}
-}
-
-void ModelTreeInfo::AddModel(const ModelTreeInfo& info)
-{
-	if (isComplex)
-		children.push_back(info);
 }
 
 void ModelTreeInfo::Transform(ModelOperations replacementOperation)
@@ -79,7 +68,7 @@ void ModelTreeInfo::Transform(ModelOperations replacementOperation)
 	{
 		isComplex = true;
 		operation = replacementOperation;
-		children.emplace_back(modelName);
+		children.emplace_back(modelName, std::format("{}.{}", depthIds, children.size()));
 		isOpened = true;
 	}
 }
@@ -90,11 +79,11 @@ void ModelTreeInfo::Transform(std::string replacementModelName)
 	{
 		isComplex = false;
 		modelName = std::move(replacementModelName);
-		children.emplace_back(operation);
+		children.emplace_back(operation, std::format("{}.{}", depthIds, children.size()));
 		isOpened = true;
 	}
 }
 
-ModelTree::ModelTree() : ModelTreeInfo(ModelOperations::Union)
+ModelTree::ModelTree() : ModelTreeInfo(ModelOperations::Union, "0")
 {
 }

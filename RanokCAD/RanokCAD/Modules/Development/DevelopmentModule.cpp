@@ -56,19 +56,17 @@ DevelopmentModule::DevelopmentModule(InputManager& inInputManager) :
 						 }
 					 });
 
-	_modelTree.AddModel(ModelTreeInfo("Circle1"));
-	_modelTree.AddModel(ModelTreeInfo("Circle2"));
+	_modelTree.AddModel("Circle1");
+	_modelTree.AddModel("Circle2");
 }
 
 void DevelopmentModule::DrawGui()
 {
-	static float splitterPosX = ImGui::GetWindowContentRegionMax().x / 3.f;
 	ImGui::Begin("DevelopmentViewport");
+	static float splitterPosX = ImGui::GetWindowContentRegionMax().x / 5.f;
 	ImGui::BeginChild("##MainZone");
-	// ImGui::BeginChild("##TextEditorChild", ImVec2(splitterPosX, 0), true, ImGuiWindowFlags_NoScrollbar);
-	// _modelTree.DrawGui();
-	// ImGui::EndChild();
-	// ImGui::SameLine();
+	DrawModelPicker(ImVec2(splitterPosX, 0));
+	ImGui::SameLine();
 
 	ImGui::InvisibleButton("##VSplitter", ImVec2(5.0f, ImGui::GetWindowContentRegionMax().y));
 	const bool bIsActive = ImGui::IsItemActive();
@@ -79,30 +77,60 @@ void DevelopmentModule::DrawGui()
 		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
 	ImGui::SameLine();
 
+	DrawViewport();
+
+	ImGui::EndChild();
+	ImGui::End();
+}
+
+void DevelopmentModule::DrawViewport()
+{
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+
 	ImGui::BeginChild("##Viewport", ImGui::GetContentRegionAvail(), true, ImGuiWindowFlags_NoScrollbar);
 	_viewport->DrawGui();
+	DrawTreeView();
+	ImGui::EndChild();
 
-	ImGui::SetItemAllowOverlap();
-	ImGui::SetCursorPos(ImGui::GetWindowContentRegionMin());
+	ImGui::PopStyleVar(); // ImGuiStyleVar_WindowPadding
+}
 
-	ImGui::BeginChild(
-		"##TreeModel", ImVec2(ImGui::GetContentRegionAvail().x / 6.f, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
-	bool isHidden = !ImGui::IsWindowHovered(); // TODO: Change to mouse position
-	if (isHidden)
-		ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyle().Colors[ImGuiCol_Text] * ImVec4(1.0f, 1.0f, 1.0f, 0.3f));
+void DevelopmentModule::DrawTreeView()
+{
+	const ImVec2 treeViewSizeMin = ImGui::GetItemRectSize() / ImVec2(6, 3);
+	const ImVec2 treeViewSizeMax = ImGui::GetItemRectSize() / ImVec2(3, 1.5f);
+	static bool bIsHovered = false;
+
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetStyle().Colors[ImGuiCol_WindowBg] * ImVec4(1, 1, 1, 0.4f));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(6, 6));
+	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 10);
+	if (bIsHovered)
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 1);
+	}
+	else
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.6f);
+	}
+
+	ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImGui::GetStyle().WindowPadding);
+	ImGui::SetNextWindowSizeConstraints(treeViewSizeMin, treeViewSizeMax);
+
+	ImGui::Begin("##TreeModel",
+				 nullptr,
+				 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_HorizontalScrollbar);
 
 	_modelTree.DrawGui();
-
-	if (isHidden)
-		ImGui::PopStyleColor();
-
-	ImGui::EndChild();
-
-	ImGui::EndChild();
-
-	ImGui::PopStyleVar();
-	ImGui::EndChild();
-
+	bIsHovered = ImGui::IsAnyItemHovered() || ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup);
 	ImGui::End();
+
+	ImGui::PopStyleVar(3);
+	ImGui::PopStyleColor(); // ImGuiCol_WindowBg
+}
+
+void DevelopmentModule::DrawModelPicker(const ImVec2& size)
+{
+	ImGui::BeginChild("##ModelsPicker", size, true);
+	ImGui::Button("ModelPicker");
+	ImGui::EndChild();
 }

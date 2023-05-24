@@ -12,6 +12,8 @@ class RanokCADApp: public Application
 public:
 	RanokCADApp();
 
+	void SetDefaultStyle();
+
 	void RenderImGui() override;
 
 private:
