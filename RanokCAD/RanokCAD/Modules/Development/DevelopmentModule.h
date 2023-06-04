@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "../IModule.h"
-#include "ModelTree.h"
+#include "Model\GuiTree.h"
 
 struct ImVec2;
 class RayMarchWidget;
@@ -18,9 +18,9 @@ public:
 
 
 protected:
-	void DrawViewport();
+	void DrawRightPanel();
 	void DrawTreeView();
-	void DrawModelPicker(const ImVec2& size);
+	void DrawLeftPanel(const ImVec2& size);
 
 
 private:

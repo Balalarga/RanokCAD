@@ -1,5 +1,5 @@
-﻿#include "DevelopmentModule.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
+﻿#define IMGUI_DEFINE_MATH_OPERATORS
+#include "DevelopmentModule.h"
 
 #include "ImGui/imgui.h"
 #include "OpenglWrap/Core/Material.h"
@@ -65,7 +65,7 @@ void DevelopmentModule::DrawGui()
 	ImGui::Begin("DevelopmentViewport");
 	static float splitterPosX = ImGui::GetWindowContentRegionMax().x / 5.f;
 	ImGui::BeginChild("##MainZone");
-	DrawModelPicker(ImVec2(splitterPosX, 0));
+	DrawLeftPanel(ImVec2(splitterPosX, 0));
 	ImGui::SameLine();
 
 	ImGui::InvisibleButton("##VSplitter", ImVec2(5.0f, ImGui::GetWindowContentRegionMax().y));
@@ -77,17 +77,17 @@ void DevelopmentModule::DrawGui()
 		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
 	ImGui::SameLine();
 
-	DrawViewport();
+	DrawRightPanel();
 
 	ImGui::EndChild();
 	ImGui::End();
 }
 
-void DevelopmentModule::DrawViewport()
+void DevelopmentModule::DrawRightPanel()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
-	ImGui::BeginChild("##Viewport", ImGui::GetContentRegionAvail(), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("##DevRightPanel", ImGui::GetContentRegionAvail(), true, ImGuiWindowFlags_NoScrollbar);
 	_viewport->DrawGui();
 	DrawTreeView();
 	ImGui::EndChild();
@@ -121,16 +121,25 @@ void DevelopmentModule::DrawTreeView()
 				 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_HorizontalScrollbar);
 
 	_modelTree.DrawGui();
-	bIsHovered = ImGui::IsAnyItemHovered() || ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup);
+	bIsHovered = ImGui::IsAnyItemHovered() ||
+		ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_RootAndChildWindows);
 	ImGui::End();
 
 	ImGui::PopStyleVar(3);
 	ImGui::PopStyleColor(); // ImGuiCol_WindowBg
 }
 
-void DevelopmentModule::DrawModelPicker(const ImVec2& size)
+void DevelopmentModule::DrawLeftPanel(const ImVec2& size)
 {
 	ImGui::BeginChild("##ModelsPicker", size, true);
-	ImGui::Button("ModelPicker");
+	if (ImGui::BeginTabBar("##DevLeftPanel"))
+	{
+		if (ImGui::BeginTabItem("Models"))
+		{
+			ImGui::Button("ModelPicker");
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
 	ImGui::EndChild();
 }
