@@ -3,7 +3,7 @@
 #include <string>
 
 #include "OpenglWrap/Core/Transformable.h"
-#include "RanokCAD/Utils/GuiTree.h"
+#include "Utils/GuiTree.h"
 #include "RanokLang/ActionTree.h"
 #include "RanokLang/Generators/ShaderGenerator.h"
 
@@ -38,4 +38,6 @@ private:
 class ModelTree: public GuiTree<ModelItem>
 {
 public:
+	void DrawItem() override;
+	std::string GetTitle() const override;
 };

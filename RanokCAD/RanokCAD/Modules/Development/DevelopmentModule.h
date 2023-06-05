@@ -1,8 +1,9 @@
 ﻿#pragma once
 #include <memory>
 
-#include "../IModule.h"
-#include "Model\GuiTree.h"
+#include "Model/ModelItem.h"
+#include "Modules/IModule.h"
+#include "Utils/GuiTree.h"
 
 struct ImVec2;
 class RayMarchWidget;

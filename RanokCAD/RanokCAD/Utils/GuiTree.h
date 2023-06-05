@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "ImGui/imgui.h"
-#include "RanokCAD/Graphics/ImGuiWidget.h"
+#include "Graphics/ImGuiWidget.h"
 
 template<class T>
 class GuiTree: public ImGuiWidget
@@ -13,6 +13,8 @@ public:
 	GuiTree(const T& val = T()) : _val(val)
 	{
 	}
+
+	virtual ~GuiTree() = default;
 
 	void DrawGui() override
 	{

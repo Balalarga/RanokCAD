@@ -27,3 +27,12 @@ std::optional<std::string> ModelItem::GetShaderCode() const
 {
 	return sGenerator.Generate(_program);
 }
+
+void ModelTree::DrawItem()
+{
+}
+
+std::string ModelTree::GetTitle() const
+{
+	return {};
+}

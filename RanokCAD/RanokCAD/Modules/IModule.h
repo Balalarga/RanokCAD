@@ -1,6 +1,5 @@
 ﻿#pragma once
-#include "RanokCAD/Graphics/ImGuiWidget.h"
-
+#include "Graphics/ImGuiWidget.h"
 
 class InputManager;class IModule: public ImGuiWidget
 {
