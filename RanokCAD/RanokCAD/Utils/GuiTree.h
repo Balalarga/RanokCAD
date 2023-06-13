@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 
-#include "../Graphics/ImGuiWidget.h"
-#include "ImGui/imgui.h"
+#include "Graphics/ImGuiWidget.h"
+#include "imgui.h"
 
 template<class T>
 class GuiTree: public ImGuiWidget

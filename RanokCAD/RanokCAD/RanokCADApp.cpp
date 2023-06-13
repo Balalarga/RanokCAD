@@ -12,6 +12,7 @@ RanokCADApp::RanokCADApp() :
 {
 	SetDefaultStyle();
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	ImGui::GetIO().IniFilename = nullptr;
 
 	GetInputManager()->Add(SDL_SCANCODE_ESCAPE, [](Window& window, const KeyState& state) { window.Close(); });
 }

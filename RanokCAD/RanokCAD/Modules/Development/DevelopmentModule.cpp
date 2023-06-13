@@ -5,7 +5,7 @@
 #include "OpenglWrap/Core/Material.h"
 #include "OpenglWrap/Core/SceneObject.h"
 #include "OpenglWrap/Platform/InputManager.h"
-#include "RanokCAD/Graphics/RayMarchWidget.h"
+#include "Graphics/RayMarchWidget.h"
 
 DevelopmentModule::DevelopmentModule(InputManager& inInputManager) :
 	IModule(inInputManager), _viewport(std::make_shared<RayMarchWidget>(glm::ivec2{800, 600}))
@@ -55,9 +55,6 @@ DevelopmentModule::DevelopmentModule(InputManager& inInputManager) :
 							 _viewport->GetCamera().Move({-0.1, 0, 0});
 						 }
 					 });
-
-	_modelTree.AddModel("Circle1");
-	_modelTree.AddModel("Circle2");
 }
 
 void DevelopmentModule::DrawGui()

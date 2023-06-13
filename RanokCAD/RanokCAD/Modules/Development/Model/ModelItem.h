@@ -12,6 +12,7 @@ class ModelItem: public Transformable
 public:
 	static ShaderGenerator sGenerator;
 
+	ModelItem() = default;
 	ModelItem(const std::string& newCode, glm::vec3 newBounding);
 
 	const std::string& GetCode() const

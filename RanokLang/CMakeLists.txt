@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.20)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+get_filename_component(RootDirName ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
+project(${RootDirName} LANGUAGES CXX)
+
+# Source files
+file(GLOB_RECURSE PROJECT_SOURCES
+    ${PROJECT_NAME}/*.cpp
+    ${PROJECT_NAME}/*.h
+    ${PROJECT_NAME}/*.hpp)
+
+add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
+
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC RanokCAD_ThirdParty)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

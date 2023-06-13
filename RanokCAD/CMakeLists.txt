@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 3.20)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+get_filename_component(RootDirName ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
+project(${RootDirName} LANGUAGES CXX)
+
+# Source files
+file(GLOB_RECURSE PROJECT_SOURCES
+    ${PROJECT_NAME}/*.cpp
+    ${PROJECT_NAME}/*.h
+    ${PROJECT_NAME}/*.hpp)
+
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+#set_target_properties(${PROJECT_NAME} PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC RanokCAD_ThirdParty OpenglWrap ResourceManager RanokLang)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_NAME})

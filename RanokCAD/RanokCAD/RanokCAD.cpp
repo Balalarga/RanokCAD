@@ -1,11 +1,12 @@
 ﻿#include <iostream>
 
-#include "RanokCAD/RanokCADApp.h"
-#include "RanokCAD/RanokResources.h"
+#include "RanokCADApp.h"
+#include "RanokResources.h"
 #include "RanokLang/Generators/MultiObjectShaderGenerator.h"
 
 int main(int argc, char** argv)
 {
+	std::cout << std::filesystem::current_path() << std::endl;
 	constexpr auto resourceRegistry = "resourceRegistry.json";
 	if (!RanokResources::Get().InitFrom(resourceRegistry))
 	{
