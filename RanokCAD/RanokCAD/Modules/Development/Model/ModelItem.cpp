@@ -34,5 +34,5 @@ void ModelTree::DrawItem()
 
 std::string ModelTree::GetTitle() const
 {
-	return {};
+	return "NewNode";
 }
