@@ -1,11 +1,11 @@
 ﻿#pragma once
 #include <glm/vec4.hpp>
 #include <string>
-
-#include "../../../Utils/GuiTree.h"
 #include "OpenglWrap/Core/Transformable.h"
 #include "RanokLang/ActionTree.h"
 #include "RanokLang/Generators/ShaderGenerator.h"
+#include "Utils/GuiTree.h"
+
 
 class ModelItem: public Transformable
 {
@@ -33,12 +33,13 @@ public:
 private:
 	std::string _code;
 	ActionTree _program;
-	glm::vec3 _bounding{1.f};
+	glm::vec3 _bounding{ 1.f };
 };
+
 
 class ModelTree: public GuiTree<ModelItem>
 {
 public:
-	void DrawItem() override;
-	std::string GetTitle() const override;
+	virtual void DrawItem() override;
+	virtual std::string GetTitle() const override;
 };

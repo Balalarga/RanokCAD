@@ -19,4 +19,6 @@ public:
 	static std::shared_ptr<std::ofstream> CreateFileWriter(const std::string& filepath);
 
 	static bool IsFileExists(const std::string& filepath);
+
+	static std::vector<std::filesystem::path> ScanDir(const std::filesystem::path& dir, bool bRecursive = false);
 };

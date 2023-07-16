@@ -1,7 +1,8 @@
 ﻿#include "IModule.h"
 
-IModule::IModule(InputManager& inputManager):
-	inputManager(inputManager)
-{
 
+IModule::IModule(glm::ivec2 windowSize, InputManager& inputManager)
+	: inputManager(inputManager)
+	, _windowSize(windowSize)
+{
 }

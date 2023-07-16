@@ -5,12 +5,14 @@
 #include "glm/vec2.hpp"
 #include <vector>
 
+
 enum class KeyState
 {
 	Pressed, Released, Repeated
 };
 
-enum class MouseKey
+
+enum class MouseKey: uint8_t
 {
 	Left = 0,
 	Middle,
@@ -19,12 +21,14 @@ enum class MouseKey
 	X2
 };
 
+
 struct MouseState
 {
 	glm::vec2 pos;
 	glm::vec2 moved;
 	KeyState keys[5];
 };
+
 
 class InputManager
 {

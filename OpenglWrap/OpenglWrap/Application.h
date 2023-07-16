@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <memory>
-
 #include "Platform/Window.h"
+
 
 class Application
 {

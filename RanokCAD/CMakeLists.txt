@@ -12,7 +12,8 @@ project(${RootDirName} LANGUAGES CXX)
 file(GLOB_RECURSE PROJECT_SOURCES
     ${PROJECT_NAME}/*.cpp
     ${PROJECT_NAME}/*.h
-    ${PROJECT_NAME}/*.hpp)
+    ${PROJECT_NAME}/*.hpp
+    *.json)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 

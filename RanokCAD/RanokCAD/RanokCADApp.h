@@ -7,6 +7,7 @@ class SceneObject;
 class Material;
 class RayMarchWidget;
 
+
 class RanokCADApp: public Application
 {
 public:
@@ -15,6 +16,7 @@ public:
 	void SetDefaultStyle();
 
 	void RenderImGui() override;
+
 
 private:
 	std::shared_ptr<IModule> _activeModule;

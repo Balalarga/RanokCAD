@@ -1,16 +1,17 @@
 ﻿#pragma once
-#include <format>
 #include <string>
 #include <vector>
 
 #include "Graphics/ImGuiWidget.h"
 #include "imgui.h"
 
+
 template<class T>
 class GuiTree: public ImGuiWidget
 {
 public:
-	GuiTree(const T& val = T()) : _val(val)
+	GuiTree(const T& val = T())
+		: _val(val)
 	{
 	}
 

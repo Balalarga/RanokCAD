@@ -10,18 +10,19 @@ class RayMarchWidget;
 class SceneObject;
 class Material;
 
+
 class DevelopmentModule: public IModule
 {
 public:
-	DevelopmentModule(InputManager& inInputManager);
+	DevelopmentModule(glm::ivec2 windowSize, InputManager& inInputManager);
 
 	void DrawGui() override;
 
 
 protected:
-	void DrawRightPanel();
+	void DrawViewport();
 	void DrawTreeView();
-	void DrawLeftPanel(const ImVec2& size);
+	void DrawControls();
 
 
 private:

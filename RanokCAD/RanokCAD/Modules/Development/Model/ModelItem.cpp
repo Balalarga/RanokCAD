@@ -3,6 +3,7 @@
 #include "RanokLang/Lexer.h"
 #include "RanokLang/Parser.h"
 
+
 ShaderGenerator ModelItem::sGenerator;
 
 ModelItem::ModelItem(const std::string& newCode, glm::vec3 newBounding)
@@ -13,7 +14,7 @@ ModelItem::ModelItem(const std::string& newCode, glm::vec3 newBounding)
 bool ModelItem::UpdateCode(const std::string& newCode, glm::vec3 newBounding)
 {
 	Parser parser;
-	ActionTree newProgram = parser.Parse(Lexer{newCode});
+	ActionTree newProgram = parser.Parse(Lexer{ newCode });
 	if (parser.HasErrors() || newProgram.Root())
 		return false;
 

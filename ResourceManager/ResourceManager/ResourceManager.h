@@ -89,8 +89,6 @@ private:
 	std::filesystem::path _configPath;
 
 	std::map<std::string, std::unique_ptr<Resource>> _supportedTypes;
-
 	std::map<std::string, std::shared_ptr<Resource>> _resources;
-
 	std::vector<std::shared_ptr<Resource>> _resourcesArray;
 };
