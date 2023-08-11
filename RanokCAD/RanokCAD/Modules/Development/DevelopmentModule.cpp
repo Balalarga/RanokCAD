@@ -71,7 +71,9 @@ void DevelopmentModule::DrawViewport()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
 	ImGui::BeginChild("##DevRightPanel", ImGui::GetContentRegionAvail(), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 	_viewport->DrawGui();
+	ImGui::PopStyleVar();
 	DrawTreeView();
 	ImGui::EndChild();
 

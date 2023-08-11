@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Graphics/ImGuiWidget.h"
-#include "imgui.h"
+#include "ImGui/imgui.h"
 
 
 template<class T>
@@ -17,7 +17,7 @@ public:
 
 	virtual ~GuiTree() = default;
 
-	void DrawGui() override
+	virtual void DrawGui() override
 	{
 		if (_bOpened)
 			_flags |= ImGuiTreeNodeFlags_DefaultOpen;

@@ -23,3 +23,4 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${CMA
 
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC RanokCAD_ThirdParty OpenglWrap ResourceManager RanokLang)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_NAME})
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}/${PROJECT_NAME})

@@ -4,6 +4,7 @@
 #include "RanokResources.h"
 #include "RanokLang/Generators/MultiObjectShaderGenerator.h"
 
+
 int main(int argc, char** argv)
 {
 	std::cout << std::filesystem::current_path() << std::endl;

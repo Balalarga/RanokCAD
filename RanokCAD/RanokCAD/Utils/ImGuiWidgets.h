@@ -1,15 +1,15 @@
 ﻿#pragma once
-#include <imgui.h>
-
+#include "ImGui/imgui.h"
 
 
 class ImGuiWidgets
 {
-public:
 	ImGuiWidgets() = delete;
 	ImGuiWidgets(ImGuiWidgets&&) = delete;
 	ImGuiWidgets(const ImGuiWidgets&) = delete;
 
+
+public:
 	static void ResizableVSplitter(
 		float& splitterPosX,
 		const ImVec2& size = { 5.f, ImGui::GetWindowContentRegionMax().y },

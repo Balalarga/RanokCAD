@@ -5,7 +5,9 @@
 class RanokResources: public ResourceManager
 {
 public:
-	static RanokResources& Get();
+	static 
+        RanokResources& Get();
+
 
 protected:
 	RanokResources() = default;

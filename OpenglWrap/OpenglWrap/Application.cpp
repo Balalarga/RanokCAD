@@ -1,10 +1,9 @@
 ﻿#include "Application.h"
-
 #include <chrono>
-
 #include "Core/RenderApi.h"
-#include "backends/imgui_impl_opengl3.h"
-#include "backends/imgui_impl_sdl2.h"
+#include "ImGui/backends/imgui_impl_opengl3.h"
+#include "ImGui/backends/imgui_impl_sdl2.h"
+
 
 Application::Application(Params params) :
 	_params(std::move(params)), _window(std::make_unique<Window>(_params.windowInitializer)),
@@ -12,6 +11,7 @@ Application::Application(Params params) :
 {
 	if (_params.updateRate <= 0)
 		_params.updateRate = 1;
+
 	if (_params.renderRate <= 0)
 		_params.renderRate = 1;
 }
@@ -19,36 +19,43 @@ Application::Application(Params params) :
 void Application::Run()
 {
 	using namespace std::chrono;
-	long long updateTimeMcs = 1000000 / _params.updateRate;
-	long long renderTimeMcs = 1000000 / _params.renderRate;
-	long long updateTimerMcs = 0;
 
-	_window->Open();
+
+	size_t updateTimeMcs = 1000000 / _params.updateRate;
+	size_t renderTimeMcs = 1000000 / _params.renderRate;
+	size_t updateTimerMcs = 0;
+
+
+	_window->Open(); // Enforce window opening
 	while (_window->IsOpen())
 	{
 		high_resolution_clock::time_point frameStart = high_resolution_clock::now();
+
+		// Event handling
 		_inputManager->HandleEvent();
 
+		// Updating
 		if (updateTimerMcs >= updateTimeMcs)
 		{
 			Update(static_cast<float>(updateTimeMcs) / 1000.f);
 			updateTimerMcs -= updateTimeMcs;
 		}
-		RenderApi::Clear();
 
+		// Rendering
+		RenderApi::Clear();
 		Render();
 
+		// ImGui Rendering
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL2_NewFrame();
 		ImGui::NewFrame();
-
 		RenderImGui();
-
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		RenderApi::Present();
 
+		// Frame delay
 		high_resolution_clock::time_point frameEnd = high_resolution_clock::now();
 		long long duration = duration_cast<microseconds>(frameEnd - frameStart).count();
 		if (duration < renderTimeMcs)
@@ -62,33 +69,33 @@ void Application::Run()
 
 void Application::Render()
 {
-	if (_onRender)
-		_onRender();
+	if (_onRenderEvent)
+		_onRenderEvent();
 }
 
 void Application::RenderImGui()
 {
-	if (_onImGuiRender)
-		_onImGuiRender();
+	if (_onImGuiRenderEvent)
+		_onImGuiRenderEvent();
 }
 
 void Application::Update(float delta)
 {
-	if (_onUpdate)
-		_onUpdate(delta);
+	if (_onUpdateEvent)
+		_onUpdateEvent(delta);
 }
 
-void Application::SetOnRender(const std::function<void()>& func)
+void Application::SetOnRenderEvent(const std::function<void()>& func)
 {
-	_onRender = func;
+	_onRenderEvent = func;
 }
 
-void Application::SetOnImGuiRender(const std::function<void()>& func)
+void Application::SetOnImGuiRenderEvent(const std::function<void()>& func)
 {
-	_onImGuiRender = func;
+	_onImGuiRenderEvent = func;
 }
 
-void Application::SetOnUpdate(const std::function<void(float)>& func)
+void Application::SetOnUpdateEvent(const std::function<void(float)>& func)
 {
-	_onUpdate = func;
+	_onUpdateEvent = func;
 }

@@ -7,14 +7,15 @@
 #include "../Core/RenderTarget.h"
 #include "InputManager.h"
 
+
 class Window: public RenderTarget
 {
 	friend class InputManager;
+
 public:
-	static size_t sWindowDefaultFlags;
 	struct Params
 	{
-		std::string Title = "Window";
+		std::string Title = {"Window"};
 		Uint32 Subsystems = SDL_INIT_EVERYTHING;
 		SDL_Point Size = {1280, 720};
 		SDL_Point Pos = {SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED};
@@ -24,13 +25,13 @@ public:
 		const char* imguiGlVersion = "#version 330";
 	};
 
+
+	static size_t sWindowDefaultFlags;
+
+
 	Window(Params params = {});
 	virtual ~Window();
 
-	bool IsOpen() const
-	{
-		return _isOpen;
-	}
 	virtual void Open();
 	virtual void Close();
 
@@ -40,12 +41,17 @@ public:
 
 	virtual void Resize(unsigned x, unsigned y);
 	virtual glm::uvec2 GetSize();
-
 	uint32_t GetWindowId() const;
+
 
 	const Params& GetParams() const
 	{
 		return _params;
+	}
+
+	bool IsOpen() const
+	{
+		return _isOpen;
 	}
 
 

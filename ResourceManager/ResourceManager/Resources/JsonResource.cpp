@@ -1,9 +1,8 @@
 ﻿#include "JsonResource.h"
 
-JsonResource::JsonResource(const ResourceDesc& desc):
-	Resource(desc)
+JsonResource::JsonResource(const ResourceDesc& desc)
+	: Resource(desc)
 {
-
 }
 
 std::string JsonResource::GetResourceType()
@@ -18,6 +17,8 @@ Resource* JsonResource::GetPrototype(const ResourceDesc& desc)
 
 bool JsonResource::LoadImpl(std::istream& stream)
 {
+	int s[] = { 1, 2, 3 };
+
 	stream >> _json;
 	return stream.good();
 }
@@ -32,7 +33,7 @@ void JsonResource::UnloadImpl()
 	_json.clear();
 }
 
-JsonResourceWritable::JsonResourceWritable(const ResourceDesc& desc):
-	JsonResource(desc)
+JsonResourceWritable::JsonResourceWritable(const ResourceDesc& desc)
+	: JsonResource(desc)
 {
 }

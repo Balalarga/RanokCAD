@@ -3,10 +3,6 @@
 #include "Modules/IModule.h"
 #include "OpenglWrap/Application.h"
 
-class SceneObject;
-class Material;
-class RayMarchWidget;
-
 
 class RanokCADApp: public Application
 {
