@@ -9,6 +9,7 @@ class BoundingBox;
 class SceneObject;
 class Material;
 
+
 class RayMarchWidget: public FboWidget
 {
 	friend class RanokCADApp;

@@ -40,6 +40,6 @@ private:
 class ModelTree: public GuiTree<ModelItem>
 {
 public:
-	virtual void DrawItem() override;
-	virtual std::string GetTitle() const override;
+	void DrawItem() override;
+	std::string GetTitle() const override;
 };

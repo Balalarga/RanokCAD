@@ -10,14 +10,12 @@ template<class T>
 class GuiTree: public ImGuiWidget
 {
 public:
-	GuiTree(const T& val = T())
-		: _val(val)
+	GuiTree(T val = T())
+		: _val(std::move(val))
 	{
 	}
 
-	virtual ~GuiTree() = default;
-
-	virtual void DrawGui() override
+	void DrawGui() override
 	{
 		if (_bOpened)
 			_flags |= ImGuiTreeNodeFlags_DefaultOpen;
@@ -58,10 +56,11 @@ public:
 
 
 private:
-	ImGuiTreeNodeFlags _flags = ImGuiTreeNodeFlags_SpanFullWidth;
+	ImGuiTreeNodeFlags _flags = ImGuiTreeNodeFlags_None;
 	bool _bOpened = false;
 
 	T _val;
 	std::vector<GuiTree> _children;
 	std::string _depthIds;
 };
+

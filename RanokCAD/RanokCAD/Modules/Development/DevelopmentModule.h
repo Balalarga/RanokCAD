@@ -22,10 +22,12 @@ public:
 protected:
 	void DrawViewport();
 	void DrawTreeView();
-	void DrawControls();
+	void DrawToolBar();
+	void DrawMenuBar();
 
 
 private:
 	std::shared_ptr<RayMarchWidget> _viewport;
 	ModelTree _modelTree;
+    bool _bIsViewportFocused = false;
 };

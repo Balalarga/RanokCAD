@@ -1,5 +1,7 @@
 ﻿#include "RayMarchWidget.h"
 
+#include <ImGui/imgui_internal.h>
+
 #include "BoundingBox.h"
 #include "ImGui/imgui.h"
 #include "OpenglWrap/Camera.h"
@@ -155,7 +157,7 @@ def main(s[3])
 	}
 
 	auto path = std::filesystem::current_path();
-	path /= "Templates/RayMarch.glsl.templ";
+	path /= "Assets/Templates/RayMarch.glsl.templ";
 
 	inja::Environment env;
 	_material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, env.render_file(path.string(), objects)));
@@ -202,6 +204,7 @@ void RayMarchWidget::Render()
 		texture->Bind();
 	_material->SetUniform("uResolution", GetSize());
 	_material->SetUniform("uCameraPos", _camera.GetLocation());
+	_material->SetUniform("uCameraDir", _camera.GetRotation());
 	_material->SetUniform("uCameraFov", _camera.GetFov());
 	_material->SetUniform("uCameraNear", _camera.GetNear());
 	_material->SetUniform("uCameraFar", _camera.GetFar());
@@ -212,5 +215,6 @@ void RayMarchWidget::Render()
 void RayMarchWidget::DrawGui()
 {
 	Render();
-	FboWidget::DrawGui();
+    if (ImGui::GetCurrentWindowRead())
+	    FboWidget::DrawGui();
 }

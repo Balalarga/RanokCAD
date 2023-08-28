@@ -13,6 +13,7 @@ file(GLOB_RECURSE PROJECT_SOURCES
     ${PROJECT_NAME}/*.cpp
     ${PROJECT_NAME}/*.h
     ${PROJECT_NAME}/*.hpp
+    Assets/*
     *.json)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
