@@ -1,14 +1,6 @@
-/**
- * Part 2 Challenges
- * - Change the diffuse color of the sphere to be blue
- * - Change the specual color of the sphere to be green
- * - Make one of the lights pulse by having its intensity vary over time
- * - Add a third light to the scene
- */
 #version 420
 
 layout(location = 0) in vec2 vUv;
-
 layout(location = 0) out vec4 oColor;
 
 uniform vec2 uResolution = vec2(800, 600);
@@ -216,6 +208,30 @@ float rand(vec2 co)
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+mat4 rotationX( in float angle ) {
+	return mat4(	1.0,		0,			0,			0,
+			 		0, 	cos(angle),	-sin(angle),		0,
+					0, 	sin(angle),	 cos(angle),		0,
+					0, 			0,			  0, 		1);
+}
+mat4 rotationY( in float angle ) {
+	return mat4(	cos(angle),		0,		sin(angle),	0,
+			 				0,		1.0,			 0,	0,
+					-sin(angle),	0,		cos(angle),	0,
+							0, 		0,				0,	1);
+}
+mat4 rotationZ( in float angle ) {
+	return mat4(	cos(angle),		-sin(angle),	0,	0,
+			 		sin(angle),		cos(angle),		0,	0,
+							0,				0,		1,	0,
+							0,				0,		0,	1);
+}
+
+vec3 rotate(vec3 a, vec3 rotation)
+{
+    return (vec4(a, 1.0) * rotationY(-rotation.x) * rotationX(rotation.y) * rotationZ(rotation.z)).xyz;
+}
+
 vec3 myRayDirection(vec2 size, vec2 fragCoord) {
     vec2 xy = fragCoord - size / 2.0;
     float z = size.y / tan(radians(uCameraFov) / 2.0);
@@ -229,7 +245,7 @@ void main()
     fwdColor = texture(tForwardRendering, uv);
 
     vec3 dir = myRayDirection(uResolution.xy, gl_FragCoord.xy);
-    
+    dir = rotate(dir, uCameraDir);
     vec3 eye = vec3(uCameraPos.x, uCameraPos.y, -uCameraPos.z);
     ObjectHit hit = shortestDistanceToSurface(eye, dir, uCameraNear, uCameraFar);
 
