@@ -3,13 +3,11 @@
 
 #include "Model/ModelItem.h"
 #include "Modules/IModule.h"
-#include "Utils/GuiTree.h"
 
 struct ImVec2;
 class RayMarchWidget;
 class SceneObject;
 class Material;
-
 
 class DevelopmentModule: public IModule
 {
@@ -29,5 +27,5 @@ protected:
 private:
 	std::shared_ptr<RayMarchWidget> _viewport;
 	ModelTree _modelTree;
-    bool _bIsViewportFocused = false;
+	bool _bIsViewportFocused = false;
 };

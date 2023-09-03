@@ -1,45 +1,48 @@
 ﻿#pragma once
 #include <glm/vec4.hpp>
 #include <string>
+
 #include "OpenglWrap/Core/Transformable.h"
 #include "RanokLang/ActionTree.h"
 #include "RanokLang/Generators/ShaderGenerator.h"
+#include "Utils/ClassDefines.h"
 #include "Utils/GuiTree.h"
-
 
 class ModelItem: public Transformable
 {
+	friend class ModelDetailsView;
 public:
 	static ShaderGenerator sGenerator;
 
-	ModelItem() = default;
-	ModelItem(const std::string& newCode, glm::vec3 newBounding);
+	DefineGetter(Name, _name);
+	DefineGetter(BoundingBox, _bounding);
+	DefineGetter(Color, _color);
+	DefineGetter(Code, _code);
 
-	const std::string& GetCode() const
-	{
-		return _code;
-	}
+	DefineConstructSetter(BoundingBox, const std::string&, _name);
+	DefineConstructSetter(BoundingBox, const glm::vec3&, _bounding);
+	DefineConstructSetter(Color, const glm::vec4&, _color);
 
-	const glm::vec3& GetBoundingBox() const
-	{
-		return _bounding;
-	}
-
-	bool UpdateCode(const std::string& newCode, glm::vec3 newBounding);
+	ModelItem& SetCode(const std::string& newCode, bool* bSucceeded = nullptr);
 
 	std::optional<std::string> GetShaderCode() const;
 
 
 private:
+	std::string _name = "<Unnamed>";
+	glm::vec3 _bounding{0.f};
+	glm::vec4 _color{1.f};
+
 	std::string _code;
 	ActionTree _program;
-	glm::vec3 _bounding{ 1.f };
 };
-
 
 class ModelTree: public GuiTree<ModelItem>
 {
 public:
-	void DrawItem() override;
+	static ModelTree sDefaultTree;
+	using GuiTree::GuiTree;
+	
+	bool DrawItem(ImGuiTreeNodeFlags flags) override;
 	std::string GetTitle() const override;
 };

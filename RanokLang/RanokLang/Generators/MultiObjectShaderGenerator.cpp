@@ -103,3 +103,12 @@ void MultiObjectShaderGenerator::SetColor(float r, float g, float b, float a)
 		{"a", a},
 	};
 }
+
+void MultiObjectShaderGenerator::SetPosition(const glm::vec3& pos)
+{
+	objectJson["Pos"] = {
+		{"x", pos.x},
+		{"y", pos.y},
+		{"z", pos.z},
+	};
+}

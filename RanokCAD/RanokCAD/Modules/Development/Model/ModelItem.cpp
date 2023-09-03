@@ -4,24 +4,29 @@
 #include "RanokLang/Parser.h"
 
 
+ModelTree ModelTree::sDefaultTree(ModelItem().SetCode("").SetColor(),);
+
+
 ShaderGenerator ModelItem::sGenerator;
 
-ModelItem::ModelItem(const std::string& newCode, glm::vec3 newBounding)
-{
-	UpdateCode(newCode, newBounding);
-}
-
-bool ModelItem::UpdateCode(const std::string& newCode, glm::vec3 newBounding)
+ModelItem& ModelItem::SetCode(const std::string& newCode, bool* bSucceeded)
 {
 	Parser parser;
-	ActionTree newProgram = parser.Parse(Lexer{ newCode });
-	if (parser.HasErrors() || newProgram.Root())
-		return false;
+	const ActionTree newProgram = parser.Parse(Lexer{ newCode });
+	if (!parser.HasErrors() && newProgram.Root())
+	{
+		_program = newProgram;
+		_code = newCode;
+		
+		if (bSucceeded)
+			*bSucceeded = true;
+	}
+	else if (bSucceeded)
+	{
+		*bSucceeded = false;
+	}
 
-	_program = newProgram;
-	_code = newCode;
-	_bounding = newBounding;
-	return true;
+	return *this;
 }
 
 std::optional<std::string> ModelItem::GetShaderCode() const
@@ -29,11 +34,17 @@ std::optional<std::string> ModelItem::GetShaderCode() const
 	return sGenerator.Generate(_program);
 }
 
-void ModelTree::DrawItem()
+bool ModelTree::DrawItem(ImGuiTreeNodeFlags flags)
 {
+	if (ImGui::TreeNodeEx(GetInner().GetName().c_str(), flags))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 std::string ModelTree::GetTitle() const
 {
-	return "NewNode";
+	return "Model structure";
 }

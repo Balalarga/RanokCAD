@@ -64,7 +64,13 @@ ObjectHit sceneSDF(vec3 samplePoint)
     //return sphereSDF(samplePoint);
     float dist;
 ## for Object in Objects
-    dist = ObjectFunc{{loop.index}}(float[](samplePoint.x, samplePoint.y, samplePoint.z));
+
+    dist = ObjectFunc{{loop.index}}(float[](
+    {%- if existsIn(Object, "Pos") -%}
+        samplePoint.x + {{Object.Pos.x}}, samplePoint.y + {{Object.Pos.y}}, samplePoint.z + {{Object.Pos.z}}{%- else -%}
+        samplePoint.x, samplePoint.y, samplePoint.z
+        {%- endif -%}
+        ));
     if (dist > 0)
     {
         hit.miss = false;

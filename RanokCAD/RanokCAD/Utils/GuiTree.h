@@ -5,28 +5,29 @@
 #include "Graphics/ImGuiWidget.h"
 #include "ImGui/imgui.h"
 
-
 template<class T>
 class GuiTree: public ImGuiWidget
 {
 public:
-	GuiTree(T val = T())
-		: _val(std::move(val))
+	GuiTree(T val = T()) : _val(std::move(val))
 	{
 	}
 
 	void DrawGui() override
 	{
+		ImGuiTreeNodeFlags runtimeFlags = ImGuiTreeNodeFlags_None;
 		if (_bOpened)
-			_flags |= ImGuiTreeNodeFlags_DefaultOpen;
-
-		_bOpened = ImGui::TreeNodeEx(GetTitle().c_str(), _flags);
+			runtimeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
+		
+		if (_children.empty())
+			runtimeFlags |= ImGuiTreeNodeFlags_Leaf;
+		
+		_bOpened = DrawItem(_flags | runtimeFlags);
 		if (_bOpened)
 		{
-			DrawItem();
 			for (GuiTree& child : _children)
 				child.DrawGui();
-
+			
 			ImGui::TreePop();
 		}
 	}
@@ -36,7 +37,11 @@ public:
 		_bOpened = opened;
 	}
 
-	virtual void DrawItem() = 0;
+	virtual bool DrawItem(ImGuiTreeNodeFlags flags)
+	{
+		return ImGui::TreeNodeEx(GetTitle().c_str(), flags);
+	}
+
 	virtual std::string GetTitle() const = 0;
 
 	void AddFlag(ImGuiTreeNodeFlags flag)
@@ -54,6 +59,18 @@ public:
 		_flags &= !flag;
 	}
 
+	const T& GetInner() const
+	{
+		return _val;
+	}
+
+
+protected:
+	const std::vector<GuiTree>& GetChildren() const
+	{
+		return _children;
+	}
+
 
 private:
 	ImGuiTreeNodeFlags _flags = ImGuiTreeNodeFlags_None;
@@ -63,4 +80,3 @@ private:
 	std::vector<GuiTree> _children;
 	std::string _depthIds;
 };
-

@@ -36,6 +36,7 @@ public:
 	const glm::mat4& GetUpdatedMatrix();
 	void RequestMatrixUpdate();
 
+
 protected:
 	virtual glm::mat4 UpdateMatrix();
 

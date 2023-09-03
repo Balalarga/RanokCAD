@@ -121,7 +121,7 @@ RayMarchWidget::RayMarchWidget(glm::ivec2 size) :
 def main(s[3])
 {
 	r = 1;
-	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 3)^2.0;
+	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
 }
 )";
 
@@ -146,6 +146,7 @@ def main(s[3])
 	if (std::optional<std::string> res = generator.Generate(tree1))
 	{
 		generator.SetColor(0.1f, 0.1f, 0.2f);
+		generator.SetPosition({5.f, 0.0f, 0.0f});
 		objects["Objects"].push_back(generator.FlushJson());
 	}
 
