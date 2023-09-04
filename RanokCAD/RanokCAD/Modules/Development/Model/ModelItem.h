@@ -14,18 +14,17 @@ class ModelItem: public Transformable
 public:
 	static ShaderGenerator sGenerator;
 
-	DefineGetter(Name, _name);
-	DefineGetter(BoundingBox, _bounding);
-	DefineGetter(Color, _color);
-	DefineGetter(Code, _code);
-
-	DefineConstructSetter(BoundingBox, const std::string&, _name);
-	DefineConstructSetter(BoundingBox, const glm::vec3&, _bounding);
-	DefineConstructSetter(Color, const glm::vec4&, _color);
+	DefineConstructSetter(BoundingBox, const std::string&, _name)
+	DefineConstructSetter(BoundingBox, const glm::vec3&, _bounding)
+	DefineConstructSetter(Color, const glm::vec4&, _color)
 
 	ModelItem& SetCode(const std::string& newCode, bool* bSucceeded = nullptr);
 
 	std::optional<std::string> GetShaderCode() const;
+	std::string GetName() const {return _name;}
+	glm::vec3 GetBounding() const {return _bounding;}
+	glm::vec4 GetColor() const {return _color;}
+	std::string GetCode() const {return _code;}
 
 
 private:
@@ -41,7 +40,6 @@ class ModelTree: public GuiTree<ModelItem>
 {
 public:
 	static ModelTree sDefaultTree;
-	using GuiTree::GuiTree;
 	
 	bool DrawItem(ImGuiTreeNodeFlags flags) override;
 	std::string GetTitle() const override;

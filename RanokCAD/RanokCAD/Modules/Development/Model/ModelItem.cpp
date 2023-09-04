@@ -4,7 +4,7 @@
 #include "RanokLang/Parser.h"
 
 
-ModelTree ModelTree::sDefaultTree(ModelItem().SetCode("").SetColor(),);
+ModelTree ModelTree::sDefaultTree;
 
 
 ShaderGenerator ModelItem::sGenerator;

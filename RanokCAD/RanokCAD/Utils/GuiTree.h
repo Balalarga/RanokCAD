@@ -42,7 +42,10 @@ public:
 		return ImGui::TreeNodeEx(GetTitle().c_str(), flags);
 	}
 
-	virtual std::string GetTitle() const = 0;
+	virtual std::string GetTitle() const
+	{
+		return "<UnnamedTree>";
+	}
 
 	void AddFlag(ImGuiTreeNodeFlags flag)
 	{
