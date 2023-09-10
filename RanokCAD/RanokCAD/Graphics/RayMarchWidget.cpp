@@ -184,6 +184,7 @@ RayMarchWidget::~RayMarchWidget()
 void RayMarchWidget::UpdateCode(const std::string& fragmentCode)
 {
 	_material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, fragmentCode));
+	_material->Construct();
 }
 
 void RayMarchWidget::Render()

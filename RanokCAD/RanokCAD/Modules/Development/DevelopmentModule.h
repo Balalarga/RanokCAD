@@ -3,11 +3,14 @@
 
 #include "Model/ModelItem.h"
 #include "Modules/IModule.h"
+#include "RanokLang/Generators/MultiObjectShaderGenerator.h"
+
 
 struct ImVec2;
 class RayMarchWidget;
 class SceneObject;
 class Material;
+
 
 class DevelopmentModule: public IModule
 {

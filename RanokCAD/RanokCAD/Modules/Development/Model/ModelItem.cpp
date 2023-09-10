@@ -44,7 +44,3 @@ bool ModelTree::DrawItem(ImGuiTreeNodeFlags flags)
 	return false;
 }
 
-std::string ModelTree::GetTitle() const
-{
-	return "Model structure";
-}

@@ -7,8 +7,10 @@
 #include "OpenglWrap/Core/SceneObject.h"
 #include "OpenglWrap/Platform/InputManager.h"
 
-DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInputManager) :
-	IModule(windowSize, inInputManager), _viewport(std::make_shared<RayMarchWidget>(windowSize)), _modelTree(ModelTree::sDefaultTree)
+DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInputManager)
+	: IModule(windowSize, inInputManager)
+	, _viewport(std::make_shared<RayMarchWidget>(windowSize))
+	, _modelTree(ModelTree::sDefaultTree)
 {
 	_viewport->Construct();
 	inputManager.AddOnMouseMove(
@@ -20,53 +22,77 @@ DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInpu
 			}
 		});
 
-	inputManager.Add(SDL_SCANCODE_W,
-					 [&](Window&, const KeyState& state)
-					 {
-						 if (_bIsViewportFocused)
-						 {
-							 if (state == KeyState::Pressed || state == KeyState::Repeated)
-							 {
-								 _viewport->GetCamera().Move({0, 0, 0.1});
-							 }
-						 }
-					 });
+	inputManager.Add(
+		SDL_SCANCODE_W,
+		[&](Window&, const KeyState& state)
+		{
+			if (_bIsViewportFocused)
+			{
+				if (state == KeyState::Pressed || state == KeyState::Repeated)
+				{
+					_viewport->GetCamera().Move({0, 0, 0.1});
+				}
+			}
+		});
 
-	inputManager.Add(SDL_SCANCODE_S,
-					 [&](Window&, const KeyState& state)
-					 {
-						 if (_bIsViewportFocused)
-						 {
-							 if (state == KeyState::Pressed || state == KeyState::Repeated)
-							 {
-								 _viewport->GetCamera().Move({0, 0, -0.1});
-							 }
-						 }
-					 });
+	inputManager.Add(
+		SDL_SCANCODE_S,
+		[&](Window&, const KeyState& state)
+		{
+			if (_bIsViewportFocused)
+			{
+				if (state == KeyState::Pressed || state == KeyState::Repeated)
+				{
+					_viewport->GetCamera().Move({0, 0, -0.1});
+				}
+			}
+		});
 
-	inputManager.Add(SDL_SCANCODE_D,
-					 [&](Window&, const KeyState& state)
-					 {
-						 if (_bIsViewportFocused)
-						 {
-							 if (state == KeyState::Pressed || state == KeyState::Repeated)
-							 {
-								 _viewport->GetCamera().Move({0.1, 0, 0});
-							 }
-						 }
-					 });
+	inputManager.Add(
+		SDL_SCANCODE_D,
+		[&](Window&, const KeyState& state)
+		{
+			if (_bIsViewportFocused)
+			{
+				if (state == KeyState::Pressed || state == KeyState::Repeated)
+				{
+					_viewport->GetCamera().Move({0.1, 0, 0});
+				}
+			}
+		});
 
-	inputManager.Add(SDL_SCANCODE_A,
-					 [&](Window&, const KeyState& state)
-					 {
-						 if (_bIsViewportFocused)
-						 {
-							 if (state == KeyState::Pressed || state == KeyState::Repeated)
-							 {
-								 _viewport->GetCamera().Move({-0.1, 0, 0});
-							 }
-						 }
-					 });
+	inputManager.Add(
+		SDL_SCANCODE_A,
+		[&](Window&, const KeyState& state)
+		{
+			if (_bIsViewportFocused)
+			{
+				if (state == KeyState::Pressed || state == KeyState::Repeated)
+				{
+					_viewport->GetCamera().Move({-0.1, 0, 0});
+				}
+			}
+		});
+	
+	_modelTree.Add(
+		ModelItem().SetName("Sphere1").SetColor(glm::vec4(0.8, 0.1, 0.1, 1.0)).SetCode(
+			R"(
+def main(s[3])
+{
+	r = 1;
+	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
+}
+)"));
+	_modelTree.Add(
+		ModelItem().SetName("Sphere2").SetColor(glm::vec4(0.8, 0.1, 0.1, 1.0)).SetCode(
+			R"(
+def main(s[3])
+{
+	r = 1;
+	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
+}
+)"));
+	
 }
 
 void DevelopmentModule::DrawMenuBar()
@@ -87,9 +113,10 @@ void DevelopmentModule::DrawMenuBar()
 
 void DevelopmentModule::DrawGui()
 {
-	ImGui::Begin("DevelopmentViewport",
-				 nullptr,
-				 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_MenuBar);
+	ImGui::Begin(
+		"DevelopmentViewport",
+		nullptr,
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_MenuBar);
 
 	DrawMenuBar();
 	DrawToolBar();
@@ -134,6 +161,12 @@ void DevelopmentModule::DrawTreeView()
 void DevelopmentModule::DrawToolBar()
 {
 	ImGui::BeginGroup();
-	ImGui::Button("ModelPicker");
+
+	if (ImGui::Button("ModelPicker"))
+	{
+		ModelItem newItem = ModelItem().SetName("NewItem");
+		_modelTree.Add(ModelTree(newItem));
+	}
+
 	ImGui::EndGroup();
 }

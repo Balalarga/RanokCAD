@@ -8,23 +8,43 @@
 #include "Utils/ClassDefines.h"
 #include "Utils/GuiTree.h"
 
-class ModelItem: public Transformable
+
+class ModelItem: public Transformable, public IGuiTreeItem
 {
 	friend class ModelDetailsView;
+
+
 public:
 	static ShaderGenerator sGenerator;
 
-	DefineConstructSetter(BoundingBox, const std::string&, _name)
+	DefineConstructSetter(Name, const std::string&, _name)
 	DefineConstructSetter(BoundingBox, const glm::vec3&, _bounding)
 	DefineConstructSetter(Color, const glm::vec4&, _color)
 
 	ModelItem& SetCode(const std::string& newCode, bool* bSucceeded = nullptr);
 
+	std::string GetName() const override
+	{
+		return _name;
+	}
+
 	std::optional<std::string> GetShaderCode() const;
-	std::string GetName() const {return _name;}
-	glm::vec3 GetBounding() const {return _bounding;}
-	glm::vec4 GetColor() const {return _color;}
-	std::string GetCode() const {return _code;}
+
+
+	glm::vec3 GetBounding() const
+	{
+		return _bounding;
+	}
+
+	glm::vec4 GetColor() const
+	{
+		return _color;
+	}
+
+	std::string GetCode() const
+	{
+		return _code;
+	}
 
 
 private:
@@ -36,11 +56,13 @@ private:
 	ActionTree _program;
 };
 
+
 class ModelTree: public GuiTree<ModelItem>
 {
 public:
+	using GuiTree::GuiTree;
+
 	static ModelTree sDefaultTree;
-	
+
 	bool DrawItem(ImGuiTreeNodeFlags flags) override;
-	std::string GetTitle() const override;
 };

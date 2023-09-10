@@ -8,6 +8,7 @@
         "glew",
         "nlohmann-json",
         "inja",
+        "imguizmo",
         "glm"
     ]
 }

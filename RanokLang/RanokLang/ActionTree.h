@@ -7,6 +7,7 @@ class ActionTree
 {
 public:
 	ActionTree() = default;
+	ActionTree(ActionNodeFactory&& factory);
 	
 	const ActionNode* Root() const { return _root; }
 	void SetRoot(ActionNode* node) { if (node) _root = node; }

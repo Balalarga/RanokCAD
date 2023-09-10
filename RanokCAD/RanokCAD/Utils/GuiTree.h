@@ -5,7 +5,20 @@
 #include "Graphics/ImGuiWidget.h"
 #include "ImGui/imgui.h"
 
+
+
+class IGuiTreeItem
+{
+public:
+	virtual ~IGuiTreeItem() = default;
+	
+	virtual std::string GetName() const = 0;
+};
+
+
+
 template<class T>
+requires std::is_base_of_v<IGuiTreeItem, T>
 class GuiTree: public ImGuiWidget
 {
 public:
@@ -39,12 +52,7 @@ public:
 
 	virtual bool DrawItem(ImGuiTreeNodeFlags flags)
 	{
-		return ImGui::TreeNodeEx(GetTitle().c_str(), flags);
-	}
-
-	virtual std::string GetTitle() const
-	{
-		return "<UnnamedTree>";
+		return ImGui::TreeNodeEx(GetInner().GetName().c_str(), flags);
 	}
 
 	void AddFlag(ImGuiTreeNodeFlags flag)
@@ -65,6 +73,16 @@ public:
 	const T& GetInner() const
 	{
 		return _val;
+	}
+
+	void Add(const GuiTree& item)
+	{
+		_children.push_back(item);
+	}
+	
+	void Add(T&& item)
+	{
+		_children.emplace_back(item);
 	}
 
 
