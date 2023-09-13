@@ -10,7 +10,6 @@
 DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInputManager)
 	: IModule(windowSize, inInputManager)
 	, _viewport(std::make_shared<RayMarchWidget>(windowSize))
-	, _modelTree(ModelTree::sDefaultTree)
 {
 	_viewport->Construct();
 	inputManager.AddOnMouseMove(
@@ -73,26 +72,31 @@ DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInpu
 				}
 			}
 		});
-	
-	_modelTree.Add(
-		ModelItem().SetName("Sphere1").SetColor(glm::vec4(0.8, 0.1, 0.1, 1.0)).SetCode(
-			R"(
-def main(s[3])
-{
-	r = 1;
-	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
-}
-)"));
-	_modelTree.Add(
-		ModelItem().SetName("Sphere2").SetColor(glm::vec4(0.8, 0.1, 0.1, 1.0)).SetCode(
-			R"(
-def main(s[3])
-{
-	r = 1;
-	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
-}
-)"));
-	
+
+	auto part1 = std::make_unique<AssemblyPart>();
+	part1->SetName("Part1");
+	auto part2 = std::make_unique<AssemblyPart>();
+	part2->SetName("Part2");
+	_assembly.AddPart(std::move(part1));
+	_assembly.AddPart(std::move(part2));
+	// 	_assembly.Add(
+	// 		ModelItem().SetName("Sphere1").SetColor(glm::vec4(0.8, 0.1, 0.1, 1.0)).SetCode(
+	// 			R"(
+	// def main(s[3])
+	// {
+	// 	r = 1;
+	// 	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
+	// }
+	// )"));
+	// 	_modelTree.Add(
+	// 		ModelItem().SetName("Sphere2").SetColor(glm::vec4(0.8, 0.1, 0.1, 1.0)).SetCode(
+	// 			R"(
+	// def main(s[3])
+	// {
+	// 	r = 1;
+	// 	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
+	// }
+	// )"));
 }
 
 void DevelopmentModule::DrawMenuBar()
@@ -152,7 +156,7 @@ void DevelopmentModule::DrawTreeView()
 	ImGui::SetCursorPos(ImGui::GetStyle().WindowPadding);
 
 	ImGui::BeginChild("##ModelTreeView", treeViewSizeMax);
-	_modelTree.DrawGui();
+	_assembly.DrawGui();
 	ImGui::EndChild();
 
 	ImGui::PopStyleVar(2);
@@ -164,8 +168,8 @@ void DevelopmentModule::DrawToolBar()
 
 	if (ImGui::Button("ModelPicker"))
 	{
-		ModelItem newItem = ModelItem().SetName("NewItem");
-		_modelTree.Add(ModelTree(newItem));
+		// ModelItem newItem = ModelItem().SetName("NewItem");
+		// _modelTree.Add(ModelTree(newItem));
 	}
 
 	ImGui::EndGroup();

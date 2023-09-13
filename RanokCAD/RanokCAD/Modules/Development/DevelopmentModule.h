@@ -1,9 +1,8 @@
 ﻿#pragma once
 #include <memory>
 
-#include "Model/ModelItem.h"
+#include "Model/Assembly.h"
 #include "Modules/IModule.h"
-#include "RanokLang/Generators/MultiObjectShaderGenerator.h"
 
 
 struct ImVec2;
@@ -29,6 +28,6 @@ protected:
 
 private:
 	std::shared_ptr<RayMarchWidget> _viewport;
-	ModelTree _modelTree;
+	Assembly _assembly;
 	bool _bIsViewportFocused = false;
 };
