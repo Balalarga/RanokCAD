@@ -31,20 +31,12 @@ static std::string backFsh = R"(
 #version 420
 
 layout(location = 0) in vec2 vUv;
-
 layout(location = 0) out vec4 oColor;
 
-uniform vec2 uResolution;
-
-uniform sampler2D tForwardRendering;
 
 void main()
 {
-    vec4 fwdColor = texture(tForwardRendering, vUv);
-	vec2 uv = gl_FragCoord.xy / uResolution.xy;
-    //fwdColor = texture(tForwardRendering, uv);
-    oColor = vec4(fwdColor.xyz, 1.0);
-    //oColor = vec4(1.0, 0.5, 0.5, 1.0);
+    oColor = vec4(0.1, 0.1, 0.1, 1.0);
 }
 )";
 
@@ -116,58 +108,10 @@ RayMarchWidget::RayMarchWidget(glm::ivec2 size) :
 	_camera.Move({0, 0, -4});
 	AddRenderingTexture(GL_COLOR_ATTACHMENT0, size, 4);
 
-	MultiObjectShaderGenerator generator;
-	constexpr auto code1 = R"(
-def main(s[3])
-{
-	r = 1;
-	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
-}
-)";
-
-	constexpr auto code2 = R"(
-def s2()
-{
-	return 1;
-}
-
-def main(s[3])
-{
-	r = s2();
-	return r^2 - s[0]^2 - s[1]^2.0 - s[2]^2.0;
-}
-)";
-	nlohmann::json objects;
-	objects["Objects"] = {};
-	Lexer lexer1(code1);
-	Lexer lexer2(code2);
-	Parser parser;
-	ActionTree tree1 = parser.Parse(lexer1);
-	if (std::optional<std::string> res = generator.Generate(tree1))
-	{
-		generator.SetColor(0.1f, 0.1f, 0.2f);
-		generator.SetPosition({5.f, 0.0f, 0.0f});
-		objects["Objects"].push_back(generator.FlushJson());
-	}
-
-	ActionTree tree2 = parser.Parse(lexer2);
-	if (std::optional<std::string> res = generator.Generate(tree2))
-	{
-		generator.SetColor(0.1f, 0.2f, 0.1f);
-		objects["Objects"].push_back(generator.FlushJson());
-	}
-
-	auto path = std::filesystem::current_path();
-	path /= "Assets/Templates/RayMarch.glsl.templ";
-
-	inja::Environment env;
-	_material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, env.render_file(path.string(), objects)));
-	// _material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, backFsh));
-
+	_material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, backFsh));
 	if (!_material->Construct() || !_materialFwd->Construct())
 	{
 		std::cout << "_material error\n";
-		std::cout << env.render_file(path.string(), objects) << std::endl;
 	}
 
 	if (!_obj->Construct() || !_objFwd->Construct())
@@ -181,10 +125,40 @@ RayMarchWidget::~RayMarchWidget()
 	RayMarchWidget::Destroy();
 }
 
+void RayMarchWidget::SetObjects(const std::vector<std::unique_ptr<AssemblyPart>>& objects)
+{
+	MultiObjectShaderGenerator generator;
+
+	nlohmann::json objectsJson;
+	objectsJson["Objects"] = {};
+
+	auto path = std::filesystem::current_path();
+	path /= "Assets/Templates/RayMarch.glsl.templ";
+
+	Parser parser;
+	for (size_t i = 0; i < objects.size(); ++i)
+	{
+		generator.Generate(parser.Parse(Lexer(objects[i]->GetFunctionCode())));
+		objectsJson["Objects"].push_back(generator.FlushJson());
+	}
+	inja::Environment env;
+	UpdateCode(env.render_file(path.string(), objectsJson));
+	
+	_material->Bind();
+	
+	for (size_t i = 0; i < objects.size(); ++i)
+	{
+		_material->SetUniform(std::format("uObjectsData[{}].location", i), objects[i]->GetLocation());
+		_material->SetUniform(std::format("uObjectsData[{}].color", i), objects[i]->GetColor());
+	}
+	
+	_material->Release();
+}
+
 void RayMarchWidget::UpdateCode(const std::string& fragmentCode)
 {
 	_material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, fragmentCode));
-	_material->Construct();
+	_material->Construct(true);
 }
 
 void RayMarchWidget::Render()
@@ -209,6 +183,7 @@ void RayMarchWidget::Render()
 	_material->SetUniform("uCameraDir", _camera.GetRotation());
 	_material->SetUniform("uCameraFov", _camera.GetFov());
 	_material->SetUniform("uCameraNear", _camera.GetNear());
+	_material->SetUniform("uCameraFar", _camera.GetFar());
 	_material->SetUniform("uCameraFar", _camera.GetFar());
 	_obj->Render();
 	RenderApi::PopTarget();

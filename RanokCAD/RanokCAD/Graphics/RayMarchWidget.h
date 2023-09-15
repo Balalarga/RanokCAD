@@ -3,6 +3,7 @@
 #include <string>
 
 #include "FboWidget.h"
+#include "Modules/Development/Model/AssemblyPart.h"
 #include "OpenglWrap/Camera.h"
 
 class BoundingBox;
@@ -17,6 +18,8 @@ public:
 	RayMarchWidget(glm::ivec2 size);
 	virtual ~RayMarchWidget();
 
+	void SetObjects(const std::vector<std::unique_ptr<AssemblyPart>>& objects);
+	
 	void UpdateCode(const std::string& fragmentCode);
 
 	void Render();

@@ -42,9 +42,14 @@ public:
 		return _extendBox;
 	}
 
+	const std::string& GetFunctionCode() const
+	{
+		return _functionCode;
+	}
+
 
 private:
-	std::string _name = "<-- UNNAMED -->";
+	std::string _name = "--unnamed--";
 	glm::vec4 _color = glm::vec4{0.8f, 0.1f, 0.1f, 1.0f};
 	glm::vec3 _extendBox = glm::vec3{0.f};
 

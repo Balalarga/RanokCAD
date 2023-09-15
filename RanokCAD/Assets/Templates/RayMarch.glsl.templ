@@ -11,6 +11,20 @@ uniform float uCameraFov = 60;
 uniform float uCameraNear = 0.01;
 uniform float uCameraFar = 100.0;
 
+struct ObjectData
+{
+    vec3 location;
+    vec4 color;
+};
+uniform ObjectData uObjectsData[{{length(Objects)}}] = {
+## for Object in Objects
+    ObjectData(
+        vec3(0, 0, 0),
+        vec4(1, 1, 1, 1)
+    ),
+## endfor
+};
+
 const int MAX_MARCHING_STEPS = 1024;
 const float EPSILON = 0.0001;
 const vec3 DEFAULT_OBJECT_COLOR = vec3(0.3, 0.1, 0.1);
@@ -66,17 +80,14 @@ ObjectHit sceneSDF(vec3 samplePoint)
 ## for Object in Objects
 
     dist = ObjectFunc{{loop.index}}(float[](
-    {%- if existsIn(Object, "Pos") -%}
-        samplePoint.x + {{Object.Pos.x}}, samplePoint.y + {{Object.Pos.y}}, samplePoint.z + {{Object.Pos.z}}{%- else -%}
-        samplePoint.x, samplePoint.y, samplePoint.z
-        {%- endif -%}
+            samplePoint.x + uObjectsData[{{loop.index}}].location.x,
+            samplePoint.y + uObjectsData[{{loop.index}}].location.y,
+            samplePoint.z + uObjectsData[{{loop.index}}].location.z
         ));
     if (dist > 0)
     {
         hit.miss = false;
-## if existsIn(Object, "Color")
-        hit.color = vec3({{Object.Color.r}}, {{Object.Color.g}}, {{Object.Color.b}});
-## endif
+        hit.color = uObjectsData[{{loop.index}}].color.xyz;
         return hit;
     }
 ## endfor

@@ -10,9 +10,6 @@ public:
 
 	nlohmann::json FlushJson();
 
-	void SetColor(float r, float g, float b, float a = 1);
-	void SetPosition(const glm::vec3& pos);
-
 
 private:
 	nlohmann::json objectJson;

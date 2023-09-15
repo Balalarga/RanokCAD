@@ -75,28 +75,36 @@ DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInpu
 
 	auto part1 = std::make_unique<AssemblyPart>();
 	part1->SetName("Part1");
+	part1->SetColor({0.7, 0.1, 0.2, 1.0});
 	auto part2 = std::make_unique<AssemblyPart>();
 	part2->SetName("Part2");
+	part1->SetColor({0.1, 0.7, 0.2, 1.0});
+
+	part1->SetFunctionCode(R"(
+def main(s[3])
+{
+	r = 1;
+	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
+}
+)");
+
+	part2->SetFunctionCode(R"(
+def s2()
+{
+	return 1;
+}
+
+def main(s[3])
+{
+	r = s2();
+	return r^2 - s[0]^2 - s[1]^2.0 - s[2]^2.0;
+}
+)");
+
+	
 	_assembly.AddPart(std::move(part1));
 	_assembly.AddPart(std::move(part2));
-	// 	_assembly.Add(
-	// 		ModelItem().SetName("Sphere1").SetColor(glm::vec4(0.8, 0.1, 0.1, 1.0)).SetCode(
-	// 			R"(
-	// def main(s[3])
-	// {
-	// 	r = 1;
-	// 	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
-	// }
-	// )"));
-	// 	_modelTree.Add(
-	// 		ModelItem().SetName("Sphere2").SetColor(glm::vec4(0.8, 0.1, 0.1, 1.0)).SetCode(
-	// 			R"(
-	// def main(s[3])
-	// {
-	// 	r = 1;
-	// 	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
-	// }
-	// )"));
+	_viewport->SetObjects(_assembly.Parts());
 }
 
 void DevelopmentModule::DrawMenuBar()

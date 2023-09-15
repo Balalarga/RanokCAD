@@ -2,6 +2,7 @@
 #include <array>
 #include <map>
 #include <memory>
+#include <vector>
 
 #include "Shader.h"
 #include "UniformValue.h"

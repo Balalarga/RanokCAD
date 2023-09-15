@@ -93,22 +93,3 @@ nlohmann::json MultiObjectShaderGenerator::FlushJson()
 	objectJson.clear();
 	return res;
 }
-
-void MultiObjectShaderGenerator::SetColor(float r, float g, float b, float a)
-{
-	objectJson["Color"] = {
-		{"r", r},
-		{"g", g},
-		{"b", b},
-		{"a", a},
-	};
-}
-
-void MultiObjectShaderGenerator::SetPosition(const glm::vec3& pos)
-{
-	objectJson["Pos"] = {
-		{"x", pos.x},
-		{"y", pos.y},
-		{"z", pos.z},
-	};
-}
