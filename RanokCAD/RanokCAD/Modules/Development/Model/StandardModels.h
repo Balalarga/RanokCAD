@@ -8,6 +8,6 @@ public:
 	StandardModels(StandardModels&&) = delete;
 	StandardModels(const StandardModels&) = delete;
 
-	static ActionTree GetCube();
-	static ActionTree GetSphere();
+	static ActionTree GetCube(float size = 1);
+	static ActionTree GetSphere(float radius = 1);
 };

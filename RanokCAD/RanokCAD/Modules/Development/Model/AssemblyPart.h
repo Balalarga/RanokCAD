@@ -5,12 +5,14 @@
 
 #include "Graphics/ImGuiWidget.h"
 #include "OpenglWrap/Core/Transformable.h"
+#include "RanokLang/ActionTree.h"
+#include "RanokLang/Generators/JsonGenerator.h"
 
 
-class AssemblyPart: public Transformable, public ImGuiWidget
+class AssemblyPart: public Transformable, public IImGuiWidget
 {
 public:
-	static void DetailsView(AssemblyPart& part);
+	static bool DetailsView(AssemblyPart& part);
 
 	AssemblyPart() = default;
 	AssemblyPart(AssemblyPart&) = delete;
@@ -19,13 +21,14 @@ public:
 	AssemblyPart& operator=(AssemblyPart&&) = default;
 	virtual ~AssemblyPart() = default;
 
-	virtual nlohmann::json ToJson() const;
 	void DrawGui() override;
+	virtual JsonGeneratorFunctionObject GetJson();
 
 	AssemblyPart& SetName(std::string name);
 	AssemblyPart& SetColor(const glm::vec4& newColor);
 	AssemblyPart& SetExtendBox(const glm::vec3& extendBox);
 	AssemblyPart& SetFunctionCode(const std::string& code);
+	AssemblyPart& SetFunctionTree(const ActionTree& tree);
 
 	std::string GetName() const
 	{
@@ -42,9 +45,9 @@ public:
 		return _extendBox;
 	}
 
-	const std::string& GetFunctionCode() const
+	const ActionTree& GetFunctionTree() const
 	{
-		return _functionCode;
+		return _functionTree;
 	}
 
 
@@ -53,5 +56,5 @@ private:
 	glm::vec4 _color = glm::vec4{0.8f, 0.1f, 0.1f, 1.0f};
 	glm::vec3 _extendBox = glm::vec3{0.f};
 
-	std::string _functionCode;
+	ActionTree _functionTree;
 };

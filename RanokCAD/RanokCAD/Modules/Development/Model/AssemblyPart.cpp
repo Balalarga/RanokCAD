@@ -1,64 +1,40 @@
 ﻿#include "AssemblyPart.h"
 
 #include <ImGui/imgui.h>
+#include "RanokLang/Parser.h"
 
 
-void AssemblyPart::DetailsView(AssemblyPart& part)
+static JsonGenerator sJsonGenerator;
+
+
+bool AssemblyPart::DetailsView(AssemblyPart& part)
 {
-	ImGui::BeginChild("Details view");
+	bool bInteracted = false;
+	ImGui::BeginGroup();
 	glm::vec3 location = part.GetLocation();
-	ImGui::DragFloat3("Location", &location.x, 0.05f);
+	bInteracted |= ImGui::DragFloat3("Location", &location.x, 0.05f);
 	if (location != part.GetLocation())
 		part.SetLocation(location);
 
 	glm::vec4 color = part.GetColor();
-	ImGui::ColorEdit4("Color", &color.x);
+	bInteracted |= ImGui::ColorEdit4("Color", &color.x);
 	if (color != part.GetColor())
 		part.SetColor(color);
 
-	ImGui::EndChild();
-}
-
-
-nlohmann::json AssemblyPart::ToJson() const
-{
-	//@formatter:off
-	return {
-		{"Name", _name},
-		{"Location", {
-			{"x", GetLocation().x},
-			{"y", GetLocation().y},
-			{"z", GetLocation().z},
-		}},
-		{"Scale", {
-			{"x", GetScale().x},
-			{"y", GetScale().y},
-			{"z", GetScale().z},
-		}},
-		{"Rotation", {
-			{"x", GetRotation().x},
-			{"y", GetRotation().y},
-			{"z", GetRotation().z},
-		}},
-		{"Color", {
-			{"r", _color.r},
-			{"g", _color.g},
-			{"b", _color.b},
-			{"a", _color.a},
-		}},
-		{"ExtendBox", {
-			{"x", _extendBox.x},
-			{"y", _extendBox.y},
-			{"z", _extendBox.z},
-		}},
-	};
-	//@formatter:on
+	ImGui::EndGroup();
+	return bInteracted;
 }
 
 void AssemblyPart::DrawGui()
 {
 	if (ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_Leaf))
 		ImGui::TreePop();
+}
+
+JsonGeneratorFunctionObject AssemblyPart::GetJson()
+{
+	sJsonGenerator.Generate(_functionTree);
+	return sJsonGenerator.FlushObject();
 }
 
 AssemblyPart& AssemblyPart::SetName(std::string name)
@@ -81,6 +57,13 @@ AssemblyPart& AssemblyPart::SetExtendBox(const glm::vec3& extendBox)
 
 AssemblyPart& AssemblyPart::SetFunctionCode(const std::string& code)
 {
-	_functionCode = code;
+	static Parser parser;
+	_functionTree = parser.Parse(Lexer(code));
+	return *this;
+}
+
+AssemblyPart& AssemblyPart::SetFunctionTree(const ActionTree& tree)
+{
+	_functionTree = tree;
 	return *this;
 }

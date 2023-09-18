@@ -77,6 +77,11 @@ ActionTree Parser::Parse(Lexer lexer)
 	return tree;
 }
 
+ActionTree Parser::Parse(const std::string& text)
+{
+	return Parse(Lexer(text));
+}
+
 int Parser::GetOperationPriority(Token::Type type)
 {
 	auto it = _operationPriorities.find(type);

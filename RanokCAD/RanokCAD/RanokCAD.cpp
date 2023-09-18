@@ -2,7 +2,7 @@
 
 #include "RanokCADApp.h"
 #include "RanokResources.h"
-#include "RanokLang/Generators/MultiObjectShaderGenerator.h"
+#include "RanokLang/Generators/JsonGenerator.h"
 
 
 int main(int argc, char** argv)

@@ -17,6 +17,7 @@ public:
 	Parser();
 	
 	ActionTree Parse(Lexer lexer);
+	ActionTree Parse(const std::string& text);
 	
 	const std::vector<Error>& Errors() const { return _errors; }
 	bool HasErrors() const { return !_errors.empty(); }

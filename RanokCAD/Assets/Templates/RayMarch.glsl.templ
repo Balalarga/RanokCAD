@@ -16,8 +16,8 @@ struct ObjectData
     vec3 location;
     vec4 color;
 };
-uniform ObjectData uObjectsData[{{length(Objects)}}] = {
-## for Object in Objects
+uniform ObjectData uObjectsData[{{length(objects)}}] = {
+## for Object in objects
     ObjectData(
         vec3(0, 0, 0),
         vec4(1, 1, 1, 1)
@@ -46,15 +46,9 @@ float sphereSDF(vec3 samplePoint) {
     return length(samplePoint) - 1.0;
 }
 
-## for Object in Objects
-## if existsIn(Object, "Functions")
-## for Function in Object.Functions
-{{Function.ReturnType}} {{Function.Name}}({% if existsIn(Function, "Args") %}{% for Arg in Function.Args %}{{Arg.Type}} {{Arg.Name}}{% if not loop.is_last %},{% endif %}{% endfor %}{% endif %})
-{{Function.Body}}
-## endfor
-## endif
-{{Object.Main.ReturnType}} ObjectFunc{{loop.index}}({% for Arg in Object.Main.Args %}{{Arg.Type}} {{Arg.Name}}{% if Arg.Count != 0 %}[{{Arg.Count}}]{% endif %}{% if not loop.is_last %},{% endif %}{% endfor %})
-{{Object.Main.Body}}
+## for Object in objects
+float ObjectFunc{{loop.index}}({% for Arg in Object.args %}{{Arg.type}} {{Arg.name}}{% if Arg.count != 1 %}[{{Arg.count}}]{% endif %}{% if not loop.is_last %},{% endif %}{% endfor %})
+{{Object.body}}
 ## endfor
 
 struct ObjectHit
@@ -77,7 +71,7 @@ ObjectHit sceneSDF(vec3 samplePoint)
     ObjectHit hit = ObjectHit(true, DEFAULT_OBJECT_COLOR, -1);
     //return sphereSDF(samplePoint);
     float dist;
-## for Object in Objects
+## for Object in objects
 
     dist = ObjectFunc{{loop.index}}(float[](
             samplePoint.x + uObjectsData[{{loop.index}}].location.x,

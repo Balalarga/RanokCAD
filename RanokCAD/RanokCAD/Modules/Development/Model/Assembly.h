@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "AssemblyPart.h"
-#include "RanokLang/Generators/MultiObjectShaderGenerator.h"
 
 
 enum class PartsCombineType
@@ -9,16 +8,23 @@ enum class PartsCombineType
 	Subtract
 };
 
+
 class Assembly: public AssemblyPart
 {
+	static std::map<PartsCombineType, std::string> sCombineTypeViews;
 public:
+	static void SetPartCombineView(PartsCombineType type, const std::string& view);
+	
 	using AssemblyPart::AssemblyPart;
+	
 	explicit Assembly(std::vector<std::unique_ptr<AssemblyPart>>&& parts);
 
-	nlohmann::json ToJson() const override;
-
 	virtual void AddPart(std::unique_ptr<AssemblyPart>&& part);
+	
 	void DrawGui() override;
+	JsonGeneratorFunctionObject GetJson() override;
+	
+	bool DrawDetailsPanel() const;
 
 	void SetCombineType(const PartsCombineType& type);
 
@@ -31,4 +37,6 @@ public:
 private:
 	std::vector<std::unique_ptr<AssemblyPart>> _parts;
 	PartsCombineType _combineType = PartsCombineType::Union;
+	
+	AssemblyPart* _selectedPart = nullptr;
 };

@@ -19,6 +19,7 @@ public:
 	virtual ~RayMarchWidget();
 
 	void SetObjects(const std::vector<std::unique_ptr<AssemblyPart>>& objects);
+	void SetUniforms(const std::vector<std::unique_ptr<AssemblyPart>>& objects) const;
 	
 	void UpdateCode(const std::string& fragmentCode);
 

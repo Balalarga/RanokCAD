@@ -25,7 +25,9 @@ protected:
 	void DrawToolBar();
 	void DrawMenuBar();
 
+	void InitInput() const;
 
+	
 private:
 	std::shared_ptr<RayMarchWidget> _viewport;
 	Assembly _assembly;

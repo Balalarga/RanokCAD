@@ -1,10 +1,10 @@
 ﻿#pragma once
 
-class ImGuiWidget
+class IImGuiWidget
 {
 public:
-	ImGuiWidget() = default;
-	virtual ~ImGuiWidget() = default;
+	IImGuiWidget() = default;
+	virtual ~IImGuiWidget() = default;
 
 	virtual void DrawGui() = 0;
 };

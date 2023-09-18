@@ -3,6 +3,7 @@
 
 #include "Graphics/RayMarchWidget.h"
 #include "ImGui/imgui.h"
+#include "Model/StandardModels.h"
 #include "OpenglWrap/Core/Material.h"
 #include "OpenglWrap/Core/SceneObject.h"
 #include "OpenglWrap/Platform/InputManager.h"
@@ -11,7 +12,51 @@ DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInpu
 	: IModule(windowSize, inInputManager)
 	, _viewport(std::make_shared<RayMarchWidget>(windowSize))
 {
+	InitInput();
 	_viewport->Construct();
+
+	auto part1 = std::make_unique<AssemblyPart>();
+	part1->SetName("Part1");
+	part1->SetColor({0.4, 0.1, 0.2, 1.0});
+	part1->SetLocation({3, 0, 0});
+	part1->SetFunctionTree(StandardModels::GetSphere());
+	
+	auto part2 = std::make_unique<AssemblyPart>();
+	part2->SetName("Part2");
+	part2->SetColor({0.1, 0.4, 0.2, 1.0});
+	part2->SetLocation({0, 0, 3});
+	part2->SetFunctionTree(StandardModels::GetSphere(2));
+	
+	auto part3 = std::make_unique<AssemblyPart>();
+	part3->SetName("Part3");
+	part3->SetColor({0.1, 0.2, 0.4, 1.0});
+	part3->SetLocation({0, 3, 3});
+	part3->SetFunctionTree(StandardModels::GetSphere(1));
+	
+	_assembly.AddPart(std::move(part1));
+	_assembly.AddPart(std::move(part2));
+	_assembly.AddPart(std::move(part3));
+	_viewport->SetObjects(_assembly.Parts());
+}
+
+void DevelopmentModule::DrawMenuBar()
+{
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("New model"))
+			{
+			}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
+}
+
+void DevelopmentModule::InitInput() const
+{
 	inputManager.AddOnMouseMove(
 		[&](Window&, const MouseState& state)
 		{
@@ -73,54 +118,31 @@ DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInpu
 			}
 		});
 
-	auto part1 = std::make_unique<AssemblyPart>();
-	part1->SetName("Part1");
-	part1->SetColor({0.7, 0.1, 0.2, 1.0});
-	auto part2 = std::make_unique<AssemblyPart>();
-	part2->SetName("Part2");
-	part1->SetColor({0.1, 0.7, 0.2, 1.0});
-
-	part1->SetFunctionCode(R"(
-def main(s[3])
-{
-	r = 1;
-	return r^2 - (s[0]-3)^2.0 - s[1]^2.0 - (s[2] + 2)^2.0;
-}
-)");
-
-	part2->SetFunctionCode(R"(
-def s2()
-{
-	return 1;
-}
-
-def main(s[3])
-{
-	r = s2();
-	return r^2 - s[0]^2 - s[1]^2.0 - s[2]^2.0;
-}
-)");
-
-	
-	_assembly.AddPart(std::move(part1));
-	_assembly.AddPart(std::move(part2));
-	_viewport->SetObjects(_assembly.Parts());
-}
-
-void DevelopmentModule::DrawMenuBar()
-{
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
+	inputManager.Add(
+		SDL_SCANCODE_E,
+		[&](Window&, const KeyState& state)
 		{
-			if (ImGui::MenuItem("New model"))
+			if (_bIsViewportFocused)
 			{
+				if (state == KeyState::Pressed || state == KeyState::Repeated)
+				{
+					_viewport->GetCamera().Move({0, 0.1, 0});
+				}
 			}
-			ImGui::EndMenu();
-		}
+		});
 
-		ImGui::EndMenuBar();
-	}
+	inputManager.Add(
+		SDL_SCANCODE_Q,
+		[&](Window&, const KeyState& state)
+		{
+			if (_bIsViewportFocused)
+			{
+				if (state == KeyState::Pressed || state == KeyState::Repeated)
+				{
+					_viewport->GetCamera().Move({0, -0.1, 0});
+				}
+			}
+		});
 }
 
 void DevelopmentModule::DrawGui()
@@ -166,7 +188,12 @@ void DevelopmentModule::DrawTreeView()
 	ImGui::BeginChild("##ModelTreeView", treeViewSizeMax);
 	_assembly.DrawGui();
 	ImGui::EndChild();
-
+	ImGui::BeginChild("##ModelTreeViewDetails", ImVec2(treeViewSizeMax.x, ImGui::GetItemRectSize().y - treeViewSizeMax.y));
+	if (_assembly.DrawDetailsPanel())
+	{
+		_viewport->SetUniforms(_assembly.Parts());
+	}
+	ImGui::EndChild();
 	ImGui::PopStyleVar(2);
 }
 

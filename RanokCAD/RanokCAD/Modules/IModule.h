@@ -1,11 +1,11 @@
 ﻿#pragma once
 #include <glm/vec2.hpp>
-#include "Graphics/ImGuiWidget.h"
+#include "..\Graphics\ImGuiWidget.h"
 
 class InputManager;
 
 
-class IModule: public ImGuiWidget
+class IModule: public IImGuiWidget
 {
 public:
 	IModule(glm::ivec2 windowSize, InputManager& inputManager);

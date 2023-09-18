@@ -8,7 +8,7 @@
 #include "OpenglWrap/Core/Material.h"
 #include "OpenglWrap/Core/RenderApi.h"
 #include "OpenglWrap/Core/SceneObject.h"
-#include "RanokLang/Generators/MultiObjectShaderGenerator.h"
+#include "RanokLang/Generators/JsonGenerator.h"
 #include "RanokLang/Lexer.h"
 #include "RanokLang/Parser.h"
 
@@ -46,12 +46,7 @@ struct RM_Vertex
 };
 
 static std::vector<RM_Vertex> backObjData{
-	{{-1, -1}, {0, 0}},
-	{{-1, 1}, {0, 1}},
-	{{1, 1}, {1, 1}},
-	{{1, 1}, {1, 1}},
-	{{1, -1}, {1, 0}},
-	{{-1, -1}, {0, 0}},
+	{{-1, -1}, {0, 0}}, {{-1, 1}, {0, 1}}, {{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}, {{1, -1}, {1, 0}}, {{-1, -1}, {0, 0}},
 };
 
 static std::string shapeVsh = R"(
@@ -90,20 +85,18 @@ void main()
 }
 )";
 
-static std::vector<glm::vec3> shapeObjData{
-	{-1, -1, 0},
-	{-1, 1, 0},
-	{1, 1, 0},
-	{1, -1, 2},
-};
+static std::vector<glm::vec3> shapeObjData{{-1, -1, 0}, {-1, 1, 0}, {1, 1, 0}, {1, -1, 2},};
 
-RayMarchWidget::RayMarchWidget(glm::ivec2 size) :
-	FboWidget(size), _camera(60.f, size.x / size.y, 0.1f, 100.f),
-	_material(std::make_shared<Material>(ShaderSourceKit{.vertexShader = backVsh})),
-	_obj(std::make_shared<SceneObject>(LaidVramBuffer(RawPtrData(backObjData), VramBufferLayout().Float(2).Float(2)),
-									   _material)),
-	_materialFwd(std::make_shared<Material>(ShaderSourceKit{.vertexShader = shapeVsh, .fragmentShader = shapeFsh})),
-	_objFwd(std::make_shared<BoundingBox>(glm::vec3(3), _materialFwd))
+RayMarchWidget::RayMarchWidget(glm::ivec2 size)
+	: FboWidget(size)
+	, _camera(60.f, size.x / size.y, 0.1f, 100.f)
+	, _material(std::make_shared<Material>(ShaderSourceKit{.vertexShader = backVsh}))
+	, _obj(
+		std::make_shared<SceneObject>(
+			LaidVramBuffer(RawPtrData(backObjData), VramBufferLayout().Float(2).Float(2)),
+			_material))
+	, _materialFwd(std::make_shared<Material>(ShaderSourceKit{.vertexShader = shapeVsh, .fragmentShader = shapeFsh}))
+	, _objFwd(std::make_shared<BoundingBox>(glm::vec3(3), _materialFwd))
 {
 	_camera.Move({0, 0, -4});
 	AddRenderingTexture(GL_COLOR_ATTACHMENT0, size, 4);
@@ -127,31 +120,38 @@ RayMarchWidget::~RayMarchWidget()
 
 void RayMarchWidget::SetObjects(const std::vector<std::unique_ptr<AssemblyPart>>& objects)
 {
-	MultiObjectShaderGenerator generator;
-
+	JsonGenerator generator;
+	
 	nlohmann::json objectsJson;
-	objectsJson["Objects"] = {};
-
-	auto path = std::filesystem::current_path();
-	path /= "Assets/Templates/RayMarch.glsl.templ";
-
 	Parser parser;
 	for (size_t i = 0; i < objects.size(); ++i)
 	{
-		generator.Generate(parser.Parse(Lexer(objects[i]->GetFunctionCode())));
-		objectsJson["Objects"].push_back(generator.FlushJson());
+		generator.Generate(objects[i]->GetFunctionTree());
+		objectsJson.push_back(generator.FlushObject());
 	}
 	inja::Environment env;
-	UpdateCode(env.render_file(path.string(), objectsJson));
+	nlohmann::json json{
+		{
+			"objects", objectsJson
+		}
+	};
 	
+	auto path = std::filesystem::current_path();
+	path /= "Assets/Templates/RayMarch.glsl.templ";
+	UpdateCode(env.render_file(path.string(), json));
+	SetUniforms(objects);
+}
+
+void RayMarchWidget::SetUniforms(const std::vector<std::unique_ptr<AssemblyPart>>& objects) const
+{
 	_material->Bind();
-	
+
 	for (size_t i = 0; i < objects.size(); ++i)
 	{
 		_material->SetUniform(std::format("uObjectsData[{}].location", i), objects[i]->GetLocation());
 		_material->SetUniform(std::format("uObjectsData[{}].color", i), objects[i]->GetColor());
 	}
-	
+
 	_material->Release();
 }
 
@@ -192,6 +192,6 @@ void RayMarchWidget::Render()
 void RayMarchWidget::DrawGui()
 {
 	Render();
-    if (ImGui::GetCurrentWindowRead())
-	    FboWidget::DrawGui();
+	if (ImGui::GetCurrentWindowRead())
+		FboWidget::DrawGui();
 }

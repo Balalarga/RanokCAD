@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "Graphics/ImGuiWidget.h"
+#include "..\Graphics\ImGuiWidget.h"
 #include "ImGui/imgui.h"
 
 
@@ -19,7 +19,7 @@ public:
 
 template<class T>
 requires std::is_base_of_v<IGuiTreeItem, T>
-class GuiTree: public ImGuiWidget
+class GuiTree: public IImGuiWidget
 {
 public:
 	GuiTree(T val = T()) : _val(std::move(val))

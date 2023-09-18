@@ -4,7 +4,7 @@
 #include "ImGuiWidget.h"
 #include "OpenglWrap/Core/FrameBuffer.h"
 
-class FboWidget: public FrameBuffer, public ImGuiWidget
+class FboWidget: public FrameBuffer, public IImGuiWidget
 {
 public:
 	using FrameBuffer::FrameBuffer;
