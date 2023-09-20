@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "ShaderGenerator.h"
+#include "RanokLang/Generators/ShaderGenerator.h"
 
 
 struct JsonGeneratorFunctionArg
@@ -21,14 +21,16 @@ struct JsonGeneratorFunctionObject
 };
 
 
-class JsonGenerator: public ShaderGenerator
+class AssemblyCodeGenerator: public ShaderGenerator
 {
 public:
 	void ProcessNode(std::stringstream& outCode, const FunctionDeclarationNode* node) override;
 
 	JsonGeneratorFunctionObject FlushObject();
+	void SetAssemblyPart(const class AssemblyPart* part);
 
 
 private:
 	JsonGeneratorFunctionObject _object;
+	const AssemblyPart* _part = nullptr;
 };

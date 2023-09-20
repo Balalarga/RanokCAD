@@ -16,14 +16,13 @@ struct ObjectData
     vec3 location;
     vec4 color;
 };
-uniform ObjectData uObjectsData[{{length(objects)}}] = {
+
 ## for Object in objects
-    ObjectData(
-        vec3(0, 0, 0),
-        vec4(1, 1, 1, 1)
-    ),
+uniform ObjectData {{Object.Name}}Data = ObjectData(
+    vec3(0, 0, 0),
+    vec4(1, 1, 1, 1)
+);
 ## endfor
-};
 
 const int MAX_MARCHING_STEPS = 1024;
 const float EPSILON = 0.0001;
@@ -47,8 +46,8 @@ float sphereSDF(vec3 samplePoint) {
 }
 
 ## for Object in objects
-float ObjectFunc{{loop.index}}({% for Arg in Object.args %}{{Arg.type}} {{Arg.name}}{% if Arg.count != 1 %}[{{Arg.count}}]{% endif %}{% if not loop.is_last %},{% endif %}{% endfor %})
-{{Object.body}}
+float {{Object.Name}}({% for Arg in Object.Function.args %}{{Arg.type}} {{Arg.name}}{% if Arg.count != 1 %}[{{Arg.count}}]{% endif %}{% if not loop.is_last %},{% endif %}{% endfor %})
+{{Object.Function.body}}
 ## endfor
 
 struct ObjectHit
@@ -71,20 +70,17 @@ ObjectHit sceneSDF(vec3 samplePoint)
     ObjectHit hit = ObjectHit(true, DEFAULT_OBJECT_COLOR, -1);
     //return sphereSDF(samplePoint);
     float dist;
-## for Object in objects
-
-    dist = ObjectFunc{{loop.index}}(float[](
-            samplePoint.x + uObjectsData[{{loop.index}}].location.x,
-            samplePoint.y + uObjectsData[{{loop.index}}].location.y,
-            samplePoint.z + uObjectsData[{{loop.index}}].location.z
+    dist = {{rootObject}}(float[](
+            samplePoint.x + {{rootObject}}Data.location.x,
+            samplePoint.y + {{rootObject}}Data.location.y,
+            samplePoint.z + {{rootObject}}Data.location.z
         ));
     if (dist > 0)
     {
         hit.miss = false;
-        hit.color = uObjectsData[{{loop.index}}].color.xyz;
+        hit.color = {{rootObject}}Data.color.xyz;
         return hit;
     }
-## endfor
     return hit;
 }
 

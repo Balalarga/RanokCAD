@@ -20,13 +20,15 @@ public:
 	explicit Assembly(std::vector<std::unique_ptr<AssemblyPart>>&& parts);
 
 	virtual void AddPart(std::unique_ptr<AssemblyPart>&& part);
+	nlohmann::json GenerateJson() const override;
 	
 	void DrawGui() override;
-	JsonGeneratorFunctionObject GetJson() override;
+	AssemblyPart* IsClicked() override;
 	
 	bool DrawDetailsPanel() const;
 
 	void SetCombineType(const PartsCombineType& type);
+	void UpdateCode();
 
 	const std::vector<std::unique_ptr<AssemblyPart>>& Parts() const
 	{
@@ -39,4 +41,5 @@ private:
 	PartsCombineType _combineType = PartsCombineType::Union;
 	
 	AssemblyPart* _selectedPart = nullptr;
+	bool _bOpened = false;
 };

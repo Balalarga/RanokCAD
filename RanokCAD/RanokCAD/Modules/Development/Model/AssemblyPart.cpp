@@ -2,9 +2,7 @@
 
 #include <ImGui/imgui.h>
 #include "RanokLang/Parser.h"
-
-
-static JsonGenerator sJsonGenerator;
+#include "AssemblyCodeGenerator.h"
 
 
 bool AssemblyPart::DetailsView(AssemblyPart& part)
@@ -28,13 +26,35 @@ bool AssemblyPart::DetailsView(AssemblyPart& part)
 void AssemblyPart::DrawGui()
 {
 	if (ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_Leaf))
+	{
+		_onNodeDraw(this);
 		ImGui::TreePop();
+	}
 }
 
-JsonGeneratorFunctionObject AssemblyPart::GetJson()
+AssemblyPart* AssemblyPart::IsClicked()
 {
-	sJsonGenerator.Generate(_functionTree);
-	return sJsonGenerator.FlushObject();
+	if (ImGui::IsItemClicked())
+		return this;
+	
+	return nullptr;
+}
+
+nlohmann::json AssemblyPart::GenerateJson() const
+{
+	static AssemblyCodeGenerator generator;
+	generator.SetAssemblyPart(this);
+	generator.Generate(GetFunctionTree());
+	
+	return {
+		{"Name", GetName()},
+		{"Function", generator.FlushObject()},
+	};
+}
+
+void AssemblyPart::SetDrawNode(std::function<void(AssemblyPart*)>&& func)
+{
+	_onNodeDraw = std::move(func);
 }
 
 AssemblyPart& AssemblyPart::SetName(std::string name)

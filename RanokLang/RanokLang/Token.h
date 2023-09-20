@@ -34,6 +34,7 @@ struct Token
 	Token() = default;
 	Token(std::string string): type(Type::Word), string(std::move(string)) {}
 	Token(Type type, std::string string): type(type), string(std::move(string)) {}
+	Token(Type type): type(type), string(TypeString(type)) {}
 	Token(Type type, std::string string, int line, int column):
 		type(type), string(std::move(string)), line(line), column(column) {}
 	

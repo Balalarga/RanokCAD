@@ -1,6 +1,8 @@
 ﻿#include "RayMarchWidget.h"
 
+#include <iostream>
 #include <ImGui/imgui_internal.h>
+#include <Inja/inja.hpp>
 
 #include "BoundingBox.h"
 #include "ImGui/imgui.h"
@@ -8,7 +10,6 @@
 #include "OpenglWrap/Core/Material.h"
 #include "OpenglWrap/Core/RenderApi.h"
 #include "OpenglWrap/Core/SceneObject.h"
-#include "RanokLang/Generators/JsonGenerator.h"
 #include "RanokLang/Lexer.h"
 #include "RanokLang/Parser.h"
 
@@ -118,38 +119,33 @@ RayMarchWidget::~RayMarchWidget()
 	RayMarchWidget::Destroy();
 }
 
-void RayMarchWidget::SetObjects(const std::vector<std::unique_ptr<AssemblyPart>>& objects)
+void RayMarchWidget::SetObjects(const Assembly& assembly)
 {
-	JsonGenerator generator;
-	
-	nlohmann::json objectsJson;
-	Parser parser;
-	for (size_t i = 0; i < objects.size(); ++i)
-	{
-		generator.Generate(objects[i]->GetFunctionTree());
-		objectsJson.push_back(generator.FlushObject());
-	}
 	inja::Environment env;
-	nlohmann::json json{
-		{
-			"objects", objectsJson
-		}
-	};
-	
+	nlohmann::json json{{"objects", assembly.GenerateJson()}, {"rootObject", assembly.GetName(),}};
+
 	auto path = std::filesystem::current_path();
 	path /= "Assets/Templates/RayMarch.glsl.templ";
+	std::cout << json.dump(2) << std::endl;
 	UpdateCode(env.render_file(path.string(), json));
-	SetUniforms(objects);
+	SetUniforms(assembly);
 }
 
-void RayMarchWidget::SetUniforms(const std::vector<std::unique_ptr<AssemblyPart>>& objects) const
+void RayMarchWidget::SetUniforms(const Assembly& assembly) const
 {
 	_material->Bind();
 
-	for (size_t i = 0; i < objects.size(); ++i)
+	_material->SetUniform(std::format("{}Data.location", assembly.GetName()), assembly.GetLocation());
+	_material->SetUniform(std::format("{}Data.color", assembly.GetName()), assembly.GetColor());
+
+	for (size_t i = 0; i < assembly.Parts().size(); ++i)
 	{
-		_material->SetUniform(std::format("uObjectsData[{}].location", i), objects[i]->GetLocation());
-		_material->SetUniform(std::format("uObjectsData[{}].color", i), objects[i]->GetColor());
+		_material->SetUniform(
+			std::format("{}Data.location", assembly.Parts()[i]->GetName()),
+			assembly.Parts()[i]->GetLocation());
+		_material->SetUniform(
+			std::format("{}Data.color", assembly.Parts()[i]->GetName()),
+			assembly.Parts()[i]->GetColor());
 	}
 
 	_material->Release();
@@ -158,7 +154,12 @@ void RayMarchWidget::SetUniforms(const std::vector<std::unique_ptr<AssemblyPart>
 void RayMarchWidget::UpdateCode(const std::string& fragmentCode)
 {
 	_material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, fragmentCode));
-	_material->Construct(true);
+	if (!_material->Construct(true))
+	{
+		std::cout << fragmentCode << std::endl;
+	}
+	else
+		std::cout << fragmentCode << std::endl;
 }
 
 void RayMarchWidget::Render()

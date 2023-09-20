@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include <string>
 #include <glm/vec4.hpp>
 #include <nlohmann/json.hpp>
@@ -6,7 +7,6 @@
 #include "Graphics/ImGuiWidget.h"
 #include "OpenglWrap/Core/Transformable.h"
 #include "RanokLang/ActionTree.h"
-#include "RanokLang/Generators/JsonGenerator.h"
 
 
 class AssemblyPart: public Transformable, public IImGuiWidget
@@ -22,8 +22,11 @@ public:
 	virtual ~AssemblyPart() = default;
 
 	void DrawGui() override;
-	virtual JsonGeneratorFunctionObject GetJson();
-
+	virtual AssemblyPart* IsClicked();
+	virtual nlohmann::json GenerateJson() const;
+	
+	void SetDrawNode(std::function<void(AssemblyPart*)>&& func);
+	
 	AssemblyPart& SetName(std::string name);
 	AssemblyPart& SetColor(const glm::vec4& newColor);
 	AssemblyPart& SetExtendBox(const glm::vec3& extendBox);
@@ -45,14 +48,18 @@ public:
 		return _extendBox;
 	}
 
-	const ActionTree& GetFunctionTree() const
+	virtual ActionTree GetFunctionTree() const
 	{
 		return _functionTree;
 	}
 
-
+	
+protected:
+	std::function<void(AssemblyPart*)> _onNodeDraw = [](auto&&){};
+	
+	
 private:
-	std::string _name = "--unnamed--";
+	std::string _name = "Root";
 	glm::vec4 _color = glm::vec4{0.8f, 0.1f, 0.1f, 1.0f};
 	glm::vec3 _extendBox = glm::vec3{0.f};
 

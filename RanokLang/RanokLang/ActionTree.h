@@ -9,7 +9,7 @@ public:
 	ActionTree() = default;
 	ActionTree(ActionNodeFactory&& factory);
 	
-	const ActionNode* Root() const { return _root; }
+	ActionNode* Root() const { return _root; }
 	void SetRoot(ActionNode* node) { if (node) _root = node; }
 	
 	ActionNodeFactory& GlobalFactory() { return _globalFactory; }

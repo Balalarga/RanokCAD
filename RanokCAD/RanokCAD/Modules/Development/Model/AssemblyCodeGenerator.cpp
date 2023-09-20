@@ -1,6 +1,8 @@
-﻿#include "JsonGenerator.h"
+﻿#include "AssemblyCodeGenerator.h"
 
-void JsonGenerator::ProcessNode(std::stringstream& outCode, const FunctionDeclarationNode* node)
+#include "AssemblyPart.h"
+
+void AssemblyCodeGenerator::ProcessNode(std::stringstream& outCode, const FunctionDeclarationNode* node)
 {
 	if (node->Name() == "main" && !ActionNode::IsArray(node->Body()))
 	{
@@ -16,6 +18,14 @@ void JsonGenerator::ProcessNode(std::stringstream& outCode, const FunctionDeclar
 				_object.args[i].count = 1;
 		}
 		outCode << "{\n";
+		if (_object.args.size() == 1 && _part)
+		{
+			for (size_t i = 0; i < sigArgs.size(); ++i)
+			{
+				outCode << _object.args[0].name << "[" << i << "] = ";
+				outCode << _object.args[0].name << "[" << i << "] + " << _part->GetName() << "Data.location["<<i<<"];\n"; 
+			}
+		}
 		for (size_t i = sigArgs.size(); i < node->Factory().DeclarationOrder().size(); ++i)
 			Process(outCode, node->Factory().DeclarationOrder()[i]);
 
@@ -28,9 +38,14 @@ void JsonGenerator::ProcessNode(std::stringstream& outCode, const FunctionDeclar
 	}
 }
 
-JsonGeneratorFunctionObject JsonGenerator::FlushObject()
+JsonGeneratorFunctionObject AssemblyCodeGenerator::FlushObject()
 {
 	JsonGeneratorFunctionObject objectsCopy = _object;
 	_object = {};
 	return objectsCopy;
+}
+
+void AssemblyCodeGenerator::SetAssemblyPart(const AssemblyPart* part)
+{
+	_part = part;
 }

@@ -27,16 +27,28 @@ DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInpu
 	part2->SetLocation({0, 0, 3});
 	part2->SetFunctionTree(StandardModels::GetSphere(2));
 	
-	auto part3 = std::make_unique<AssemblyPart>();
-	part3->SetName("Part3");
-	part3->SetColor({0.1, 0.2, 0.4, 1.0});
-	part3->SetLocation({0, 3, 3});
-	part3->SetFunctionTree(StandardModels::GetSphere(1));
+	auto part3 = std::make_unique<Assembly>();
+	part3->SetName("Assembly1");
+	
+	auto part31 = std::make_unique<AssemblyPart>();
+	part31->SetName("Part3");
+	part31->SetColor({0.1, 0.2, 0.4, 1.0});
+	part31->SetLocation({0, 3, 3});
+	part31->SetFunctionTree(StandardModels::GetSphere(1));
+	
+	auto part32 = std::make_unique<AssemblyPart>();
+	part32->SetName("Part4");
+	part32->SetColor({0.2, 0.2, 0.3, 1.0});
+	part32->SetLocation({0, 0, 6});
+	part32->SetFunctionTree(StandardModels::GetSphere(1));
+	
+	part3->AddPart(std::move(part31));
+	part3->AddPart(std::move(part32));
 	
 	_assembly.AddPart(std::move(part1));
 	_assembly.AddPart(std::move(part2));
 	_assembly.AddPart(std::move(part3));
-	_viewport->SetObjects(_assembly.Parts());
+	_viewport->SetObjects(_assembly);
 }
 
 void DevelopmentModule::DrawMenuBar()
@@ -191,7 +203,7 @@ void DevelopmentModule::DrawTreeView()
 	ImGui::BeginChild("##ModelTreeViewDetails", ImVec2(treeViewSizeMax.x, ImGui::GetItemRectSize().y - treeViewSizeMax.y));
 	if (_assembly.DrawDetailsPanel())
 	{
-		_viewport->SetUniforms(_assembly.Parts());
+		_viewport->SetUniforms(_assembly);
 	}
 	ImGui::EndChild();
 	ImGui::PopStyleVar(2);

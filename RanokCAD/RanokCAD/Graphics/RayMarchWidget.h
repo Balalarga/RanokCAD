@@ -3,6 +3,7 @@
 #include <string>
 
 #include "FboWidget.h"
+#include "Modules/Development/Model/Assembly.h"
 #include "Modules/Development/Model/AssemblyPart.h"
 #include "OpenglWrap/Camera.h"
 
@@ -17,9 +18,9 @@ class RayMarchWidget: public FboWidget
 public:
 	RayMarchWidget(glm::ivec2 size);
 	virtual ~RayMarchWidget();
-
-	void SetObjects(const std::vector<std::unique_ptr<AssemblyPart>>& objects);
-	void SetUniforms(const std::vector<std::unique_ptr<AssemblyPart>>& objects) const;
+	
+	void SetObjects(const Assembly& objects);
+	void SetUniforms(const Assembly& objects) const;
 	
 	void UpdateCode(const std::string& fragmentCode);
 
