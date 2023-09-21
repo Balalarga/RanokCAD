@@ -1,31 +1,23 @@
 ﻿#include "AssemblyCodeGenerator.h"
 
-#include "AssemblyPart.h"
+#include "Model.h"
 
 void AssemblyCodeGenerator::ProcessNode(std::stringstream& outCode, const FunctionDeclarationNode* node)
 {
 	if (node->Name() == "main" && !ActionNode::IsArray(node->Body()))
 	{
 		const std::vector<VariableDeclarationNode*>& sigArgs = node->Signature().Args();
-		_object.args.resize(sigArgs.size());
+		_object.Args.resize(sigArgs.size());
 		for (size_t i = 0; i < sigArgs.size(); ++i)
 		{
-			_object.args[i].name = sigArgs[i]->Name();
-			_object.args[i].type = "float";
+			_object.Args[i].Name = sigArgs[i]->Name();
+			_object.Args[i].Type = "float";
 			if (const ArrayNode* asArr = ActionNode::IsArray(sigArgs[i]->Value()))
-				_object.args[i].count = asArr->Values().size();
+				_object.Args[i].Count = asArr->Values().size();
 			else
-				_object.args[i].count = 1;
+				_object.Args[i].Count = 1;
 		}
 		outCode << "{\n";
-		if (_object.args.size() == 1 && _part)
-		{
-			for (size_t i = 0; i < sigArgs.size(); ++i)
-			{
-				outCode << _object.args[0].name << "[" << i << "] = ";
-				outCode << _object.args[0].name << "[" << i << "] + " << _part->GetName() << "Data.location["<<i<<"];\n"; 
-			}
-		}
 		for (size_t i = sigArgs.size(); i < node->Factory().DeclarationOrder().size(); ++i)
 			Process(outCode, node->Factory().DeclarationOrder()[i]);
 
@@ -33,7 +25,7 @@ void AssemblyCodeGenerator::ProcessNode(std::stringstream& outCode, const Functi
 		outCode << "return ";
 		Process(outCode, node->Body());
 		outCode << ";\n}\n";
-		_object.body = outCode.str();
+		_object.Body = outCode.str();
 		outCode.str("");
 	}
 }
@@ -43,9 +35,4 @@ JsonGeneratorFunctionObject AssemblyCodeGenerator::FlushObject()
 	JsonGeneratorFunctionObject objectsCopy = _object;
 	_object = {};
 	return objectsCopy;
-}
-
-void AssemblyCodeGenerator::SetAssemblyPart(const AssemblyPart* part)
-{
-	_part = part;
 }

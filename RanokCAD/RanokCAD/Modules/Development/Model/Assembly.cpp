@@ -1,127 +1,138 @@
 ﻿#include "Assembly.h"
 
+#include "AssemblyCodeGenerator.h"
 #include "RanokLang/Parser.h"
-#include "Utils/GuiTree.h"
 
 
-std::map<PartsCombineType, std::string> Assembly::sCombineTypeViews{
-	{PartsCombineType::Subtract, "& {}"}, {PartsCombineType::Union, "| {}"},
-};
-
-
-void Assembly::SetPartCombineView(PartsCombineType type, const std::string& view)
+Assembly::Assembly(std::string name)
+	: IModelBase(std::move(name))
 {
-	sCombineTypeViews[type] = view;
 }
 
-Assembly::Assembly(std::vector<std::unique_ptr<AssemblyPart>>&& parts)
-	: _parts(std::move(parts))
+Assembly::Assembly(std::string name, std::vector<AssemblyPart> parts)
+	: IModelBase(std::move(name))
+	, _parts(std::move(parts))
 {
-	UpdateCode();
 }
 
-void Assembly::AddPart(std::unique_ptr<AssemblyPart>&& part)
+void Assembly::AddPart(AssemblyPart&& part)
 {
-	part->SetDrawNode(
-		[this](AssemblyPart* subPart)
-		{
-			if (auto clickedItem = subPart->IsClicked())
-			{
-				_selectedPart = clickedItem;
-				_onNodeDraw(_selectedPart);
-			}
-		});
 	_parts.emplace_back(std::move(part));
-	UpdateCode();
 }
 
 nlohmann::json Assembly::GenerateJson() const
 {
-	nlohmann::json json;
-	for (auto& part : _parts)
-	{
-		auto partJson = part->GenerateJson();
-		if (partJson.is_array())
-		{
-			for (auto& subPart : partJson)
-				json.push_back(subPart);
-		}
-		else
-		{
-			json.push_back(partJson);
-		}
-	}
+	std::ostringstream combinationCode;
 
-	json.push_back(AssemblyPart::GenerateJson());
-	return json;
-}
+	for (const AssemblyPart& part : _parts)
+		combinationCode << "def " << part.model.GetName() << "(s[3]){ return 0; };\n";
 
-void Assembly::DrawGui()
-{
-	static ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-
-	if (_bOpened)
-		flags |= ImGuiTreeNodeFlags_DefaultOpen;
+	combinationCode << "\ndef main(s[3]){\n";
+	combinationCode << "return ";
 	if (_parts.empty())
-		flags |= ImGuiTreeNodeFlags_Leaf;
+		combinationCode << "0";
 
-	const std::string nodeTitle = std::vformat(sCombineTypeViews[_combineType], std::make_format_args(GetName()));
-	if (_bOpened = ImGui::TreeNodeEx(nodeTitle.c_str(), flags); _bOpened)
-	{
-		_onNodeDraw(this);
-		for (const std::unique_ptr<AssemblyPart>& part : _parts)
-			part->DrawGui();
-
-		ImGui::TreePop();
-	}
-}
-
-AssemblyPart* Assembly::IsClicked()
-{
-	if (const auto clickedItem = AssemblyPart::IsClicked())
-		return clickedItem;
-
-	for (auto& part : _parts)
-	{
-		if (part->IsClicked())
-			return part.get();
-	}
-
-	return nullptr;
-}
-
-bool Assembly::DrawDetailsPanel() const
-{
-	if (_selectedPart)
-		return DetailsView(*_selectedPart);
-
-	return false;
-}
-
-void Assembly::SetCombineType(const PartsCombineType& type)
-{
-	_combineType = type;
-}
-
-void Assembly::UpdateCode()
-{
-	std::ostringstream codeStream;
-
-	for (auto& part : _parts)
-		codeStream << "def " << part->GetName() << "(s[3]){ return 0; };\n";
-
-	codeStream << "\ndef main(s[3]){\n";
-	codeStream << "return ";
-	if (_parts.empty())
-		codeStream << "0";
-	
 	for (size_t i = 0; i < _parts.size(); ++i)
 	{
-		codeStream << _parts[i]->GetName() << "(s)";
+		combinationCode << _parts[i].model.GetName() << "(s)";
 		if ((i == 0 && _parts.size() < 2) || i != _parts.size() - 1)
-			codeStream << (_combineType == PartsCombineType::Subtract ? "&" : "|");
+			combinationCode << (_parts[i].combineType == AssemblyPart::CombineType::Subtract ? "&" : "|");
 	}
-	codeStream << ";\n}";
+	combinationCode << ";\n}";
 
-	SetFunctionCode(codeStream.str());
+	constexpr const char* baseArgName = "s";
+	ActionTree newTree;
+	FunctionDeclarationNode* func = newTree.GlobalFactory().CreateFunction(FunctionSignature({"main"}));
+	ActionNodeFactory& mainFactory = func->Factory();
+	func->Signature().Args().push_back(mainFactory.CreateVariable(
+		Token{baseArgName},
+		mainFactory.Create<ArrayNode>(
+			Token{baseArgName},
+			std::vector<ActionNode*>{
+				nullptr,
+				nullptr,
+				nullptr,
+			})));
+	auto createSignature = [&](std::string&& name)
+	{
+		return FunctionSignature(
+			{name},
+			{
+				mainFactory.CreateVariable(
+					Token{baseArgName},
+					mainFactory.Create<ArrayNode>(
+						Token{baseArgName},
+						std::vector<ActionNode*>{
+							nullptr,
+							nullptr,
+							nullptr,
+						})),
+			});
+	};
+
+	VariableDeclarationNode* baseArg = mainFactory.FindVariable(baseArgName);
+	for (const AssemblyPart& part : _parts)
+	{
+		const std::string varName = part.model.GetName() + "_loc";
+		mainFactory.CreateVariable(
+			Token{varName},
+			mainFactory.Create<ArrayNode>(
+				Token{varName},
+				std::vector<ActionNode*>{
+					mainFactory.Create<BinaryNode>(
+						Token{"+"},
+						mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, part.model.GetLocation().x),
+						mainFactory.Create<ArrayGetterNode>(
+							baseArg, mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, 0))),
+					mainFactory.Create<BinaryNode>(
+						Token{"+"},
+						mainFactory.Create<VariableNode>(Token{Token::Type::Number}, part.model.GetLocation().y),
+						mainFactory.Create<ArrayGetterNode>(
+							baseArg, mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, 1))),
+					mainFactory.Create<BinaryNode>(
+						Token{"+"},
+						mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, part.model.GetLocation().z),
+						mainFactory.Create<ArrayGetterNode>(
+							baseArg, mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, 2))),
+				}));
+	}
+
+	ActionNode* body = nullptr;
+	for (size_t i = 0; i < _parts.size(); ++i)
+	{
+		VariableDeclarationNode* modelLocationVar = mainFactory.FindVariable(_parts[i].model.GetName() + "_loc");
+		if (body == nullptr)
+		{
+				body = mainFactory.Create<FunctionCallNode>(
+					mainFactory.CreateFunction(
+						createSignature(_parts[i].model.GetName()),
+						mainFactory.Create<DoubleNumberNode>(Token(Token::Type::Number), 0)),
+					std::vector<ActionNode*>{mainFactory.Create<VariableNode>(modelLocationVar)});
+			continue;
+		}
+
+		body = mainFactory.Create<BinaryNode>(
+				Token{_parts[i].combineType == AssemblyPart::CombineType::Subtract ? Token::Type::Ampersand : Token::Type::Pipe},
+			body,
+			mainFactory.Create<FunctionCallNode>(
+				mainFactory.CreateFunction(
+					createSignature(_parts[i].model.GetName()),
+					mainFactory.Create<DoubleNumberNode>(Token(Token::Type::Number), 0)),
+				std::vector<ActionNode*>{mainFactory.Create<VariableNode>(modelLocationVar)}));
+	}
+	func->SetBody(body);
+
+	newTree.SetRoot(func);
+
+
+	static AssemblyCodeGenerator generator;
+	static Parser parser;
+	ActionTree actionTree = parser.Parse(Lexer(combinationCode.str()));
+	generator.Generate(newTree);
+
+	nlohmann::json subModelsArr;
+	for (const AssemblyPart& part : _parts)
+		subModelsArr.push_back(part.model.GenerateJson());
+
+	return {{"Name", GetName()}, {"Function", generator.FlushObject()}, {"Models", subModelsArr}};
 }

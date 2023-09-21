@@ -30,6 +30,6 @@ protected:
 	
 private:
 	std::shared_ptr<RayMarchWidget> _viewport;
-	Assembly _assembly;
+	std::vector<Assembly> _assemblies;
 	bool _bIsViewportFocused = false;
 };

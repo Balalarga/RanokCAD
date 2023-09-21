@@ -17,11 +17,17 @@ struct ObjectData
     vec4 color;
 };
 
-## for Object in objects
-uniform ObjectData {{Object.Name}}Data = ObjectData(
+## for Assembly in Assemblies
+uniform ObjectData {{Assembly.Name}}Data = ObjectData(
     vec3(0, 0, 0),
     vec4(1, 1, 1, 1)
 );
+## for Model in Assembly.Models
+uniform ObjectData {{Assembly.Name}}_{{Model.Name}}Data = ObjectData(
+    vec3(0, 0, 0),
+    vec4(1, 1, 1, 1)
+);
+## endfor
 ## endfor
 
 const int MAX_MARCHING_STEPS = 1024;
@@ -45,9 +51,13 @@ float sphereSDF(vec3 samplePoint) {
     return length(samplePoint) - 1.0;
 }
 
-## for Object in objects
-float {{Object.Name}}({% for Arg in Object.Function.args %}{{Arg.type}} {{Arg.name}}{% if Arg.count != 1 %}[{{Arg.count}}]{% endif %}{% if not loop.is_last %},{% endif %}{% endfor %})
-{{Object.Function.body}}
+## for Assembly in Assemblies
+## for Model in Assembly.Models
+float {{Model.Name}}({% for Arg in Model.Function.Args %}{{Arg.Type}} {{Arg.Name}}{% if Arg.Count != 1 %}[{{Arg.Count}}]{% endif %}{% if not loop.is_last %},{% endif %}{% endfor %})
+{{Model.Function.Body}}
+## endfor
+float {{Assembly.Name}}({% for Arg in Assembly.Function.Args %}{{Arg.Type}} {{Arg.Name}}{% if Arg.Count != 1 %}[{{Arg.Count}}]{% endif %}{% if not loop.is_last %},{% endif %}{% endfor %})
+{{Assembly.Function.Body}}
 ## endfor
 
 struct ObjectHit
@@ -70,17 +80,19 @@ ObjectHit sceneSDF(vec3 samplePoint)
     ObjectHit hit = ObjectHit(true, DEFAULT_OBJECT_COLOR, -1);
     //return sphereSDF(samplePoint);
     float dist;
-    dist = {{rootObject}}(float[](
-            samplePoint.x + {{rootObject}}Data.location.x,
-            samplePoint.y + {{rootObject}}Data.location.y,
-            samplePoint.z + {{rootObject}}Data.location.z
+## for Assembly in Assemblies
+    dist = {{Assembly.Name}}(float[](
+            samplePoint.x + {{Assembly.Name}}Data.location.x,
+            samplePoint.y + {{Assembly.Name}}Data.location.y,
+            samplePoint.z + {{Assembly.Name}}Data.location.z
         ));
     if (dist > 0)
     {
         hit.miss = false;
-        hit.color = {{rootObject}}Data.color.xyz;
+        hit.color = {{Assembly.Name}}Data.color.xyz;
         return hit;
     }
+## endfor
     return hit;
 }
 

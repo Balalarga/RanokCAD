@@ -4,20 +4,19 @@
 
 struct JsonGeneratorFunctionArg
 {
-	std::string name;
-	std::string type;
-	size_t count;
+	std::string Name;
+	std::string Type;
+	size_t Count;
 
-	NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(JsonGeneratorFunctionArg, name, type, count)
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(JsonGeneratorFunctionArg, Name, Type, Count)
 };
 
 struct JsonGeneratorFunctionObject
 {
-	std::string body;
-	std::vector<JsonGeneratorFunctionArg> args;
-	std::vector<JsonGeneratorFunctionObject> functions;
+	std::string Body;
+	std::vector<JsonGeneratorFunctionArg> Args;
 	
-	NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(JsonGeneratorFunctionObject, body, args, functions)
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(JsonGeneratorFunctionObject, Body, Args)
 };
 
 
@@ -27,10 +26,8 @@ public:
 	void ProcessNode(std::stringstream& outCode, const FunctionDeclarationNode* node) override;
 
 	JsonGeneratorFunctionObject FlushObject();
-	void SetAssemblyPart(const class AssemblyPart* part);
 
 
 private:
 	JsonGeneratorFunctionObject _object;
-	const AssemblyPart* _part = nullptr;
 };
