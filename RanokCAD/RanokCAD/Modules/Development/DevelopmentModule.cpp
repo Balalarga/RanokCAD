@@ -201,13 +201,27 @@ void DevelopmentModule::DrawTreeView()
 	ImGui::SetCursorPos(ImGui::GetStyle().WindowPadding);
 
 	ImGui::BeginChild("##ModelTreeView", treeViewSizeMax);
+	static const Assembly* selectedAssembly = nullptr;
+	static const AssemblyPart* selectedAssemblyPart = nullptr;
 	for (Assembly& assembly : _assemblies)
 	{
+		if (ImGui::IsItemClicked())
+		{
+			selectedAssembly = &assembly;
+			selectedAssemblyPart = nullptr;
+		}
+		
 		if (!ImGui::TreeNodeEx(assembly.GetName().c_str(), ImGuiTreeNodeFlags_OpenOnArrow))
 			continue;
 		
 		for (const AssemblyPart& part : assembly.GetParts())
 		{
+			if (ImGui::IsItemClicked())
+			{
+				selectedAssembly = nullptr;
+				selectedAssemblyPart = &part;
+			}
+			
 			if (!ImGui::TreeNodeEx(part.model.GetName().c_str(), ImGuiTreeNodeFlags_Leaf))
 				continue;
 			
@@ -218,10 +232,19 @@ void DevelopmentModule::DrawTreeView()
 	ImGui::EndChild();
 	ImGui::BeginChild(
 		"##ModelTreeViewDetails", ImVec2(treeViewSizeMax.x, ImGui::GetItemRectSize().y - treeViewSizeMax.y));
-	// if (_assembly.DrawDetailsPanel())
-	// {
-	// _viewport->SetUniforms(_assembly);
-	// }
+	ImGui::BeginGroup();
+	if (selectedAssembly)
+	{
+		glm::vec3 location = selectedAssembly->GetLocation();
+		ImGui::DragFloat3("Location", &location.x);
+	}
+	else if (selectedAssemblyPart)
+	{
+		glm::vec3 location = selectedAssemblyPart->model.GetLocation();
+		ImGui::DragFloat3("Location", &location.x);
+		
+	}
+	ImGui::EndGroup();
 	ImGui::EndChild();
 	ImGui::PopStyleVar(2);
 }
@@ -230,10 +253,14 @@ void DevelopmentModule::DrawToolBar()
 {
 	ImGui::BeginGroup();
 
-	if (ImGui::Button("ModelPicker"))
+	if (ImGui::Button("Sphere"))
 	{
-		// ModelItem newItem = ModelItem().SetName("NewItem");
-		// _modelTree.Add(ModelTree(newItem));
+		Model part31("Part33");
+		part31.SetColor({0.3, 0.3, 0.3, 1.0});
+		part31.SetLocation({0, 5, 5});
+		part31.SetFunctionTree(StandardModels::GetSphere(1));
+		_assemblies.back().AddPart(AssemblyPart{part31, AssemblyPart::CombineType::Union});
+		_viewport->SetObjects(_assemblies);
 	}
 
 	ImGui::EndGroup();
