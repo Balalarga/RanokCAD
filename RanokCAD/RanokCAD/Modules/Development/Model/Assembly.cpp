@@ -86,7 +86,7 @@ nlohmann::json Assembly::GenerateJson() const
 							baseArg, mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, 0))),
 					mainFactory.Create<BinaryNode>(
 						Token{"+"},
-						mainFactory.Create<VariableNode>(Token{Token::Type::Number}, part.model.GetLocation().y),
+						mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, part.model.GetLocation().y),
 						mainFactory.Create<ArrayGetterNode>(
 							baseArg, mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, 1))),
 					mainFactory.Create<BinaryNode>(
@@ -108,6 +108,7 @@ nlohmann::json Assembly::GenerateJson() const
 						createSignature(_parts[i].model.GetName()),
 						mainFactory.Create<DoubleNumberNode>(Token(Token::Type::Number), 0)),
 					std::vector<ActionNode*>{mainFactory.Create<VariableNode>(modelLocationVar)});
+			
 			continue;
 		}
 
