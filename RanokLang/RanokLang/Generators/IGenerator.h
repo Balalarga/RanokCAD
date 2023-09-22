@@ -31,6 +31,7 @@ protected:
 	virtual void ProcessNode(std::stringstream& outCode, const VariableNode* node) = 0;
 	virtual void ProcessNode(std::stringstream& outCode, const UnaryNode* node) = 0;
 	virtual void ProcessNode(std::stringstream& outCode, const BinaryNode* node) = 0;
+	virtual void ProcessNode(std::stringstream& outCode, const NamedNode* node);
 	virtual void
 	ProcessNode(std::stringstream& outCode, const FunctionCallNode* node, const ActionNode* result = nullptr) = 0;
 	virtual void ProcessNode(std::stringstream& outCode, const FunctionDeclarationNode* node) = 0;

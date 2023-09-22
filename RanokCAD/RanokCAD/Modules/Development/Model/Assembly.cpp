@@ -69,7 +69,7 @@ nlohmann::json Assembly::GenerateJson() const
 						})),
 			});
 	};
-
+	
 	VariableDeclarationNode* baseArg = mainFactory.FindVariable(baseArgName);
 	for (const AssemblyPart& part : _parts)
 	{
@@ -81,17 +81,17 @@ nlohmann::json Assembly::GenerateJson() const
 				std::vector<ActionNode*>{
 					mainFactory.Create<BinaryNode>(
 						Token{"+"},
-						mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, part.model.GetLocation().x),
+						mainFactory.Create<NamedNode>(std::vformat("{}_{}Data.location.x", std::make_format_args(GetName(), part.model.GetName()))),
 						mainFactory.Create<ArrayGetterNode>(
 							baseArg, mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, 0))),
 					mainFactory.Create<BinaryNode>(
 						Token{"+"},
-						mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, part.model.GetLocation().y),
+						mainFactory.Create<NamedNode>(std::vformat("{}_{}Data.location.y", std::make_format_args(GetName(), part.model.GetName()))),
 						mainFactory.Create<ArrayGetterNode>(
 							baseArg, mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, 1))),
 					mainFactory.Create<BinaryNode>(
 						Token{"+"},
-						mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, part.model.GetLocation().z),
+						mainFactory.Create<NamedNode>(std::vformat("{}_{}Data.location.z", std::make_format_args(GetName(), part.model.GetName()))),
 						mainFactory.Create<ArrayGetterNode>(
 							baseArg, mainFactory.Create<DoubleNumberNode>(Token{Token::Type::Number}, 2))),
 				}));

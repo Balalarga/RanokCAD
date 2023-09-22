@@ -152,6 +152,11 @@ std::queue<ActionNode*> VariableDeclarationNode::WalkDown() const
 	return std::queue<ActionNode*>{{_value}};
 }
 
+NamedNode::NamedNode(const std::string& name): ActionNode(name)
+{
+	
+}
+
 UnaryNode::UnaryNode(const Token& token, ActionNode* child) : ActionNode(token), _child(child)
 {
 }

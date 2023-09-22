@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <format>
 #include <sstream>
+#include <SDL2/SDL_syswm.h>
 
 #include "RanokLang/Parser.h"
 
@@ -68,12 +69,21 @@ void IGenerator::Process(std::stringstream& outCode, const ActionNode* node)
 	{
 		ProcessNode(outCode, funcCall);
 	}
+	else if (auto namedNode = dynamic_cast<const NamedNode*>(node))
+	{
+		ProcessNode(outCode, namedNode);
+	}
 	else if (auto func = dynamic_cast<const FunctionDeclarationNode*>(node))
 	{
 		++indentWidth;
 		ProcessNode(outCode, func);
 		--indentWidth;
 	}
+}
+
+void IGenerator::ProcessNode(std::stringstream& outCode, const NamedNode* node)
+{
+	outCode << node->Name();
 }
 
 void IGenerator::PrintIndent(std::stringstream& outCode)

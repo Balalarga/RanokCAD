@@ -30,6 +30,11 @@ public:
 	void AddPart(AssemblyPart&& part);
 	nlohmann::json GenerateJson() const;
 
+	std::vector<AssemblyPart>& GetParts()
+	{
+		return _parts;
+	}
+
 	const std::vector<AssemblyPart>& GetParts() const
 	{
 		return _parts;

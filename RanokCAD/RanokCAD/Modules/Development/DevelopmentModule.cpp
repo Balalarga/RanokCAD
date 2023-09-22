@@ -14,43 +14,54 @@ DevelopmentModule::DevelopmentModule(glm::ivec2 windowSize, InputManager& inInpu
 {
 	InitInput();
 	_viewport->Construct();
+	{
+		Model part1("Part11");
+		part1.SetColor({0.1, 0.2, 0.4, 1.0});
+		part1.SetLocation({0, -3, -3});
+		part1.SetFunctionTree(StandardModels::GetSphere(1));
 
-	Model part1("Part1");
-	part1.SetColor({0.4, 0.1, 0.2, 1.0});
-	part1.SetLocation({3, 0, 0});
-	part1.SetFunctionTree(StandardModels::GetSphere());
+		Model part2("Part12");
+		part2.SetColor({0.1, 0.2, 0.4, 1.0});
+		part2.SetLocation({0, 0, -6});
+		part2.SetFunctionTree(StandardModels::GetSphere(1));
 
-	Model part2("Part2");
-	part2.SetName("Part2");
-	part2.SetColor({0.1, 0.4, 0.2, 1.0});
-	part2.SetLocation({0, 0, 3});
-	part2.SetFunctionTree(StandardModels::GetSphere(2));
+		Model part3("Part13");
+		part3.SetColor({0.3, 0.3, 0.3, 1.0});
+		part3.SetLocation({0, -1, -1});
+		part3.SetFunctionTree(StandardModels::GetSphere(1));
+	
+		Assembly assembly("Assembly1");
+		assembly.SetLocation({0, 0, 0});
+		assembly.SetColor({0.2, 0.2, 0.3, 1.0});
+		assembly.AddPart(AssemblyPart(part1, AssemblyPart::CombineType::Union));
+		assembly.AddPart(AssemblyPart(part3, AssemblyPart::CombineType::Union));
+		assembly.AddPart(AssemblyPart(part2, AssemblyPart::CombineType::Union));
+		_assemblies.emplace_back(assembly);
+	}
+	{
+		Model part1("Part21");
+		part1.SetColor({0.1, 0.2, 0.4, 1.0});
+		part1.SetLocation({0, 3, 3});
+		part1.SetFunctionTree(StandardModels::GetSphere(1));
 
-	Assembly assembly1("Assembly1");
-	assembly1.SetLocation({0, 3, 3});
-	assembly1.SetColor({0.1, 0.4, 0.2, 1.0});
-	assembly1.AddPart(AssemblyPart(part1, AssemblyPart::CombineType::Union));
-	assembly1.AddPart(AssemblyPart(part2, AssemblyPart::CombineType::Union));
+		Model part2("Part22");
+		part2.SetColor({0.1, 0.2, 0.4, 1.0});
+		part2.SetLocation({0, 3, 0});
+		part2.SetFunctionTree(StandardModels::GetSphere(1));
 
-	Model part31("Part31");
-	part31.SetColor({0.1, 0.2, 0.4, 1.0});
-	part31.SetLocation({0, 2, 2});
-	part31.SetFunctionTree(StandardModels::GetSphere(1));
+		Model part3("Part23");
+		part3.SetColor({0.3, 0.3, 0.3, 1.0});
+		part3.SetLocation({0, 1, 1});
+		part3.SetFunctionTree(StandardModels::GetSphere(1));
+	
+		Assembly assembly("Assembly2");
+		assembly.SetColor({0.4, 0.2, 0.2, 1.0});
+		assembly.AddPart(AssemblyPart(part1, AssemblyPart::CombineType::Union));
+		assembly.AddPart(AssemblyPart(part3, AssemblyPart::CombineType::Union));
+		assembly.AddPart(AssemblyPart(part2, AssemblyPart::CombineType::Union));
+		_assemblies.emplace_back(assembly);
+	}
 
-	Model part32("Part32");
-	part32.SetName("Part4");
-	part32.SetColor({0.2, 0.2, 0.3, 1.0});
-	part32.SetLocation({0, 0, 6});
-	part32.SetFunctionTree(StandardModels::GetSphere(1));
-
-	Assembly assembly2("Assembly2");
-	assembly2.SetLocation({-2, -2, 0});
-	assembly2.SetColor({0.2, 0.2, 0.3, 1.0});
-	assembly2.AddPart(AssemblyPart(part31, AssemblyPart::CombineType::Union));
-	assembly2.AddPart(AssemblyPart(part32, AssemblyPart::CombineType::Union));
-
-	_assemblies.emplace_back(assembly1);
-	_assemblies.emplace_back(assembly2);
 	_viewport->SetObjects(_assemblies);
 }
 
@@ -201,28 +212,32 @@ void DevelopmentModule::DrawTreeView()
 	ImGui::SetCursorPos(ImGui::GetStyle().WindowPadding);
 
 	ImGui::BeginChild("##ModelTreeView", treeViewSizeMax);
-	static const Assembly* selectedAssembly = nullptr;
-	static const AssemblyPart* selectedAssemblyPart = nullptr;
+	static IModelBase* selectedItem = nullptr;
 	for (Assembly& assembly : _assemblies)
 	{
-		if (ImGui::IsItemClicked())
-		{
-			selectedAssembly = &assembly;
-			selectedAssemblyPart = nullptr;
-		}
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+		if (selectedItem == &assembly)
+			flags |= ImGuiTreeNodeFlags_Selected;
+
+		const bool bAssemblyOpened = ImGui::TreeNodeEx(assembly.GetName().c_str(), flags);
 		
-		if (!ImGui::TreeNodeEx(assembly.GetName().c_str(), ImGuiTreeNodeFlags_OpenOnArrow))
+		if (ImGui::IsItemClicked())
+			selectedItem = &assembly;
+
+		if (!bAssemblyOpened)
 			continue;
 		
-		for (const AssemblyPart& part : assembly.GetParts())
+		for (AssemblyPart& part : assembly.GetParts())
 		{
+			ImGuiTreeNodeFlags partFlags = ImGuiTreeNodeFlags_Leaf;
+			if (selectedItem == &part.model)
+				partFlags |= ImGuiTreeNodeFlags_Selected;
+
+			const bool bPartOpened = ImGui::TreeNodeEx(part.model.GetName().c_str(), partFlags);
 			if (ImGui::IsItemClicked())
-			{
-				selectedAssembly = nullptr;
-				selectedAssemblyPart = &part;
-			}
+				selectedItem = &part.model;
 			
-			if (!ImGui::TreeNodeEx(part.model.GetName().c_str(), ImGuiTreeNodeFlags_Leaf))
+			if (!bPartOpened)
 				continue;
 			
 			ImGui::TreePop();
@@ -233,16 +248,20 @@ void DevelopmentModule::DrawTreeView()
 	ImGui::BeginChild(
 		"##ModelTreeViewDetails", ImVec2(treeViewSizeMax.x, ImGui::GetItemRectSize().y - treeViewSizeMax.y));
 	ImGui::BeginGroup();
-	if (selectedAssembly)
+	if (selectedItem)
 	{
-		glm::vec3 location = selectedAssembly->GetLocation();
-		ImGui::DragFloat3("Location", &location.x);
-	}
-	else if (selectedAssemblyPart)
-	{
-		glm::vec3 location = selectedAssemblyPart->model.GetLocation();
-		ImGui::DragFloat3("Location", &location.x);
+		glm::vec3 location = selectedItem->GetLocation();
+		bool bWasChanged = ImGui::DragFloat3("Location", &location.x, 0.02f);
+		if (location != selectedItem->GetLocation())
+			selectedItem->SetLocation(location);
 		
+		glm::vec4 color = selectedItem->GetColor();
+		bWasChanged |= ImGui::ColorEdit3("Color", &color.x);
+		if (color != selectedItem->GetColor())
+			selectedItem->SetColor(color);
+		
+		if (bWasChanged)
+			_viewport->SetUniforms(_assemblies);
 	}
 	ImGui::EndGroup();
 	ImGui::EndChild();
@@ -255,7 +274,7 @@ void DevelopmentModule::DrawToolBar()
 
 	if (ImGui::Button("Sphere"))
 	{
-		Model part31("Part33");
+		Model part31("NewPart");
 		part31.SetColor({0.3, 0.3, 0.3, 1.0});
 		part31.SetLocation({0, 5, 5});
 		part31.SetFunctionTree(StandardModels::GetSphere(1));

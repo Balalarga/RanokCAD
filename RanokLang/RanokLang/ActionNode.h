@@ -178,6 +178,13 @@ private:
 };
 
 
+class NamedNode: public ActionNode
+{
+public:
+	NamedNode(const std::string& name);
+};
+
+
 class UnaryNode: public ActionNode
 {
 public:
