@@ -246,22 +246,19 @@ void DevelopmentModule::DrawTreeView()
 	}
 	ImGui::EndChild();
 	ImGui::BeginChild(
-		"##ModelTreeViewDetails", ImVec2(treeViewSizeMax.x, ImGui::GetItemRectSize().y - treeViewSizeMax.y));
+		"##ModelTreeViewDetails",
+		ImVec2(treeViewSizeMax.x, ImGui::GetItemRectSize().y - treeViewSizeMax.y));
 	ImGui::BeginGroup();
+
+	static glm::fvec3 location;
 	if (selectedItem)
 	{
-		glm::vec3 location = selectedItem->GetLocation();
-		bool bWasChanged = ImGui::DragFloat3("Location", &location.x, 0.02f);
-		if (location != selectedItem->GetLocation())
+		location = selectedItem->GetLocation();
+		if (ImGui::DragFloat3("Location", &location.x) && location != selectedItem->GetLocation())
+		{
 			selectedItem->SetLocation(location);
-		
-		glm::vec4 color = selectedItem->GetColor();
-		bWasChanged |= ImGui::ColorEdit3("Color", &color.x);
-		if (color != selectedItem->GetColor())
-			selectedItem->SetColor(color);
-		
-		if (bWasChanged)
-			_viewport->SetUniforms(_assemblies);
+			_viewport->SetObjects(_assemblies);
+		}
 	}
 	ImGui::EndGroup();
 	ImGui::EndChild();

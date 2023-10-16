@@ -21,7 +21,14 @@ set(PROJECT_SOURCES ${PROJECT_SOURCES}
     ImGui/imgui_widgets.cpp
     # SDL2+OpenGL-specific files
     ImGui/backends/imgui_impl_sdl2.cpp
-    ImGui/backends/imgui_impl_opengl3.cpp)
+    ImGui/backends/imgui_impl_opengl3.cpp
+    # ImGuizmo
+    ImGuizmo/GraphEditor.cpp
+    ImGuizmo/ImCurveEdit.cpp
+    ImGuizmo/ImGradient.cpp
+    ImGuizmo/ImGuizmo.cpp
+    ImGuizmo/ImSequencer.cpp
+)
 
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
@@ -29,7 +36,8 @@ add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}
     ImGui
-    ImGui/backends)
+    ImGui/backends
+    ImGuizmo)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

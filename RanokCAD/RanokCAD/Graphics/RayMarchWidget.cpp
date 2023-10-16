@@ -147,14 +147,14 @@ void RayMarchWidget::SetUniforms(const std::vector<Assembly>& assemblies) const
 	{
 		_material->SetUniform(std::format("{}Data.location", assembly.GetName()), assembly.GetLocation());
 		_material->SetUniform(std::format("{}Data.color", assembly.GetName()), assembly.GetColor());
-
-		for (const AssemblyPart& part : assembly.GetParts())
+		
+		assembly.IterateParts([&](const AssemblyPart& part)
 		{
 			_material->SetUniform(
 				std::format("{}_{}Data.location", assembly.GetName(), part.model.GetName()), part.model.GetLocation());
 			_material->SetUniform(
 				std::format("{}_{}Data.color", assembly.GetName(), part.model.GetName()), part.model.GetColor());
-		}
+		});
 	}
 
 	_material->Release();
@@ -165,8 +165,8 @@ void RayMarchWidget::UpdateCode(const std::string& fragmentCode)
 	_material->SetShader(std::make_shared<Shader>(Shader::Type::Fragment, fragmentCode));
 	if (!_material->Construct(true))
 	{
-	}
 		std::cout << fragmentCode << std::endl;
+	}
 }
 
 void RayMarchWidget::Render()
