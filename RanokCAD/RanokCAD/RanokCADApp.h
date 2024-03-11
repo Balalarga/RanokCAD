@@ -1,19 +1,40 @@
 ﻿#pragma once
 
-#include "Modules/IModule.h"
-#include "OpenglWrap/Application.h"
 
-
-class RanokCADApp: public Application
+class RanokCADApp
 {
 public:
-	RanokCADApp();
+	struct Params
+	{
+		int width;
+		int height;
+	};
 
-	void SetDefaultStyle();
+	static RanokCADApp* Init(const Params& params);
+	static RanokCADApp* Get();
 
-	void RenderImGui() override;
+	~RanokCADApp();
+
+	void Run();
+
+
+protected:
+	RanokCADApp() = default;
+	explicit RanokCADApp(const Params& params);
+
+	void HandleKeyboard();
+	void Graphics();
 
 
 private:
-	std::shared_ptr<IModule> _activeModule;
+	Params _params;
+	class GLFWwindow* _window;
+
+
+	static void GlfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void KeyCallback(int key, int scancode, int action, int mods);
+	static void GlfwCursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
+	void CursorPositionCallback(double xpos, double ypos);
+	static void GlfwMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+	void MouseButtonCallback(int button, int action, int mods);
 };

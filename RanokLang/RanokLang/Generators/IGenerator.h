@@ -1,7 +1,6 @@
 #pragma once
 #include <optional>
 
-#include "Inja/inja.hpp"
 #include "RanokLang/ActionTree.h"
 #include "RanokLang/HardcodedConstructions.h"
 

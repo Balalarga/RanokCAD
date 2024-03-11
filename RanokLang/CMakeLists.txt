@@ -16,5 +16,5 @@ file(GLOB_RECURSE PROJECT_SOURCES
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
-target_link_libraries(${PROJECT_NAME} LINK_PUBLIC RanokCAD_ThirdParty)
+#target_link_libraries(${PROJECT_NAME} LINK_PUBLIC RanokCAD_ThirdParty)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

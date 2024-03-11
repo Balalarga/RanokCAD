@@ -1,21 +1,18 @@
 ﻿#include <iostream>
 
 #include "RanokCADApp.h"
-#include "RanokResources.h"
 
 
 int main(int argc, char** argv)
 {
-	constexpr auto resourceRegistry = "resourceRegistry.json";
-	if (!RanokResources::Get().InitFrom(resourceRegistry))
-	{
-		std::cout << "Couldn't read " << resourceRegistry << std::endl;
-		return -1;
-	}
+	RanokCADApp::Params params;
+	params.width = 1280;
+	params.height = 720;
+	const auto App = RanokCADApp::Init(params);
+	if (!App)
+		return 1;
 
-	RanokCADApp mainWindow;
-
-	mainWindow.Run();
+	App->Run();
 
 	return 0;
 }

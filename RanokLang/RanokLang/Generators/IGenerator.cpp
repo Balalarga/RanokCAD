@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <format>
 #include <sstream>
-#include <SDL2/SDL_syswm.h>
 
 #include "RanokLang/Parser.h"
 
