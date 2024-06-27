@@ -1,24 +1,41 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.28)
+project(Ranok3)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-set(CMAKE_TOOLCHAIN_FILE vcpkg/scripts/buildsystems/vcpkg.cmake)
+set(CMAKE_CXX_STANDARD 20)
 
-get_filename_component(RootDirName ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+add_executable(Ranok3
+        Source/Ranok3.cpp
+        Source/Window/Window.cpp
+        Source/Window/Window.h
+        Source/App/Application.cpp
+        Source/App/Application.h
+)
 
-project(${RootDirName} LANGUAGES CXX)
+find_package(OpenGL REQUIRED)
+target_link_libraries(Ranok3 PRIVATE OpenGL::GL)
 
-add_subdirectory(ThirdParty)
-add_subdirectory(RanokCAD)
-add_subdirectory(RanokLang)
-add_subdirectory(ResourceManager)
-add_subdirectory(OpenglWrap)
+find_package(GLEW REQUIRED)
+target_link_libraries(Ranok3 PRIVATE GLEW::GLEW)
 
-if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json)
-    add_custom_target(compile_commands_link ALL
-        COMMAND ${CMAKE_COMMAND} -E create_hardlink ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
-        ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json)
-endif()
+find_package(glfw3 CONFIG REQUIRED)
+target_link_libraries(Ranok3 PRIVATE glfw)
+
+find_package(imgui CONFIG REQUIRED)
+target_link_libraries(Ranok3 PRIVATE imgui::imgui)
+
+find_package(implot CONFIG REQUIRED)
+target_link_libraries(Ranok3 PRIVATE implot::implot)
+
+find_package(nlohmann_json CONFIG REQUIRED)
+target_link_libraries(Ranok3 PRIVATE nlohmann_json::nlohmann_json)
+
+find_package(OpenCL REQUIRED)
+target_link_libraries(Ranok3 PRIVATE OpenCL::OpenCL)
+
+find_package(spdlog CONFIG REQUIRED)
+target_link_libraries(Ranok3 PRIVATE spdlog::spdlog)
+
+find_package(glm CONFIG REQUIRED)
+target_link_libraries(Ranok3 PRIVATE glm::glm-header-only)
