@@ -10,6 +10,9 @@ void Application::RunLoop()
 {
 	while (!_window.ShouldClose())
 	{
-//		_window.();
+		_window.HandleEvents();
+
+
+		_window.SwapBuffers();
 	}
 }

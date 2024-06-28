@@ -26,12 +26,24 @@ public:
 
 	Window();
 	~Window();
-	
+
+	void Close();
 	bool ShouldClose() const;
-	
-	
+
+	void HandleEvents() const;
+	void SwapBuffers() const;
+
+
 protected:
-	static void GlfwErrorCallback(int error, const char* description);
+	void BindGlfwCallbacks();
+
+	void GlfwWindowChangeSizeEvent(int width, int height);
+
+	void GlfwMouseMoveEvent(double xpos, double ypos);
+	void GlfwMouseButtonEvent(int button, int action, int mods);
+
+	void GlfwKeyboardButtonEvent(int key, int scancode, int action, int mods);
+
 
 
 private:
@@ -39,4 +51,5 @@ private:
 	static Params _gParams;
 
 	GLFWwindow* _glfwWindow{};
+	glm::ivec2 _size;
 };
