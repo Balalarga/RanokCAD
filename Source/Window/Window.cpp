@@ -4,11 +4,14 @@
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 
 std::unique_ptr<Window> Window::_gWindow;
 
-Window::Params Window::_gParams{
+WindowParams Window::_gParams{
 	.title = "Ranok3",
 	.pos = {0, 0},
 	.size = {800, 600},
@@ -45,6 +48,7 @@ Window::Window()
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, _gParams.opengl.version.x);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, _gParams.opengl.version.y);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	_glfwWindow = glfwCreateWindow(_size.x, _size.y, _gParams.title.c_str(), nullptr, nullptr);
 	if (!_glfwWindow)
 	{
@@ -59,16 +63,25 @@ Window::Window()
 		return;
 	}
 
-	glfwSwapInterval(1);
+	if (_gParams.vSync)
+	{
+		glfwSwapInterval(1);
+	}
+
 	BindGlfwCallbacks();
+	ImGuiInit();
 }
 
 Window::~Window()
 {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
 	glfwTerminate();
 }
 
-void Window::SetParams(const Window::Params& params)
+void Window::SetParams(const WindowParams& params)
 {
 	_gParams = params;
 }
@@ -85,6 +98,7 @@ void Window::HandleEvents() const
 
 void Window::SwapBuffers() const
 {
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapBuffers(_glfwWindow);
 }
 
@@ -148,4 +162,36 @@ void Window::BindGlfwCallbacks()
 
 			Get().GlfwKeyboardButtonEvent(key, scancode, action, mods);
 		});
+}
+
+void Window::ImGuiInit()
+{
+	constexpr const char* imguiGlslVersion = "#version 130";
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls}
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplGlfw_InitForOpenGL(_glfwWindow, true);
+	ImGui_ImplOpenGL3_Init(imguiGlslVersion);
+}
+
+void Window::BeginImGuiFrame() const
+{
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+}
+
+void Window::EndImGuiFrame() const
+{
+	ImGui::Render();
+}
+
+const glm::u16vec2& Window::GetSize() const
+{
+	return _size;
 }
