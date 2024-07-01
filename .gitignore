@@ -409,3 +409,5 @@ compile_commands.json
 *.sln
 .vscode/
 cmake-build-debug/
+
+*.rfbin

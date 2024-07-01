@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.20)
 project(RanokCAD)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -11,6 +11,37 @@ add_executable(RanokCAD
         Source/Window/Window.h
         Source/App/Application.cpp
         Source/App/Application.h
+        Source/Types/MulticastDelegate.h
+        Source/Opengl/GpuResource.cpp
+        Source/Opengl/GpuResource.h
+        Source/Opengl/GpuBuffer.cpp
+        Source/Opengl/GpuBuffer.h
+        Source/Opengl/GpuTexture.cpp
+        Source/Opengl/GpuTexture.h
+        Source/Language/ActionNode.h
+        Source/Language/Token.h
+        Source/Language/Parser.h
+        Source/Language/Parser.cpp
+        Source/Language/Lexer.h
+        Source/Language/HardcodedConstructions.h
+        Source/Language/Lexer.cpp
+        Source/Language/HardcodedConstructions.cpp
+        Source/Language/ActionTree.h
+        Source/Language/ActionTree.cpp
+        Source/Language/ActionNode.h
+        Source/Language/ActionNode.cpp
+        Source/Language/Generators/IGenerator.cpp
+        Source/Language/Generators/IGenerator.h
+        Source/Language/Generators/OpenclGenerator.cpp
+        Source/Language/Generators/OpenclGenerator.h
+        Source/Language/Generators/ShaderGenerator.cpp
+        Source/Language/Generators/ShaderGenerator.h
+        Source/ClKernel/ClExecutor.cpp
+        Source/ClKernel/ClExecutor.h
+        Source/ClKernel/MultiDimSpace.cpp
+        Source/ClKernel/MultiDimSpace.h
+        Source/ClKernel/FlatBuffer.cpp
+        Source/ClKernel/FlatBuffer.h
 )
 
 find_package(OpenGL REQUIRED)

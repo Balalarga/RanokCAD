@@ -11,17 +11,7 @@
 
 std::unique_ptr<Window> Window::_gWindow;
 
-WindowParams Window::_gParams{
-	.title = "Ranok3",
-	.pos = {0, 0},
-	.size = {800, 600},
-	.fullscreen = false,
-	.vSync = false,
-	.opengl =
-		{
-			.version = {3, 3},
-		},
-};
+WindowParams Window::_gParams{};
 
 Window& Window::Get()
 {
@@ -46,6 +36,7 @@ Window::Window()
 	glfwSetErrorCallback([](int error, const char* description)
 						 { spdlog::error("[glfw3] [{}] {}", error, description); });
 
+	glfwWindowHint(GLFW_VISIBLE, false);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, _gParams.opengl.version.x);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, _gParams.opengl.version.y);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -191,7 +182,22 @@ void Window::EndImGuiFrame() const
 	ImGui::Render();
 }
 
+const WindowParams& Window::GetParams() const
+{
+	return _gParams;
+}
+
 const glm::u16vec2& Window::GetSize() const
 {
 	return _size;
+}
+
+void Window::Hide()
+{
+	glfwHideWindow(_glfwWindow);
+}
+
+void Window::Show()
+{
+	glfwShowWindow(_glfwWindow);
 }

@@ -5,8 +5,7 @@ class Window;
 
 struct AppParams
 {
-	unsigned fps = 120;
-	unsigned ups = 60;
+	unsigned fps = 60;
 };
 
 
@@ -21,6 +20,7 @@ public:
 protected:
 	void NormalizeParams();
 	void Render();
+	void RenderImGui();
 	void Update(double dt);
 
 
