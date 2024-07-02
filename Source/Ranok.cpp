@@ -1,17 +1,15 @@
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include "App/Application.h"
 #include "ClKernel/ClExecutor.h"
 #include "ClKernel/FlatBuffer.h"
 #include "ClKernel/MultiDimSpace.h"
+#include "Cli/AppArgs.h"
 #include "Language/Generators/OpenclGenerator.h"
 #include "Language/Parser.h"
 #include "Window/Window.h"
 #include "argparse/argparse.hpp"
 #include "spdlog/spdlog.h"
-
-static argparse::ArgumentParser args("RanokCAD");
 
 int UiMode()
 {
@@ -27,9 +25,10 @@ int UiMode()
 int CliMode()
 {
 	ClExecutor::Init();
-	Window& window = Window::Get();
+	// initialize opengl context
+	Window::Get();
 
-	std::filesystem::path filepath = args.get<std::string>("-filepath");
+	std::filesystem::path filepath = AppArgs::GetParser().get<std::string>("-filepath");
 	if (!exists(filepath))
 	{
 		spdlog::error("File '{}' doesn't exists", filepath.string());
@@ -150,26 +149,21 @@ int CliMode()
 
 int main(int argc, char** argv)
 {
-	args.add_argument("-uiMode").default_value(false).implicit_value(true);
-	args.add_argument("-filepath");
-	args.add_argument("-depth").default_value(5);
+	auto& parser = AppArgs::GetParser();
 
-	try
-	{
-		args.parse_args(argc, argv);
-		if (args["-uiMode"] == true)
-		{
-			return UiMode();
-		}
+	parser.add_argument("-uiMode").default_value(false).implicit_value(true);
+	parser.add_argument("-filepath");
+	parser.add_argument("-depth").default_value(5);
 
-		return CliMode();
-	}
-	catch (const std::exception& err)
+	if (!AppArgs::Init(argc, argv))
 	{
-		std::cerr << err.what() << std::endl;
-		std::cerr << args;
-		return 1;
+		return -1;
 	}
 
-	return 0;
+	if (parser["-uiMode"] == true)
+	{
+		return UiMode();
+	}
+
+	return CliMode();
 }

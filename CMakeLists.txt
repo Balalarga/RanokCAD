@@ -42,6 +42,8 @@ add_executable(RanokCAD
         Source/ClKernel/MultiDimSpace.h
         Source/ClKernel/FlatBuffer.cpp
         Source/ClKernel/FlatBuffer.h
+        Source/Cli/AppArgs.cpp
+        Source/Cli/AppArgs.h
 )
 
 find_package(OpenGL REQUIRED)
