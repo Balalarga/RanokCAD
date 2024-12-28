@@ -14,7 +14,7 @@
 int UiMode()
 {
 	WindowParams windowParams;
-	windowParams.vSync = true;
+	windowParams.vSync = false;
 	Window::SetParams(windowParams);
 
 	Application app(Window::Get());
@@ -146,24 +146,22 @@ int CliMode()
 	return 0;
 }
 
-
-int main(int argc, char** argv)
+bool SetupArgs(int argc, char** argv)
 {
 	auto& parser = AppArgs::GetParser();
-
 	parser.add_argument("-uiMode").default_value(false).implicit_value(true);
 	parser.add_argument("-filepath");
 	parser.add_argument("-depth").default_value(5);
+	return AppArgs::Init(argc, argv);
+}
 
-	if (!AppArgs::Init(argc, argv))
-	{
+int main(int argc, char** argv)
+{
+	if (!SetupArgs(argc, argv))
 		return -1;
-	}
 
-	if (parser["-uiMode"] == true)
-	{
+	if (AppArgs::GetParser()["-uiMode"] == true)
 		return UiMode();
-	}
 
 	return CliMode();
 }
