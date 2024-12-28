@@ -1,0 +1,19 @@
+[submodule "ThirdParty/GLFW3.4"]
+	path = ThirdParty/GLFW3.4
+	url = https://github.com/glfw/glfw.git
+
+[submodule "ThirdParty/spdlog"]
+	path = ThirdParty/spdlog
+	url = https://github.com/gabime/spdlog.git
+
+[submodule "ThirdParty/nlohmann_json"]
+	path = ThirdParty/nlohmann_json
+	url = https://github.com/nlohmann/json.git
+
+[submodule "ThirdParty/ImGui"]
+	path = ThirdParty/ImGui
+	url = https://github.com/ocornut/imgui.git
+
+[submodule "ThirdParty/GLEW"]
+	path = ThirdParty/GLEW
+	url = https://github.com/nigels-com/glew.git
