@@ -14,8 +14,7 @@ class Application
 public:
 	explicit Application(Window& window, const AppParams& params = {});
 
-	void RunLoop();
-
+	void Launch();
 
 protected:
 	void NormalizeParams();
@@ -23,6 +22,8 @@ protected:
 	void RenderImGui();
 	void Update(double dt);
 
+private:
+	void MainLoop();
 
 private:
 	AppParams _params;

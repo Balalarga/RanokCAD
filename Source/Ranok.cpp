@@ -18,7 +18,7 @@ int UiMode()
 	Window::SetParams(windowParams);
 
 	Application app(Window::Get());
-	app.RunLoop();
+	app.Launch();
 	return 0;
 }
 

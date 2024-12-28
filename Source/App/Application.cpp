@@ -12,11 +12,16 @@ Application::Application(Window& window, const AppParams& params)
 	NormalizeParams();
 }
 
-void Application::RunLoop()
+void Application::Launch()
+{
+	_window.Show();
+	MainLoop();
+}
+
+void Application::MainLoop()
 {
 	const double targetFrameMs = 1000. / _params.fps;
 	double frameTime;
-
 	while (!_window.ShouldClose())
 	{
 		const auto frameStart = glfwGetTime();
