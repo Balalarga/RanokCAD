@@ -5,8 +5,8 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 
 std::unique_ptr<Window> Window::_gWindow;
@@ -187,7 +187,7 @@ const WindowParams& Window::GetParams() const
 	return _gParams;
 }
 
-const glm::u16vec2& Window::GetSize() const
+glm::u16vec2 Window::GetSize() const
 {
 	return _size;
 }

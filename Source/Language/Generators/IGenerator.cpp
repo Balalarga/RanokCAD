@@ -2,7 +2,7 @@
 
 #include <sstream>
 #include "../Parser.h"
-#include "fmt/format.h"
+#include <format>
 
 
 std::optional<std::string> IGenerator::Generate(const ActionTree& tree)
@@ -214,9 +214,9 @@ void CppGenerator::ProcessNode(std::stringstream& outCode, const ArrayGetterNode
 void CppGenerator::ProcessNode(std::stringstream& outCode, const VariableDeclarationNode* node)
 {
 	if (const ArrayNode* arr = ActionNode::IsArray(node->Value()))
-		outCode << fmt::format("float {}[{}]", node->Name(), arr->Values().size());
+		outCode << std::format("float {}[{}]", node->Name(), arr->Values().size());
 	else
-		outCode << fmt::format("float {}", node->Name());
+		outCode << std::format("float {}", node->Name());
 
 	if (auto arrNode = dynamic_cast<const ArrayNode*>(node->Value()))
 	{
@@ -283,13 +283,13 @@ void CppGenerator::ProcessNode(std::stringstream& outCode, const FunctionDeclara
 	{
 		PrintIndent(outCode);
 		constexpr const char* outVarName = "__out__name";
-		outCode << fmt::format("void {}(", node->Name());
+		outCode << std::format("void {}(", node->Name());
 		for (size_t i = 0; i < sigArgs.size(); ++i)
 		{
 			if (const ArrayNode* arr = ActionNode::IsArray(sigArgs[i]))
-				outCode << fmt::format("float {}[{}]", sigArgs[i]->Name(), arr->Values().size());
+				outCode << std::format("float {}[{}]", sigArgs[i]->Name(), arr->Values().size());
 			else
-				outCode << fmt::format("float {}", sigArgs[i]->Name());
+				outCode << std::format("float {}", sigArgs[i]->Name());
 
 			outCode << ", ";
 		}
@@ -316,13 +316,13 @@ void CppGenerator::ProcessNode(std::stringstream& outCode, const FunctionDeclara
 	}
 	else
 	{
-		outCode << fmt::format("float {}(", node->Name());
+		outCode << std::format("float {}(", node->Name());
 		for (size_t i = 0; i < sigArgs.size(); ++i)
 		{
 			if (const ArrayNode* asArr = ActionNode::IsArray(sigArgs[i]->Value()))
-				outCode << fmt::format("float {}[{}]", sigArgs[i]->Name(), asArr->Values().size());
+				outCode << std::format("float {}[{}]", sigArgs[i]->Name(), asArr->Values().size());
 			else
-				outCode << fmt::format("float {}", sigArgs[i]->Name());
+				outCode << std::format("float {}", sigArgs[i]->Name());
 
 			if (i + 1 != sigArgs.size())
 				outCode << ", ";

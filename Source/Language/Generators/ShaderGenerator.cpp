@@ -2,7 +2,7 @@
 #include <sstream>
 
 #include "../Parser.h"
-#include "fmt/format.h"
+#include <format>
 
 void ShaderGenerator::Predefines(std::stringstream& outCode)
 {
@@ -86,13 +86,13 @@ void ShaderGenerator::ProcessNode(std::stringstream& outCode, const FunctionDecl
 	{
 		PrintIndent(outCode);
 		constexpr const char* outVarName = "_out_name";
-		outCode << fmt::format("void {}(", nodeName);
+		outCode << std::format("void {}(", nodeName);
 		for (size_t i = 0; i < sigArgs.size(); ++i)
 		{
 			if (const ArrayNode* arr = ActionNode::IsArray(sigArgs[i]))
-				outCode << fmt::format("float {}[{}]", sigArgs[i]->Name(), arr->Values().size());
+				outCode << std::format("float {}[{}]", sigArgs[i]->Name(), arr->Values().size());
 			else
-				outCode << fmt::format("float {}", sigArgs[i]->Name());
+				outCode << std::format("float {}", sigArgs[i]->Name());
 
 			outCode << ", ";
 		}
@@ -119,13 +119,13 @@ void ShaderGenerator::ProcessNode(std::stringstream& outCode, const FunctionDecl
 	}
 	else
 	{
-		outCode << fmt::format("float {}(", nodeName);
+		outCode << std::format("float {}(", nodeName);
 		for (size_t i = 0; i < sigArgs.size(); ++i)
 		{
 			if (const ArrayNode* asArr = ActionNode::IsArray(sigArgs[i]->Value()))
-				outCode << fmt::format("float {}[{}]", sigArgs[i]->Name(), asArr->Values().size());
+				outCode << std::format("float {}[{}]", sigArgs[i]->Name(), asArr->Values().size());
 			else
-				outCode << fmt::format("float {}", sigArgs[i]->Name());
+				outCode << std::format("float {}", sigArgs[i]->Name());
 
 			if (i + 1 != sigArgs.size())
 				outCode << ", ";

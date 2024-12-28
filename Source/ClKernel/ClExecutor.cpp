@@ -147,7 +147,7 @@ int ClExecutor::Compile(const std::string& code)
 		char buffer[2048];
 		clGetProgramBuildInfo(
 			GetDeviceInfo().program, GetDeviceInfo().device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
-		//		Logger::Error(fmt::format("Failed to build program executable!\n{}", buffer));
+		//		Logger::Error(std::format("Failed to build program executable!\n{}", buffer));
 		clReleaseProgram(GetDeviceInfo().program);
 		GetDeviceInfo().program = 0;
 		return GetDeviceInfo().ret;

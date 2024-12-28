@@ -29,7 +29,7 @@ public:
 	Window();
 	~Window();
 
-	const glm::u16vec2& GetSize() const;
+	glm::u16vec2 GetSize() const;
 	const WindowParams& GetParams() const;
 
 	void Hide();

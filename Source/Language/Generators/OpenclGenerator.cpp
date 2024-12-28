@@ -2,7 +2,7 @@
 #include <sstream>
 
 #include "../Parser.h"
-#include "fmt/format.h"
+#include <format>
 
 
 const std::string OpenclGenerator::sKernelProgram = "ComputeFullMimage";
@@ -226,13 +226,13 @@ void OpenclGenerator::ProcessNode(std::stringstream& outCode, const FunctionDecl
 	{
 		PrintIndent(outCode);
 		constexpr const char* outVarName = "__out__name";
-		outCode << fmt::format("void {}(", nodeName);
+		outCode << std::format("void {}(", nodeName);
 		for (size_t i = 0; i < sigArgs.size(); ++i)
 		{
 			if (const ArrayNode* arr = ActionNode::IsArray(sigArgs[i]))
-				outCode << fmt::format("double {}[{}]", sigArgs[i]->Name(), arr->Values().size());
+				outCode << std::format("double {}[{}]", sigArgs[i]->Name(), arr->Values().size());
 			else
-				outCode << fmt::format("double {}", sigArgs[i]->Name());
+				outCode << std::format("double {}", sigArgs[i]->Name());
 
 			outCode << ", ";
 		}
@@ -259,13 +259,13 @@ void OpenclGenerator::ProcessNode(std::stringstream& outCode, const FunctionDecl
 	}
 	else
 	{
-		outCode << fmt::format("double {}(", nodeName);
+		outCode << std::format("double {}(", nodeName);
 		for (size_t i = 0; i < sigArgs.size(); ++i)
 		{
 			if (const ArrayNode* asArr = ActionNode::IsArray(sigArgs[i]->Value()))
-				outCode << fmt::format("double {}[{}]", sigArgs[i]->Name(), asArr->Values().size());
+				outCode << std::format("double {}[{}]", sigArgs[i]->Name(), asArr->Values().size());
 			else
-				outCode << fmt::format("double {}", sigArgs[i]->Name());
+				outCode << std::format("double {}", sigArgs[i]->Name());
 
 			if (i + 1 != sigArgs.size())
 				outCode << ", ";

@@ -1,5 +1,6 @@
 ﻿#include "Parser.h"
 
+#include <algorithm>
 #include <format>
 
 #include "HardcodedConstructions.h"
