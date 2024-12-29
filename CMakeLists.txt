@@ -49,6 +49,10 @@ add_executable(RanokCAD
 	Source/Cli/AppArgs.h
 	Source/ConfigManager.cpp
 	Source/ConfigManager.h
+	Source/Opengl/GpuShader.cpp
+	Source/Opengl/GpuShader.h
+	Source/Opengl/GpuShaderProgram.cpp
+	Source/Opengl/GpuShaderProgram.h
 )
 target_include_directories(RanokCAD PRIVATE Source)
 
