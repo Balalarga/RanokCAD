@@ -8,46 +8,59 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(ThirdParty)
 
 add_executable(RanokCAD
-        ${RANOKCAD_THIRDPARTY_SOURCES}
-        Source/Ranok.cpp
-        Source/Window/Window.cpp
-        Source/Window/Window.h
-        Source/App/Application.cpp
-        Source/App/Application.h
-        Source/Types/MulticastDelegate.h
-        Source/Opengl/GpuResource.cpp
-        Source/Opengl/GpuResource.h
-        Source/Opengl/GpuBuffer.cpp
-        Source/Opengl/GpuBuffer.h
-        Source/Opengl/GpuTexture.cpp
-        Source/Opengl/GpuTexture.h
-        Source/Language/ActionNode.h
-        Source/Language/Token.h
-        Source/Language/Parser.h
-        Source/Language/Parser.cpp
-        Source/Language/Lexer.h
-        Source/Language/HardcodedConstructions.h
-        Source/Language/Lexer.cpp
-        Source/Language/HardcodedConstructions.cpp
-        Source/Language/ActionTree.h
-        Source/Language/ActionTree.cpp
-        Source/Language/ActionNode.h
-        Source/Language/ActionNode.cpp
-        Source/Language/Generators/IGenerator.cpp
-        Source/Language/Generators/IGenerator.h
-        Source/Language/Generators/OpenclGenerator.cpp
-        Source/Language/Generators/OpenclGenerator.h
-        Source/Language/Generators/ShaderGenerator.cpp
-        Source/Language/Generators/ShaderGenerator.h
-        Source/ClKernel/ClExecutor.cpp
-        Source/ClKernel/ClExecutor.h
-        Source/ClKernel/MultiDimSpace.cpp
-        Source/ClKernel/MultiDimSpace.h
-        Source/ClKernel/FlatBuffer.cpp
-        Source/ClKernel/FlatBuffer.h
-        Source/Cli/AppArgs.cpp
-        Source/Cli/AppArgs.h
+	${RANOKCAD_THIRDPARTY_SOURCES}
+	Source/Ranok.cpp
+	Source/Window/Window.cpp
+	Source/Window/Window.h
+	Source/App/Application.cpp
+	Source/App/Application.h
+	Source/Types/MulticastDelegate.h
+	Source/Opengl/GpuResource.cpp
+	Source/Opengl/GpuResource.h
+	Source/Opengl/GpuBuffer.cpp
+	Source/Opengl/GpuBuffer.h
+	Source/Opengl/GpuTexture.cpp
+	Source/Opengl/GpuTexture.h
+	Source/Language/ActionNode.h
+	Source/Language/Token.h
+	Source/Language/Parser.h
+	Source/Language/Parser.cpp
+	Source/Language/Lexer.h
+	Source/Language/HardcodedConstructions.h
+	Source/Language/Lexer.cpp
+	Source/Language/HardcodedConstructions.cpp
+	Source/Language/ActionTree.h
+	Source/Language/ActionTree.cpp
+	Source/Language/ActionNode.h
+	Source/Language/ActionNode.cpp
+	Source/Language/Generators/IGenerator.cpp
+	Source/Language/Generators/IGenerator.h
+	Source/Language/Generators/OpenclGenerator.cpp
+	Source/Language/Generators/OpenclGenerator.h
+	Source/Language/Generators/ShaderGenerator.cpp
+	Source/Language/Generators/ShaderGenerator.h
+	Source/ClKernel/ClExecutor.cpp
+	Source/ClKernel/ClExecutor.h
+	Source/ClKernel/MultiDimSpace.cpp
+	Source/ClKernel/MultiDimSpace.h
+	Source/ClKernel/FlatBuffer.cpp
+	Source/ClKernel/FlatBuffer.h
+	Source/Cli/AppArgs.cpp
+	Source/Cli/AppArgs.h
+	Source/ConfigManager.cpp
+	Source/ConfigManager.h
 )
+target_include_directories(RanokCAD PRIVATE Source)
+
+target_compile_definitions(RanokCAD PRIVATE
+	RCAD_ASSETS_DIR="${CMAKE_CURRENT_LIST_DIR}/Assets"
+	RCAD_CONFIG_DIR="${CMAKE_CURRENT_LIST_DIR}/Config"
+)
+
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+	target_compile_definitions(RanokCAD PRIVATE RCAD_DEBUG_BUILD)
+endif ()
+
 
 target_link_libraries(RanokCAD PRIVATE RanokCADThirdParty)
 

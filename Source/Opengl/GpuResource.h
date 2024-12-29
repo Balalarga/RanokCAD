@@ -1,15 +1,17 @@
 #pragma once
 
 #include <optional>
+#include "GL/glew.h"
 
 
-class GpuResource
-{
+class GpuResource {
 public:
+	using THandle = GLuint;
+
 	GpuResource() = default;
 	virtual ~GpuResource() = default;
 
-	const std::optional<int>& GetHandle() const;
+	const std::optional<THandle>& GetHandle() const;
 	virtual bool IsValid() const;
 
 	virtual bool Construct();
@@ -18,12 +20,12 @@ public:
 
 
 protected:
-	virtual int CreateHandle() = 0;
-	virtual void DestroyHandle() = 0;
+	virtual std::optional<THandle> CreateHandle() = 0;
+	virtual void DestroyHandle(THandle handle) = 0;
 
 	virtual bool Init();
 
 
 private:
-	std::optional<int> _handle;
+	std::optional<THandle> _handle;
 };

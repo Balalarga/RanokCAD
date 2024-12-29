@@ -1,13 +1,11 @@
 #include "GpuResource.h"
 
 
-const std::optional<int>& GpuResource::GetHandle() const
-{
+const std::optional<GpuResource::THandle>& GpuResource::GetHandle() const {
 	return _handle;
 }
 
-bool GpuResource::Construct()
-{
+bool GpuResource::Construct() {
 	if (IsValid())
 		return true;
 
@@ -15,31 +13,27 @@ bool GpuResource::Construct()
 	if (IsValid())
 		return true;
 
-	DestroyHandle();
+	DestroyHandle(_handle.value());
 	return false;
 }
 
-bool GpuResource::Reconstruct()
-{
+bool GpuResource::Reconstruct() {
 	Destroy();
 	return Construct();
 }
 
-void GpuResource::Destroy()
-{
+void GpuResource::Destroy() {
 	if (!IsValid())
 		return;
 
-	DestroyHandle();
+	DestroyHandle(_handle.value());
 	_handle.reset();
 }
 
-bool GpuResource::IsValid() const
-{
+bool GpuResource::IsValid() const {
 	return _handle.has_value();
 }
 
-bool GpuResource::Init()
-{
+bool GpuResource::Init() {
 	return true;
 }

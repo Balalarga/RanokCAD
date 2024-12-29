@@ -5,8 +5,7 @@
 #include "glm/vec2.hpp"
 
 
-class GpuTexture: public GpuResource
-{
+class GpuTexture: public GpuResource {
 public:
 	GpuTexture(glm::ivec2 size, int inDataType, int outDataType);
 	GpuTexture(glm::ivec2 size, int channels);
@@ -18,8 +17,7 @@ public:
 
 	void ReadPixels(void* pixels);
 
-	const glm::ivec2& GetSize() const
-	{
+	const glm::ivec2& GetSize() const {
 		return _size;
 	}
 
