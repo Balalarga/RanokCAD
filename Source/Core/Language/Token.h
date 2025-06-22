@@ -2,51 +2,33 @@
 
 #include <string>
 
-struct Token
-{
-	enum class Type
-	{
-		EndFile,
-		NewLine,
-		Word,
-		Number,
-		Assign,
-		Comma,
-		Dot,
-		Hat,
-		Star,
-		Plus,
-		Minus,
-		Ampersand,
-		Pipe,
-		Slash,
-		BackSlash,
-		ParenthesisOpen,
-		ParenthesisClose,
-		BracketOpen,
-		BracketClose,
-		BraceOpen,
-		BraceClose,
-		Colon,
-		Semicolon,
-		Unexpected
+struct Token {
+	enum class Type {
+		EndFile, NewLine, Word, Number, Assign, Comma, Dot, Hat, Star, Plus, Minus, Ampersand, Pipe, Slash, BackSlash
+		, ParenthesisOpen, ParenthesisClose, BracketOpen, BracketClose, BraceOpen, BraceClose, Colon, Semicolon
+		, Unexpected
 	};
+
 	Token() = default;
+
 	Token(std::string string)
 		: type(Type::Word)
 		, string(std::move(string))
 	{
 	}
+
 	Token(Type type, std::string string)
 		: type(type)
 		, string(std::move(string))
 	{
 	}
+
 	Token(Type type)
 		: type(type)
 		, string(TypeString(type))
 	{
 	}
+
 	Token(Type type, std::string string, int line, int column)
 		: type(type)
 		, string(std::move(string))
@@ -62,8 +44,7 @@ struct Token
 
 	static std::string TypeString(Type type)
 	{
-		switch (type)
-		{
+		switch (type) {
 		case Type::EndFile:
 			return "EndFile";
 		case Type::NewLine:

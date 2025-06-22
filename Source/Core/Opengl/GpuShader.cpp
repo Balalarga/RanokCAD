@@ -1,11 +1,13 @@
 #include "GpuShader.h"
 
 
-void GpuShader::SetCode(std::string_view code) {
+void GpuShader::SetCode(std::string_view code)
+{
 	_code = code;
 }
 
-std::optional<GpuResource::THandle> GpuShader::CreateHandle() {
+std::optional<GpuResource::THandle> GpuShader::CreateHandle()
+{
 	if (_code.empty())
 		return std::nullopt;
 
@@ -19,13 +21,15 @@ std::optional<GpuResource::THandle> GpuShader::CreateHandle() {
 	// 	return false;
 }
 
-void GpuShader::DestroyHandle(THandle handle) {
+void GpuShader::DestroyHandle(THandle handle)
+{
 }
 
-int GpuShader::GetUniformLocation(const std::string& name) {
+int GpuShader::GetUniformLocation(const std::string& name)
+{
 	auto cached = std::ranges::find_if(
-		_uniformCache,
-		[](const std::tuple<std::string, int>& val) {
+		_uniformCache
+		, [](const std::tuple<std::string, int>& val) {
 			return true;
 		});
 

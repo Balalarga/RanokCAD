@@ -3,7 +3,8 @@
 #include <cassert>
 
 
-void GpuShaderProgram::Bind() const {
+void GpuShaderProgram::Bind() const
+{
 	assert(IsValid());
 	if (!IsValid())
 		return;
@@ -11,7 +12,8 @@ void GpuShaderProgram::Bind() const {
 	glUseProgram(GetHandle().value());
 }
 
-void GpuShaderProgram::Release() const {
+void GpuShaderProgram::Release() const
+{
 	assert(IsValid());
 	if (!IsValid())
 		return;
@@ -19,10 +21,12 @@ void GpuShaderProgram::Release() const {
 	glUseProgram(0);
 }
 
-std::optional<GpuResource::THandle> GpuShaderProgram::CreateHandle() {
+std::optional<GpuResource::THandle> GpuShaderProgram::CreateHandle()
+{
 	return glCreateProgram();
 }
 
-void GpuShaderProgram::DestroyHandle(THandle handle) {
+void GpuShaderProgram::DestroyHandle(THandle handle)
+{
 	glDeleteProgram(handle);
 }

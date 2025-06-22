@@ -17,8 +17,9 @@ public:
 	ConfigManager& operator=(const ConfigManager&) = delete;
 
 
-	template<class T>
-	std::optional<T> TryRead(std::string_view path) {
+	template <class T>
+	std::optional<T> TryRead(std::string_view path)
+	{
 		std::ifstream file(_rootDir / path);
 		if (!file) {
 			return std::nullopt;
@@ -29,16 +30,18 @@ public:
 		return config;
 	}
 
-	template<class T>
-	std::optional<T> Read(std::string_view path) {
+	template <class T>
+	std::optional<T> Read(std::string_view path)
+	{
 		auto res = TryRead<T>(path);
 		if (!res)
 			spdlog::error("Failed to read config from '{}'", _rootDir / path);
 		return res;
 	}
 
-	template<class T>
-	bool TrySave(T&& obj, std::string_view path, int indent = 4) {
+	template <class T>
+	bool TrySave(T&& obj, std::string_view path, int indent = 4)
+	{
 		const auto fullPath = _rootDir / path;
 		create_directories(fullPath.parent_path());
 		std::ofstream file(fullPath);
@@ -52,8 +55,9 @@ public:
 		return true;
 	}
 
-	template<class T>
-	bool Save(T&& obj, std::string_view path, int indent = 4) {
+	template <class T>
+	bool Save(T&& obj, std::string_view path, int indent = 4)
+	{
 		auto res = TrySave<T>(obj, path, indent);
 		if (!res)
 			return false;

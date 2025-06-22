@@ -3,23 +3,28 @@
 #include <utility>
 
 
-ConfigManager& ConfigManager::SystemConfigManager() {
+ConfigManager& ConfigManager::SystemConfigManager()
+{
 	static ConfigManager systemManager(RCAD_CONFIG_DIR);
 	return systemManager;
 }
 
-ConfigManager& ConfigManager::UserConfigManager() {
+ConfigManager& ConfigManager::UserConfigManager()
+{
 	static ConfigManager systemManager(std::filesystem::current_path() / "Config");
 	return systemManager;
 }
 
-ConfigManager::ConfigManager(std::filesystem::path rootDir): _rootDir(std::move(rootDir)) {
+ConfigManager::ConfigManager(std::filesystem::path rootDir)
+	: _rootDir(std::move(rootDir))
+{
 }
 
 // void ConfigManager::SetRootDir(std::string_view path) {
 // 	_rootDir = path;
 // }
 
-const std::filesystem::path& ConfigManager::GetRootDir() const {
+const std::filesystem::path& ConfigManager::GetRootDir() const
+{
 	return _rootDir;
 }

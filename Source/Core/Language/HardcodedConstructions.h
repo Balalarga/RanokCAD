@@ -5,35 +5,16 @@
 #include "ActionNode.h"
 
 
-class Hardcoded
-{
+class Hardcoded {
 public:
 	static Hardcoded& Get();
 
 
-	enum class FuncNames
-	{
-		Abs,
-		Sqrt,
-		Sin,
-		Cos,
-		Tan,
-		Arctan,
-		Arcsin,
-		Arccos,
-		Cosh,
-		Sinh,
-		Tanh,
-		Exp,
-		Ln,
-		Log,
-		Log10,
-		Log2,
-		Ceil,
-		Floor,
+	enum class FuncNames {
+		Abs, Sqrt, Sin, Cos, Tan, Arctan, Arcsin, Arccos, Cosh, Sinh, Tanh, Exp, Ln, Log, Log10, Log2, Ceil, Floor,
 	};
-	enum class VarNames
-	{
+
+	enum class VarNames {
 		Pi,
 	};
 

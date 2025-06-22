@@ -1,7 +1,9 @@
 #include "MultiDimSpace.h"
 
 MultiDimSpace::MultiDimSpace(
-	const std::vector<double>& centerPoint, const std::vector<double>& size, const size_t& recursiveDepth)
+	const std::vector<double>& centerPoint
+	, const std::vector<double>& size
+	, const size_t& recursiveDepth)
 {
 	if (centerPoint.size() != size.size())
 		return;
@@ -12,8 +14,11 @@ MultiDimSpace::MultiDimSpace(
 	_startPoint.resize(centerPoint.size());
 	UpdateStartPoint();
 }
+
 MultiDimSpace::MultiDimSpace(
-	const std::vector<double>& centerPoint, const std::vector<double>& size, const std::vector<size_t>& partition)
+	const std::vector<double>& centerPoint
+	, const std::vector<double>& size
+	, const std::vector<size_t>& partition)
 {
 	if (centerPoint.size() != size.size() || partition.size() != size.size())
 		return;
@@ -26,7 +31,9 @@ MultiDimSpace::MultiDimSpace(
 }
 
 MultiDimSpace::MultiDimSpace(
-	const std::vector<float>& centerPoint, const std::vector<float>& size, const size_t& recursiveDepth)
+	const std::vector<float>& centerPoint
+	, const std::vector<float>& size
+	, const size_t& recursiveDepth)
 {
 	if (centerPoint.size() != size.size())
 		return;
@@ -42,7 +49,9 @@ MultiDimSpace::MultiDimSpace(
 }
 
 MultiDimSpace::MultiDimSpace(
-	const std::vector<float>& centerPoint, const std::vector<float>& size, const std::vector<size_t>& partition)
+	const std::vector<float>& centerPoint
+	, const std::vector<float>& size
+	, const std::vector<size_t>& partition)
 {
 	if (centerPoint.size() != size.size() || partition.size() != size.size())
 		return;
@@ -66,6 +75,7 @@ std::vector<double> MultiDimSpace::GetUnitSize() const
 
 	return unitSizes;
 }
+
 std::vector<float> MultiDimSpace::GetPoint(size_t id) const
 {
 	const std::vector<double> unitSize = GetUnitSize();

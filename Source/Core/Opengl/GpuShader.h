@@ -6,7 +6,7 @@
 #include "GpuResource.h"
 
 
-class GpuShader: public GpuResource {
+class GpuShader : public GpuResource {
 public:
 	void SetCode(std::string_view code);
 

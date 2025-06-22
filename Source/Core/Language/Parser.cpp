@@ -8,29 +8,37 @@
 inline bool CompareStrings(const std::string& a, const std::string& b, bool bCaseSense = false)
 {
 	if (bCaseSense)
-		return std::ranges::equal(a, b, [](char a, char b) { return tolower(a) == tolower(b); });
+		return std::ranges::equal(
+			a
+			, b
+			, [](char a, char b) {
+				return tolower(a) == tolower(b);
+			});
 	return a == b;
 }
 
 const std::map<Token::Type, int> Parser::_operationPriorities{
-	{Token::Type::Pipe, 1},
-	{Token::Type::Ampersand, 1},
-	{Token::Type::Plus, 2},
-	{Token::Type::Minus, 2},
-	{Token::Type::Star, 4},
-	{Token::Type::Slash, 4},
-	{Token::Type::Ampersand, 5},
-	{Token::Type::Pipe, 5},
-	{Token::Type::Hat, 8},
+	{Token::Type::Pipe, 1}
+	, {Token::Type::Ampersand, 1}
+	, {Token::Type::Plus, 2}
+	, {Token::Type::Minus, 2}
+	, {Token::Type::Star, 4}
+	, {Token::Type::Slash, 4}
+	, {Token::Type::Ampersand, 5}
+	, {Token::Type::Pipe, 5}
+	, {Token::Type::Hat, 8}
+	,
 };
 
 const std::map<Parser::ReservedKeywordsTypes, std::string> Parser::_reservedKeywords{
-	{ReservedKeywordsTypes::FunctionDef, "def"},
-	{ReservedKeywordsTypes::VariableDef, "var"},
-	{ReservedKeywordsTypes::ReturnStatement, "return"},
+	{ReservedKeywordsTypes::FunctionDef, "def"}
+	, {ReservedKeywordsTypes::VariableDef, "var"}
+	, {ReservedKeywordsTypes::ReturnStatement, "return"}
+	,
 };
 const std::map<Parser::ReservedFuncsTypes, std::string> Parser::_reservedFuncs{
-	{ReservedFuncsTypes::MainFunc, "main"},
+	{ReservedFuncsTypes::MainFunc, "main"}
+	,
 };
 
 Parser::Parser()
@@ -44,22 +52,18 @@ ActionTree Parser::Parse(Lexer lexer)
 	ActionTree tree;
 	tree.GlobalFactory() += _globalFactory;
 	std::deque<ActionNodeFactory*> factoryStack({&tree.GlobalFactory()});
-	while (!lexer.IsEmpty() && lexer.Peek().type != Token::Type::EndFile)
-	{
-		if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::FunctionDef)))
-		{
+	while (!lexer.IsEmpty() && lexer.Peek().type != Token::Type::EndFile) {
+		if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::FunctionDef))) {
 			lexer.Pop();
 			if (!ParseFunction(lexer, factoryStack))
 				break;
 		}
-		else if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::VariableDef)))
-		{
+		else if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::VariableDef))) {
 			lexer.Pop();
 			if (!ParseVariableDeclaration(lexer, factoryStack))
 				break;
 		}
-		else
-		{
+		else {
 			if (!ParseVariableDeclaration(lexer, factoryStack))
 				break;
 		}
@@ -72,7 +76,7 @@ ActionTree Parser::Parse(Lexer lexer)
 		_errors.push_back({0, 0, "Scope nesting mismatch: expected 0, have " + std::to_string(factoryStack.size())});
 
 	if (FunctionDeclarationNode* mainFunc =
-			tree.GlobalFactory().FindFunction(_reservedFuncs.at(ReservedFuncsTypes::MainFunc)))
+		tree.GlobalFactory().FindFunction(_reservedFuncs.at(ReservedFuncsTypes::MainFunc)))
 		tree.SetRoot(mainFunc);
 
 	return tree;
@@ -98,10 +102,8 @@ bool Parser::CheckToken(const Token& token, Token::Type expected)
 		return true;
 
 	std::string descr = Token::TypeString(expected);
-	for (auto& kv : Lexer::SymbolTypes)
-	{
-		if (kv.second == expected)
-		{
+	for (auto& kv : Lexer::SymbolTypes) {
+		if (kv.second == expected) {
 			if (kv.first == '{')
 				descr = "{{";
 			else if (kv.first == '}')
@@ -135,9 +137,11 @@ std::set<std::string> Parser::GetReservedFuncwords()
 void Parser::DumpTokenError(const std::string& errFormat, const Token& token)
 {
 	_errors.push_back(
-		{token.line,
-		 token.column,
-		 std::vformat(errFormat, std::make_format_args(token.string, token.line, token.column))});
+		{
+			token.line
+			, token.column
+			, std::vformat(errFormat, std::make_format_args(token.string, token.line, token.column))
+		});
 }
 
 void Parser::AddGlobalData(const ActionNodeFactory& factory)
@@ -154,42 +158,37 @@ ActionNode* Parser::ParseExpression(Lexer& lexer, std::deque<ActionNodeFactory*>
 
 ActionNode* Parser::ParseBinary(ActionNode* lhs, Lexer& lexer, std::deque<ActionNodeFactory*>& factories, int priority)
 {
-	while (true)
-	{
+	while (true) {
 		int currPriority = GetOperationPriority(lexer.Peek().type);
 		if (currPriority < priority)
 			return lhs;
 
-		if (ActionNode::IsArray(lhs))
-		{
+		if (ActionNode::IsArray(lhs)) {
 			DumpTokenError(
 				"Array operations not supported ({2}: {1})\n"
-				"You must make some array variable and work with it's components",
-				lexer.Peek());
+				"You must make some array variable and work with it's components"
+				, lexer.Peek());
 			return nullptr;
 		}
 
 		Token operation = lexer.Take();
 		ActionNode* rhs = ParsePrimary(lexer, factories);
 
-		if (!rhs)
-		{
+		if (!rhs) {
 			DumpTokenError("Couldn't get operand ({2}: {1})", lexer.Peek());
 			return nullptr;
 		}
 
-		if (ActionNode::IsArray(rhs))
-		{
+		if (ActionNode::IsArray(rhs)) {
 			DumpTokenError(
 				"Array operations not supported ({2}: {1})\n"
-				"You must make some array variable and work with it's components",
-				lexer.Peek());
+				"You must make some array variable and work with it's components"
+				, lexer.Peek());
 			return nullptr;
 		}
 
 		int newOperatorPriority = GetOperationPriority(lexer.Peek().type);
-		if (currPriority < newOperatorPriority)
-		{
+		if (currPriority < newOperatorPriority) {
 			rhs = ParseBinary(rhs, lexer, factories, newOperatorPriority);
 			if (!rhs)
 				return nullptr;
@@ -203,18 +202,15 @@ VariableDeclarationNode* Parser::ParseVariableDeclaration(Lexer& lexer, std::deq
 {
 	Token var = lexer.Take();
 	if (Hardcoded::Get().VariableDeclarations.contains(var.string) ||
-		Hardcoded::Get().FunctionDeclarations.contains(var.string))
-	{
+		Hardcoded::Get().FunctionDeclarations.contains(var.string)) {
 		DumpTokenError("Word \"{0}\" is reserved by language)", var);
 		return nullptr;
 	}
 
-	if (lexer.Peek().type == Token::Type::BracketOpen)
-	{
+	if (lexer.Peek().type == Token::Type::BracketOpen) {
 		size_t size = 0;
 		lexer.Pop();
-		if (lexer.Peek().type == Token::Type::Number)
-		{
+		if (lexer.Peek().type == Token::Type::Number) {
 			ActionNode* val = ParseExpression(lexer, factories);
 			DoubleNumberNode* num = val ? dynamic_cast<DoubleNumberNode*>(val) : nullptr;
 			if (!num)
@@ -231,12 +227,11 @@ VariableDeclarationNode* Parser::ParseVariableDeclaration(Lexer& lexer, std::deq
 		if (!val)
 			return nullptr;
 		size_t valSize = ActionNode::GetArraySize(val);
-		if (size && size != valSize)
-		{
+		if (size && size != valSize) {
 			DumpTokenError(
 				"Array variable \"{0}\" ({2}: {1}) size error: have " + std::to_string(size) +
-					", expected: " + std::to_string(valSize),
-				var);
+				", expected: " + std::to_string(valSize)
+				, var);
 			return nullptr;
 		}
 
@@ -257,14 +252,12 @@ VariableDeclarationNode* Parser::ParseVariableDeclaration(Lexer& lexer, std::deq
 FunctionDeclarationNode* Parser::ParseFunction(Lexer& lexer, std::deque<ActionNodeFactory*>& factories)
 {
 	if (Hardcoded::Get().VariableDeclarations.contains(lexer.Peek().string) ||
-		Hardcoded::Get().FunctionDeclarations.contains(lexer.Peek().string))
-	{
+		Hardcoded::Get().FunctionDeclarations.contains(lexer.Peek().string)) {
 		DumpTokenError("Word \"{0}\" is reserved by language)", lexer.Peek());
 		return nullptr;
 	}
 
-	if (!bAllowInnerFunctionDeclarations && factories.size() > 1)
-	{
+	if (!bAllowInnerFunctionDeclarations && factories.size() > 1) {
 		DumpTokenError("Nested functions not supported for a while ({2}: {1})", lexer.Peek());
 		return nullptr;
 	}
@@ -279,22 +272,18 @@ FunctionDeclarationNode* Parser::ParseFunction(Lexer& lexer, std::deque<ActionNo
 	auto func = factories.front()->TempCreateFunction(FunctionSignature(name));
 	ActionNodeFactory& funcFactory = func->Get()->Factory();
 	std::vector<ActionNode*> args;
-	while (lexer.Peek().type == Token::Type::Word)
-	{
+	while (lexer.Peek().type == Token::Type::Word) {
 		Token argName = lexer.Take();
-		if (lexer.Peek().type == Token::Type::Comma)
-		{
+		if (lexer.Peek().type == Token::Type::Comma) {
 			func->Get()->Signature().Args().push_back(
 				funcFactory.CreateVariable(argName, funcFactory.Create<DoubleNumberNode>(argName, 0)));
 			lexer.Pop();
 		}
-		else if (lexer.Peek().type == Token::Type::ParenthesisClose)
-		{
+		else if (lexer.Peek().type == Token::Type::ParenthesisClose) {
 			func->Get()->Signature().Args().push_back(
 				funcFactory.CreateVariable(argName, funcFactory.Create<DoubleNumberNode>(argName, 0)));
 		}
-		else if (lexer.Peek().type == Token::Type::BracketOpen)
-		{
+		else if (lexer.Peek().type == Token::Type::BracketOpen) {
 			lexer.Pop();
 			if (!CheckToken(lexer.Peek(), Token::Type::Number))
 				return nullptr;
@@ -306,8 +295,10 @@ FunctionDeclarationNode* Parser::ParseFunction(Lexer& lexer, std::deque<ActionNo
 			if (!CheckToken(lexer.Take(), Token::Type::BracketClose))
 				return nullptr;
 
-			func->Get()->Signature().Args().push_back(funcFactory.CreateVariable(
-				argName, funcFactory.Create<ArrayNode>(argName, std::vector<ActionNode*>(arrSize, nullptr))));
+			func->Get()->Signature().Args().push_back(
+				funcFactory.CreateVariable(
+					argName
+					, funcFactory.Create<ArrayNode>(argName, std::vector<ActionNode*>(arrSize, nullptr))));
 		}
 		if (lexer.Peek().type == Token::Type::Comma)
 			lexer.Pop();
@@ -317,41 +308,33 @@ FunctionDeclarationNode* Parser::ParseFunction(Lexer& lexer, std::deque<ActionNo
 
 	factories.push_front(&funcFactory);
 
-	while (!lexer.IsEmpty() && lexer.Peek().type != Token::Type::EndFile)
-	{
-		if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::FunctionDef)))
-		{
+	while (!lexer.IsEmpty() && lexer.Peek().type != Token::Type::EndFile) {
+		if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::FunctionDef))) {
 			lexer.Pop();
 			if (!ParseFunction(lexer, factories))
 				break;
 		}
-		else if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::ReturnStatement)))
-		{
+		else if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::ReturnStatement))) {
 			lexer.Pop();
-			if (ActionNode* result = ParseExpression(lexer, factories))
-			{
+			if (ActionNode* result = ParseExpression(lexer, factories)) {
 				func->Get()->SetBody(result);
 				while (lexer.Peek().type == Token::Type::Semicolon)
 					lexer.Pop();
-				if (CheckToken(lexer.Peek(), Token::Type::BraceClose))
-				{
+				if (CheckToken(lexer.Peek(), Token::Type::BraceClose)) {
 					lexer.Pop();
 					break;
 				}
 			}
-			else
-			{
+			else {
 				break;
 			}
 		}
-		else if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::VariableDef)))
-		{
+		else if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::VariableDef))) {
 			lexer.Pop();
 			if (!ParseVariableDeclaration(lexer, factories))
 				break;
 		}
-		else
-		{
+		else {
 			if (!ParseVariableDeclaration(lexer, factories))
 				break;
 		}
@@ -381,8 +364,7 @@ ActionNode* Parser::ParsePrimary(Lexer& lexer, std::deque<ActionNodeFactory*>& f
 	if (lexer.Peek().type == Token::Type::BraceOpen)
 		return ParseArrayValues(lexer, factories);
 
-	if (lexer.Peek().type == Token::Type::Minus)
-	{
+	if (lexer.Peek().type == Token::Type::Minus) {
 		Token minus = lexer.Take();
 		ActionNode* child = ParsePrimary(lexer, factories);
 		if (child && !ActionNode::IsArray(child))
@@ -395,55 +377,46 @@ ActionNode* Parser::ParsePrimary(Lexer& lexer, std::deque<ActionNodeFactory*>& f
 
 ActionNode* Parser::ParseWord(Lexer& lexer, std::deque<ActionNodeFactory*>& factories)
 {
-	if (GetReservedKeywords().contains(lexer.Peek().string))
-	{
+	if (GetReservedKeywords().contains(lexer.Peek().string)) {
 		DumpTokenError("Word \"{0}\" is reserved by language)", lexer.Peek());
 		return nullptr;
 	}
 
 	Token name = lexer.Take();
 
-	if (lexer.Peek().type == Token::Type::ParenthesisOpen)
-	{
+	if (lexer.Peek().type == Token::Type::ParenthesisOpen) {
 		lexer.Pop();
 		FunctionDeclarationNode* funcDecl{};
-		for (auto i = factories.rbegin(); i != factories.rend(); ++i)
-		{
+		for (auto i = factories.rbegin(); i != factories.rend(); ++i) {
 			funcDecl = (*i)->FindFunction(name.string);
 			if (funcDecl)
 				break;
 		}
 
-		if (!funcDecl)
-		{
+		if (!funcDecl) {
 			auto hardcodedFunc = Hardcoded::Get().FunctionDeclarations.find(name.string);
-			if (hardcodedFunc != Hardcoded::Get().FunctionDeclarations.end())
-			{
+			if (hardcodedFunc != Hardcoded::Get().FunctionDeclarations.end()) {
 				funcDecl = hardcodedFunc->second;
 			}
-			else
-			{
+			else {
 				DumpTokenError("Couldn't find function \"{0}\" declaration ({2}: {1})", name);
 				return nullptr;
 			}
 		}
 
 		std::vector<ActionNode*> args;
-		while (lexer.Peek().type != Token::Type::ParenthesisClose)
-		{
+		while (lexer.Peek().type != Token::Type::ParenthesisClose) {
 			ActionNode* arg = ParseExpression(lexer, factories);
 			if (!arg)
 				return nullptr;
 
-			if (args.size() == funcDecl->Signature().Args().size())
-			{
+			if (args.size() == funcDecl->Signature().Args().size()) {
 				DumpTokenError("Function \"{0}\" arguments size miss match ({2}: {1})", name);
 				return nullptr;
 			}
 			bool sigArgIsArr = ActionNode::IsArray(funcDecl->Signature().Args()[args.size()]);
 			bool argIsArr = ActionNode::IsArray(arg);
-			if (sigArgIsArr != argIsArr)
-			{
+			if (sigArgIsArr != argIsArr) {
 				DumpTokenError("Function \"{0}\" arguments type miss match ({2}: {1})", name);
 				return nullptr;
 			}
@@ -454,8 +427,7 @@ ActionNode* Parser::ParseWord(Lexer& lexer, std::deque<ActionNodeFactory*>& fact
 
 			CheckToken(lexer.Take(), Token::Type::Comma);
 		}
-		if (args.size() != funcDecl->Signature().Args().size())
-		{
+		if (args.size() != funcDecl->Signature().Args().size()) {
 			DumpTokenError("Function \"{0}\" arguments size miss match ({2}: {1})", name);
 			return nullptr;
 		}
@@ -464,8 +436,7 @@ ActionNode* Parser::ParseWord(Lexer& lexer, std::deque<ActionNodeFactory*>& fact
 		return factories.front()->Create<FunctionCallNode>(funcDecl, args);
 	}
 
-	if (lexer.Peek().type == Token::Type::BracketOpen)
-	{
+	if (lexer.Peek().type == Token::Type::BracketOpen) {
 		lexer.Pop();
 		auto node = ParseExpression(lexer, factories);
 
@@ -474,16 +445,14 @@ ActionNode* Parser::ParseWord(Lexer& lexer, std::deque<ActionNodeFactory*>& fact
 
 		CheckToken(lexer.Take(), Token::Type::BracketClose);
 
-		for (auto i = factories.rbegin(); i != factories.rend(); ++i)
-		{
+		for (auto i = factories.rbegin(); i != factories.rend(); ++i) {
 			VariableDeclarationNode* var = (*i)->FindVariable(name.string);
 			if (var && ActionNode::IsArray(var->Value()))
 				return factories.front()->Create<ArrayGetterNode>(var, node);
 		}
 
 		auto hardcodedVar = Hardcoded::Get().VariableDeclarations.find(name.string);
-		if (hardcodedVar != Hardcoded::Get().VariableDeclarations.end())
-		{
+		if (hardcodedVar != Hardcoded::Get().VariableDeclarations.end()) {
 			if (ActionNode::IsArray(hardcodedVar->second->Value()))
 				return hardcodedVar->second->Value();
 		}
@@ -492,8 +461,7 @@ ActionNode* Parser::ParseWord(Lexer& lexer, std::deque<ActionNodeFactory*>& fact
 		return nullptr;
 	}
 
-	for (auto i = factories.rbegin(); i != factories.rend(); ++i)
-	{
+	for (auto i = factories.rbegin(); i != factories.rend(); ++i) {
 		auto hardcodedVar = Hardcoded::Get().VariableDeclarations.find(name.string);
 		if (hardcodedVar != Hardcoded::Get().VariableDeclarations.end())
 			return hardcodedVar->second->Value();
@@ -524,14 +492,12 @@ ActionNode* Parser::ParseArrayValues(Lexer& lexer, std::deque<ActionNodeFactory*
 	Token top = lexer.Peek();
 	Token lastArg = top;
 	std::vector<ActionNode*> components;
-	while (lexer.Peek().type != Token::Type::BraceClose)
-	{
+	while (lexer.Peek().type != Token::Type::BraceClose) {
 		ActionNode* node = ParseExpression(lexer, factories);
 		if (!node)
 			return nullptr;
 
-		if (ActionNode::IsArray(node))
-		{
+		if (ActionNode::IsArray(node)) {
 			DumpTokenError("Array nesting is not supported: \"{0}\" ({2}: {1})", lastArg);
 			return nullptr;
 		}
@@ -550,24 +516,21 @@ ActionNode* Parser::ParseNumber(Lexer& lexer, std::deque<ActionNodeFactory*>& fa
 {
 	Token number = lexer.Take();
 
-	if (number.type == Token::Type::Dot)
-	{
-		if (lexer.Peek().type == Token::Type::Number)
-		{
+	if (number.type == Token::Type::Dot) {
+		if (lexer.Peek().type == Token::Type::Number) {
 			Token num = lexer.Take();
 			return factories.front()->Create<DoubleNumberNode>(num, std::stod("0." + num.string));
 		}
 		return nullptr;
 	}
 
-	if (lexer.Peek().type == Token::Type::Dot)
-	{
+	if (lexer.Peek().type == Token::Type::Dot) {
 		lexer.Pop();
-		if (lexer.Peek().type == Token::Type::Number)
-		{
+		if (lexer.Peek().type == Token::Type::Number) {
 			Token floatPart = lexer.Take();
 			return factories.front()->Create<DoubleNumberNode>(
-				number, std::stod(number.string + '.' + floatPart.string));
+				number
+				, std::stod(number.string + '.' + floatPart.string));
 		}
 		return factories.front()->Create<DoubleNumberNode>(number, std::stod(number.string));
 	}
@@ -577,29 +540,26 @@ ActionNode* Parser::ParseNumber(Lexer& lexer, std::deque<ActionNodeFactory*>& fa
 
 ActionNode* Parser::ParseBody(Lexer& lexer, std::deque<ActionNodeFactory*>& factories)
 {
-	while (!lexer.IsEmpty() && lexer.Peek().type != Token::Type::EndFile)
-	{
-		if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::FunctionDef)))
-		{
+	while (!lexer.IsEmpty() && lexer.Peek().type != Token::Type::EndFile) {
+		if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::FunctionDef))) {
 			lexer.Pop();
 			if (!ParseFunction(lexer, factories))
 				break;
 		}
 		else if (CompareStrings(
-					 lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::ReturnStatement), false))
-		{
+			lexer.Peek().string
+			, _reservedKeywords.at(ReservedKeywordsTypes::ReturnStatement)
+			, false)) {
 			lexer.Pop();
 			if (ActionNode* result = ParseExpression(lexer, factories))
 				return result;
 		}
-		else if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::VariableDef), false))
-		{
+		else if (CompareStrings(lexer.Peek().string, _reservedKeywords.at(ReservedKeywordsTypes::VariableDef), false)) {
 			lexer.Pop();
 			if (!ParseVariableDeclaration(lexer, factories))
 				break;
 		}
-		else
-		{
+		else {
 			if (!ParseVariableDeclaration(lexer, factories))
 				break;
 		}

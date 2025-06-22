@@ -5,8 +5,7 @@
 #include <vector>
 
 
-struct ClDeviceInfo
-{
+struct ClDeviceInfo {
 	cl_platform_id platform_id{};
 	cl_device_id device_id{};
 	cl_context context{};
@@ -20,10 +19,8 @@ struct ClDeviceInfo
 };
 
 
-struct ClKernelArguments
-{
-	struct Argument
-	{
+struct ClKernelArguments {
+	struct Argument {
 		Argument(void* ptr, size_t size, size_t count = 1)
 			: ptr(ptr)
 			, size(size)
@@ -51,8 +48,7 @@ struct ClKernelArguments
 	std::vector<Argument> optional;
 };
 
-class ClExecutor
-{
+class ClExecutor {
 public:
 	static int Init();
 	static void Destroy();

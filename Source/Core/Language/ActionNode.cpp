@@ -2,14 +2,13 @@
 
 #include <sstream>
 
-std::shared_ptr<ActionNodeFactory::Commitable<FunctionDeclarationNode>>
-ActionNodeFactory::TempCreateFunction(const FunctionSignature& signature)
+std::shared_ptr<ActionNodeFactory::Commitable<FunctionDeclarationNode>> ActionNodeFactory::TempCreateFunction(
+	const FunctionSignature& signature)
 {
 	return std::make_shared<Commitable<FunctionDeclarationNode>>(
-		signature.GetToken().string,
-		new FunctionDeclarationNode(signature, nullptr),
-		[this](const std::string& name, FunctionDeclarationNode* func)
-		{
+		signature.GetToken().string
+		, new FunctionDeclarationNode(signature, nullptr)
+		, [this](const std::string& name, FunctionDeclarationNode* func) {
 			if (_functions.end() != _functions.find(name))
 				return true;
 
@@ -37,7 +36,7 @@ FunctionDeclarationNode* ActionNodeFactory::CreateFunction(const FunctionSignatu
 
 	FunctionDeclarationNode* func =
 		_functions.insert({signature.GetToken().string, Create<FunctionDeclarationNode>(signature, body)})
-			.first->second;
+				.first->second;
 	_declarationOrder.push_back(func);
 	return func;
 }
@@ -58,6 +57,7 @@ VariableDeclarationNode* ActionNodeFactory::FindVariable(const std::string& name
 
 	return it->second;
 }
+
 FunctionDeclarationNode* ActionNodeFactory::FindFunction(const std::string& name) const
 {
 	auto it = _functions.find(name);
@@ -222,8 +222,7 @@ std::string FunctionDeclarationNode::GetDescription(FunctionDeclarationNode* fun
 {
 	std::stringstream descr;
 	descr << func->Name() << "(";
-	for (size_t i = 0; i < func->Signature().Args().size(); ++i)
-	{
+	for (size_t i = 0; i < func->Signature().Args().size(); ++i) {
 		VariableDeclarationNode* arg = func->Signature().Args()[i];
 		descr << arg->Name();
 		if (const ArrayNode* arr = IsArray(arg))

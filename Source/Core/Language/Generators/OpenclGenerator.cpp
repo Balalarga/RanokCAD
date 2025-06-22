@@ -167,47 +167,38 @@ void OpenclGenerator::ProcessNode(std::stringstream& outCode, const BinaryNode* 
 	bool needLeftParent = lPriority != -1 && lPriority < currPriority;
 	bool needRightParent = rPriority != -1 && rPriority < currPriority;
 
-	if (type == Token::Type::Hat)
-	{
+	if (type == Token::Type::Hat) {
 		outCode << "pow(";
 	}
-	else if (type == Token::Type::Ampersand)
-	{
+	else if (type == Token::Type::Ampersand) {
 		outCode << "__rv__And(";
 	}
-	else if (type == Token::Type::Pipe)
-	{
+	else if (type == Token::Type::Pipe) {
 		outCode << "__rv__Or(";
 	}
 
-	if (needLeftParent)
-	{
+	if (needLeftParent) {
 		outCode << "(";
 		Process(outCode, node->Left());
 		outCode << ")";
 	}
-	else
-	{
+	else {
 		Process(outCode, node->Left());
 	}
 
-	if (type == Token::Type::Hat || type == Token::Type::Ampersand || type == Token::Type::Pipe)
-	{
+	if (type == Token::Type::Hat || type == Token::Type::Ampersand || type == Token::Type::Pipe) {
 		outCode << ", ";
 	}
-	else
-	{
+	else {
 		outCode << " " << node->Name() << " ";
 	}
 
-	if (needRightParent)
-	{
+	if (needRightParent) {
 		outCode << "(";
 		Process(outCode, node->Right());
 		outCode << ")";
 	}
-	else
-	{
+	else {
 		Process(outCode, node->Right());
 	}
 	if (type == Token::Type::Hat || type == Token::Type::Ampersand || type == Token::Type::Pipe)
@@ -222,13 +213,11 @@ void OpenclGenerator::ProcessNode(std::stringstream& outCode, const FunctionDecl
 	else
 		nodeName = "_main";
 	const std::vector<VariableDeclarationNode*>& sigArgs = node->Signature().Args();
-	if (const ArrayNode* arrBody = ActionNode::IsArray(node->Body()))
-	{
+	if (const ArrayNode* arrBody = ActionNode::IsArray(node->Body())) {
 		PrintIndent(outCode);
 		constexpr const char* outVarName = "__out__name";
 		outCode << std::format("void {}(", nodeName);
-		for (size_t i = 0; i < sigArgs.size(); ++i)
-		{
+		for (size_t i = 0; i < sigArgs.size(); ++i) {
 			if (const ArrayNode* arr = ActionNode::IsArray(sigArgs[i]))
 				outCode << std::format("double {}[{}]", sigArgs[i]->Name(), arr->Values().size());
 			else
@@ -242,12 +231,10 @@ void OpenclGenerator::ProcessNode(std::stringstream& outCode, const FunctionDecl
 			Process(outCode, node->Factory().DeclarationOrder()[i]);
 
 		std::string outResName = "__out__res";
-		if (auto varRes = dynamic_cast<const VariableNode*>(node->Body()))
-		{
+		if (auto varRes = dynamic_cast<const VariableNode*>(node->Body())) {
 			outResName = varRes->Name();
 		}
-		else
-		{
+		else {
 			PrintIndent(outCode);
 			outCode << "double " << outResName << "[" << arrBody->Values().size() << "] = ";
 			Process(outCode, node->Body());
@@ -257,11 +244,9 @@ void OpenclGenerator::ProcessNode(std::stringstream& outCode, const FunctionDecl
 		outCode << outVarName << " = " << outResName;
 		outCode << ";\n}\n";
 	}
-	else
-	{
+	else {
 		outCode << std::format("double {}(", nodeName);
-		for (size_t i = 0; i < sigArgs.size(); ++i)
-		{
+		for (size_t i = 0; i < sigArgs.size(); ++i) {
 			if (const ArrayNode* asArr = ActionNode::IsArray(sigArgs[i]->Value()))
 				outCode << std::format("double {}[{}]", sigArgs[i]->Name(), asArr->Values().size());
 			else

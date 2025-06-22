@@ -14,11 +14,11 @@ int ClExecutor::Init()
 		return GetDeviceInfo().ret;
 
 	GetDeviceInfo().ret = clGetDeviceIDs(
-		GetDeviceInfo().platform_id,
-		CL_DEVICE_TYPE_GPU,
-		1,
-		&GetDeviceInfo().device_id,
-		&GetDeviceInfo().ret_num_devices);
+		GetDeviceInfo().platform_id
+		, CL_DEVICE_TYPE_GPU
+		, 1
+		, &GetDeviceInfo().device_id
+		, &GetDeviceInfo().ret_num_devices);
 	if (GetDeviceInfo().ret != CL_SUCCESS)
 		return GetDeviceInfo().ret;
 
@@ -59,19 +59,16 @@ int ClExecutor::ExecuteCurrentKernel(const std::string& functionName, const ClKe
 		return GetDeviceInfo().ret;
 
 	GetDeviceInfo().ret = clSetKernelArg(GetDeviceInfo().kernel, 0, sizeof(cl_mem), &out_mem_obj);
-	if (GetDeviceInfo().ret != CL_SUCCESS)
-	{
+	if (GetDeviceInfo().ret != CL_SUCCESS) {
 		clReleaseMemObject(out_mem_obj);
 		return GetDeviceInfo().ret;
 	}
 
-	for (size_t i = 0; i < args.optional.size(); ++i)
-	{
+	for (size_t i = 0; i < args.optional.size(); ++i) {
 		GetDeviceInfo().ret =
 			clSetKernelArg(GetDeviceInfo().kernel, i + 1, args.optional[i].TotalSize(), args.optional[i].ptr);
 
-		if (GetDeviceInfo().ret != CL_SUCCESS)
-		{
+		if (GetDeviceInfo().ret != CL_SUCCESS) {
 			clReleaseMemObject(out_mem_obj);
 			return GetDeviceInfo().ret;
 		}
@@ -82,9 +79,13 @@ int ClExecutor::ExecuteCurrentKernel(const std::string& functionName, const ClKe
 	size_t global; // global domain size for our calculation
 	size_t local; // local domain size for our calculation
 	GetDeviceInfo().ret = clGetKernelWorkGroupInfo(
-		GetDeviceInfo().kernel, GetDeviceInfo().device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(local), &local, NULL);
-	if (GetDeviceInfo().ret != CL_SUCCESS)
-	{
+		GetDeviceInfo().kernel
+		, GetDeviceInfo().device_id
+		, CL_KERNEL_WORK_GROUP_SIZE
+		, sizeof(local)
+		, &local
+		, NULL);
+	if (GetDeviceInfo().ret != CL_SUCCESS) {
 		clReleaseMemObject(out_mem_obj);
 		return GetDeviceInfo().ret;
 	}
@@ -95,26 +96,32 @@ int ClExecutor::ExecuteCurrentKernel(const std::string& functionName, const ClKe
 	GetDeviceInfo().localGroupSize = static_cast<cl_uint>(local);
 
 	GetDeviceInfo().ret = clEnqueueNDRangeKernel(
-		GetDeviceInfo().command_queue, GetDeviceInfo().kernel, 1, NULL, &global, &local, 0, NULL, NULL);
-	if (GetDeviceInfo().ret != CL_SUCCESS)
-	{
+		GetDeviceInfo().command_queue
+		, GetDeviceInfo().kernel
+		, 1
+		, NULL
+		, &global
+		, &local
+		, 0
+		, NULL
+		, NULL);
+	if (GetDeviceInfo().ret != CL_SUCCESS) {
 		clReleaseMemObject(out_mem_obj);
 		return GetDeviceInfo().ret;
 	}
 
 	clFinish(GetDeviceInfo().command_queue);
 	GetDeviceInfo().ret = clEnqueueReadBuffer(
-		GetDeviceInfo().command_queue,
-		out_mem_obj,
-		CL_TRUE,
-		0,
-		args.output.TotalSize(),
-		args.output.ptr,
-		0,
-		NULL,
-		NULL);
-	if (GetDeviceInfo().ret != CL_SUCCESS)
-	{
+		GetDeviceInfo().command_queue
+		, out_mem_obj
+		, CL_TRUE
+		, 0
+		, args.output.TotalSize()
+		, args.output.ptr
+		, 0
+		, NULL
+		, NULL);
+	if (GetDeviceInfo().ret != CL_SUCCESS) {
 		clReleaseMemObject(out_mem_obj);
 		return GetDeviceInfo().ret;
 	}
@@ -141,12 +148,16 @@ int ClExecutor::Compile(const std::string& code)
 		return GetDeviceInfo().ret;
 
 	GetDeviceInfo().ret = clBuildProgram(GetDeviceInfo().program, 1, &GetDeviceInfo().device_id, NULL, NULL, NULL);
-	if (GetDeviceInfo().ret != CL_SUCCESS)
-	{
+	if (GetDeviceInfo().ret != CL_SUCCESS) {
 		size_t len;
 		char buffer[2048];
 		clGetProgramBuildInfo(
-			GetDeviceInfo().program, GetDeviceInfo().device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
+			GetDeviceInfo().program
+			, GetDeviceInfo().device_id
+			, CL_PROGRAM_BUILD_LOG
+			, sizeof(buffer)
+			, buffer
+			, &len);
 		//		Logger::Error(std::format("Failed to build program executable!\n{}", buffer));
 		clReleaseProgram(GetDeviceInfo().program);
 		GetDeviceInfo().program = 0;

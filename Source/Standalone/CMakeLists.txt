@@ -7,3 +7,4 @@ add_executable(
 
 # System libs
 target_link_libraries(RanokCAD PRIVATE RanokCAD::Core)
+target_compile_definitions(RanokCAD INTERFACE PROJECT_NAME=\"$<TARGET_PROPERTY:NAME>\")

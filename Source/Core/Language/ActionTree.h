@@ -3,8 +3,7 @@
 #include "ActionNode.h"
 
 
-class ActionTree
-{
+class ActionTree {
 public:
 	ActionTree() = default;
 	ActionTree(ActionNodeFactory&& factory);
@@ -13,6 +12,7 @@ public:
 	{
 		return _root;
 	}
+
 	void SetRoot(ActionNode* node)
 	{
 		if (node)
@@ -23,6 +23,7 @@ public:
 	{
 		return _globalFactory;
 	}
+
 	const ActionNodeFactory& GlobalFactory() const
 	{
 		return _globalFactory;

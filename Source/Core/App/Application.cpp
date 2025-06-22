@@ -6,15 +6,20 @@
 #include "spdlog/spdlog.h"
 
 
-Application::Application(AppParams params) : _params(std::move(params)), _window(_params.windowParams) {
+Application::Application(AppParams params)
+	: _params(std::move(params))
+	, _window(_params.windowParams)
+{
 }
 
-void Application::Launch() {
+void Application::Launch()
+{
 	_window.Show();
 	MainLoop();
 }
 
-void Application::MainLoop() {
+void Application::MainLoop()
+{
 	const double targetFrameMs = _params.fps != 0 ? 1000. / _params.fps : 0;
 	double frameTime = 1;
 	while (!_window.ShouldClose()) {
@@ -39,14 +44,17 @@ void Application::MainLoop() {
 	}
 }
 
-void Application::Render() {
+void Application::Render()
+{
 	glViewport(0, 0, _window.GetSize().x, _window.GetSize().y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void Application::Update(double dt) {
+void Application::Update(double dt)
+{
 }
 
-void Application::RenderImGui() {
+void Application::RenderImGui()
+{
 	ImGui::ShowDemoWindow();
 }

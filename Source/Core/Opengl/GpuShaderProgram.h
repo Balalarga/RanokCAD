@@ -2,7 +2,7 @@
 #include "GpuResource.h"
 
 
-class GpuShaderProgram: public GpuResource {
+class GpuShaderProgram : public GpuResource {
 public:
 	void Bind() const;
 	void Release() const;

@@ -4,14 +4,15 @@
 #include "../ActionTree.h"
 #include "../HardcodedConstructions.h"
 
-class IGenerator
-{
+class IGenerator {
 public:
 	virtual ~IGenerator() = default;
+
 	const std::vector<std::string>& Errors() const
 	{
 		return _errors;
 	}
+
 	bool HasErrors() const
 	{
 		return !_errors.empty();
@@ -32,8 +33,10 @@ protected:
 	virtual void ProcessNode(std::stringstream& outCode, const VariableNode* node) = 0;
 	virtual void ProcessNode(std::stringstream& outCode, const UnaryNode* node) = 0;
 	virtual void ProcessNode(std::stringstream& outCode, const BinaryNode* node) = 0;
-	virtual void
-	ProcessNode(std::stringstream& outCode, const FunctionCallNode* node, const ActionNode* result = nullptr) = 0;
+	virtual void ProcessNode(
+		std::stringstream& outCode
+		, const FunctionCallNode* node
+		, const ActionNode* result = nullptr) = 0;
 	virtual void ProcessNode(std::stringstream& outCode, const FunctionDeclarationNode* node) = 0;
 	virtual void PrintIndent(std::stringstream& outCode);
 	virtual std::string ProcessHardcodedFunc(Hardcoded::FuncNames);
@@ -50,8 +53,7 @@ private:
 };
 
 
-class CppGenerator: public IGenerator
-{
+class CppGenerator : public IGenerator {
 public:
 	void Predefines(std::stringstream& outCode) override;
 
@@ -61,8 +63,10 @@ public:
 	void ProcessNode(std::stringstream& outCode, const BinaryNode* node) override;
 	void ProcessNode(std::stringstream& outCode, const ArrayGetterNode* node) override;
 	void ProcessNode(std::stringstream& outCode, const VariableDeclarationNode* node) override;
-	void
-	ProcessNode(std::stringstream& outCode, const FunctionCallNode* node, const ActionNode* result = nullptr) override;
+	void ProcessNode(
+		std::stringstream& outCode
+		, const FunctionCallNode* node
+		, const ActionNode* result = nullptr) override;
 	void ProcessNode(std::stringstream& outCode, const FunctionDeclarationNode* node) override;
 	void ProcessNode(std::stringstream& outCode, const UnaryNode* node) override;
 };

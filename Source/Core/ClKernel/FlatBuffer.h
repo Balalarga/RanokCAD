@@ -4,8 +4,7 @@
 
 
 template <class Type>
-class FlatArray
-{
+class FlatArray {
 public:
 	FlatArray(size_t count = 0)
 		: _dimensions(count)
@@ -29,6 +28,7 @@ public:
 	{
 		_data.resize(size);
 	}
+
 	void Resize(const std::vector<size_t>& dims)
 	{
 		_dimensions = dims;
@@ -51,10 +51,12 @@ public:
 	{
 		return _data.size();
 	}
+
 	const size_t& GetDimension(size_t id)
 	{
 		return _dimensions[id];
 	}
+
 	std::vector<size_t>& GetDimensions()
 	{
 		return _dimensions;
@@ -64,6 +66,7 @@ public:
 	{
 		return _data[id];
 	}
+
 	Type& operator[](std::vector<size_t>& ids)
 	{
 		long id = 0;

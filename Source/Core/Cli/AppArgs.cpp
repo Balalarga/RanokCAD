@@ -1,12 +1,11 @@
 #include "AppArgs.h"
 #include "spdlog/spdlog.h"
 
+std::string AppArgs::_sAppName;
 
-std::string AppArgs::_sAppName = "RanokCAD";
-
-
-void AppArgs::SetAppName(const std::string& appName)
+void AppArgs::SetAppName(std::string_view appName)
 {
+	assert(_sAppName.empty());
 	_sAppName = appName;
 }
 
@@ -16,24 +15,42 @@ AppArgs& AppArgs::Get()
 	return inst;
 }
 
-bool AppArgs::Init(int argc, char** argv)
+bool AppArgs::Init(
+	std::string_view appName
+	, int argc
+	, char** argv
+	, std::function<void(argparse::ArgumentParser&)>&& argsSetup)
 {
-	try
-	{
-		GetParser().parse_args(argc, argv);
-
+	_sAppName = appName;
+	try {
+		auto& parser = GetParser();
+		argsSetup(parser);
+		parser.parse_args(argc, argv);
 		return true;
 	}
-	catch (const std::exception& error)
-	{
+	catch (const std::exception& error) {
 		spdlog::critical(error.what());
 		return false;
 	}
 }
 
-AppArgs::AppArgs()
-	: _argParser(_sAppName)
+bool AppArgs::Init(int argc, char** argv, std::function<void(argparse::ArgumentParser&)>&& argsSetup)
 {
+	try {
+		auto& parser = GetParser();
+		argsSetup(parser);
+		parser.parse_args(argc, argv);
+		return true;
+	}
+	catch (const std::exception& error) {
+		spdlog::critical(error.what());
+		return false;
+	}
+}
+
+bool AppArgs::Parse(const std::string_view argName)
+{
+	return GetParser().is_used(argName);
 }
 
 argparse::ArgumentParser& AppArgs::GetParser()

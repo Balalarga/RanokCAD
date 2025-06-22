@@ -1,8 +1,7 @@
 #pragma once
 #include "IGenerator.h"
 
-class OpenclGenerator: public CppGenerator
-{
+class OpenclGenerator : public CppGenerator {
 public:
 	static const std::string sKernelProgram;
 

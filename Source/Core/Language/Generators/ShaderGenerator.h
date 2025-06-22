@@ -1,8 +1,7 @@
 ﻿#pragma once
 #include "IGenerator.h"
 
-class ShaderGenerator: public CppGenerator
-{
+class ShaderGenerator : public CppGenerator {
 public:
 	void Predefines(std::stringstream& outCode) override;
 

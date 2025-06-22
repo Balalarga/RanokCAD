@@ -8,8 +8,7 @@ Hardcoded& Hardcoded::Get()
 
 Hardcoded::Hardcoded()
 {
-	auto addVar = [this](const std::string& name, VarNames type, ActionNode* value = nullptr)
-	{
+	auto addVar = [this](const std::string& name, VarNames type, ActionNode* value = nullptr) {
 		VariableNames[type] = name;
 		NamedVariables[name] = type;
 		VariableDeclarations[name] = _factory.CreateVariable(Token(name), value);
@@ -17,11 +16,10 @@ Hardcoded::Hardcoded()
 	addVar("PI", VarNames::Pi, _factory.Create<DoubleNumberNode>(Token(Token::Type::Number, "3.141592"), 3.1415926));
 
 	auto addFunc = [this](
-					   const std::string& name,
-					   FuncNames type,
-					   const std::vector<VariableDeclarationNode*>& args = {},
-					   ActionNode* body = nullptr)
-	{
+		const std::string& name
+		, FuncNames type
+		, const std::vector<VariableDeclarationNode*>& args = {}
+		, ActionNode* body = nullptr) {
 		FunctionNames[type] = name;
 		NamedFunctions[name] = type;
 		FunctionDeclarations[name] = _factory.CreateFunction(FunctionSignature(Token(name), args), body);

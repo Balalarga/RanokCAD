@@ -10,13 +10,13 @@
 
 struct WindowParams {
 	std::string title = "Ranok3";
-	glm::u16vec2 pos = { 0, 0 };
-	glm::u16vec2 size = { 1280, 720 };
+	glm::u16vec2 pos = {0, 0};
+	glm::u16vec2 size = {1280, 720};
 	bool fullscreen = false;
 	bool vSync = false;
 
 	struct {
-		glm::u8vec2 version = { 3, 3 };
+		glm::u8vec2 version = {3, 3};
 	} opengl;
 };
 

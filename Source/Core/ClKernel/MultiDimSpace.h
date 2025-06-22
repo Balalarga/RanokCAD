@@ -12,22 +12,28 @@
 #define PACK(__Declaration__) __pragma(pack(push, 1)) __Declaration__ __pragma(pack(pop))
 #endif
 
-PACK(struct MImage3D {
+PACK(
+	struct MImage3D {
 	double c[5];
 	char zone;
-});
+	});
 
-class MultiDimSpace
-{
+class MultiDimSpace {
 public:
 	MultiDimSpace() = default;
 	MultiDimSpace(
-		const std::vector<double>& centerPoint, const std::vector<double>& size, const size_t& recursiveDepth);
+		const std::vector<double>& centerPoint
+		, const std::vector<double>& size
+		, const size_t& recursiveDepth);
 	MultiDimSpace(
-		const std::vector<double>& centerPoint, const std::vector<double>& size, const std::vector<size_t>& partition);
+		const std::vector<double>& centerPoint
+		, const std::vector<double>& size
+		, const std::vector<size_t>& partition);
 	MultiDimSpace(const std::vector<float>& centerPoint, const std::vector<float>& size, const size_t& recursiveDepth);
 	MultiDimSpace(
-		const std::vector<float>& centerPoint, const std::vector<float>& size, const std::vector<size_t>& partition);
+		const std::vector<float>& centerPoint
+		, const std::vector<float>& size
+		, const std::vector<size_t>& partition);
 	MultiDimSpace(const MultiDimSpace& oth) = default;
 	virtual ~MultiDimSpace() = default;
 
@@ -35,18 +41,22 @@ public:
 	{
 		return _size;
 	}
+
 	const std::vector<double>& GetCentral() const
 	{
 		return _centerPoint;
 	}
+
 	const std::vector<size_t>& GetPartition() const
 	{
 		return _partition;
 	}
+
 	const std::vector<double>& GetStartPoint() const
 	{
 		return _startPoint;
 	}
+
 	size_t GetTotalPartition() const
 	{
 		return std::accumulate(_partition.begin(), _partition.end(), 1ull, std::multiplies());
@@ -60,14 +70,17 @@ public:
 	{
 		_size = size;
 	}
+
 	void SetPartition(const std::vector<size_t>& partition)
 	{
 		_partition = partition;
 	}
+
 	void SetPartition(const size_t& partition)
 	{
 		_partition = {partition, partition, partition};
 	}
+
 	void SetStartPoint(const std::vector<double>& point);
 	void SetCenterPoint(const std::vector<double>& point);
 

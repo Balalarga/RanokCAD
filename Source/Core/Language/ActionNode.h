@@ -13,12 +13,10 @@ class ActionNode;
 class VariableDeclarationNode;
 
 
-class ActionNodeFactory
-{
+class ActionNodeFactory {
 public:
 	template <class T>
-	struct Commitable
-	{
+	struct Commitable {
 		Commitable(const std::string& name, T* val, std::function<bool(const std::string&, T*)> wantDelete)
 			: _wantDelete(std::move(wantDelete))
 			, _name(name)
@@ -31,15 +29,18 @@ public:
 			if (!bCommit || _wantDelete(_name, _val))
 				delete _val;
 		}
+
 		T* Commit()
 		{
 			bCommit = true;
 			return _val;
 		}
+
 		T* Get()
 		{
 			return _val;
 		}
+
 
 	private:
 		bool bCommit = false;
@@ -68,6 +69,7 @@ public:
 	{
 		return _nodes;
 	}
+
 	const std::vector<std::shared_ptr<ActionNode>>& Nodes() const
 	{
 		return _nodes;
@@ -77,6 +79,7 @@ public:
 	{
 		return _functions;
 	}
+
 	const std::map<std::string, FunctionDeclarationNode*>& Functions() const
 	{
 		return _functions;
@@ -86,6 +89,7 @@ public:
 	{
 		return _variables;
 	}
+
 	const std::map<std::string, VariableDeclarationNode*>& Variables() const
 	{
 		return _variables;
@@ -95,6 +99,7 @@ public:
 	{
 		return _declarationOrder;
 	}
+
 	const std::vector<ActionNode*>& DeclarationOrder() const
 	{
 		return _declarationOrder;
@@ -103,6 +108,7 @@ public:
 	friend ActionNodeFactory operator+(const ActionNodeFactory& lhs, const ActionNodeFactory& rhs);
 	friend ActionNodeFactory& operator+=(ActionNodeFactory& lhs, const ActionNodeFactory& rhs);
 
+
 private:
 	std::vector<std::shared_ptr<ActionNode>> _nodes;
 	std::map<std::string, FunctionDeclarationNode*> _functions;
@@ -110,8 +116,7 @@ private:
 	std::vector<ActionNode*> _declarationOrder;
 };
 
-class ActionNode
-{
+class ActionNode {
 public:
 	/// Utility functions
 	static const ArrayNode* IsArray(const ActionNode* node);
@@ -126,17 +131,18 @@ public:
 	{
 		return _token.string;
 	}
+
 	const Token& GetToken() const
 	{
 		return _token;
 	}
 
+
 protected:
 	const Token _token;
 };
 
-class DoubleNumberNode: public ActionNode
-{
+class DoubleNumberNode : public ActionNode {
 public:
 	DoubleNumberNode(const Token& token, double number);
 
@@ -150,8 +156,7 @@ private:
 	double _value = 0.0;
 };
 
-class ArrayNode: public ActionNode
-{
+class ArrayNode : public ActionNode {
 public:
 	ArrayNode(const Token& token, const std::vector<ActionNode*>& values);
 
@@ -167,14 +172,11 @@ private:
 	std::vector<ActionNode*> _values;
 };
 
-enum class VariableType
-{
-	Double,
-	Array
+enum class VariableType {
+	Double, Array
 };
 
-class VariableDeclarationNode: public ActionNode
-{
+class VariableDeclarationNode : public ActionNode {
 public:
 	VariableDeclarationNode(const Token& token, ActionNode* value);
 
@@ -184,17 +186,18 @@ public:
 	{
 		return _value;
 	}
+
 	ActionNode* Value()
 	{
 		return _value;
 	}
 
+
 private:
 	ActionNode* _value;
 };
 
-class ArrayGetterNode: public ActionNode
-{
+class ArrayGetterNode : public ActionNode {
 public:
 	ArrayGetterNode(VariableDeclarationNode* var, ActionNode* id);
 
@@ -204,6 +207,7 @@ public:
 	{
 		return _id;
 	}
+
 	const ActionNode* Id() const
 	{
 		return _id;
@@ -213,6 +217,7 @@ public:
 	{
 		return _var;
 	}
+
 	const VariableDeclarationNode* Var() const
 	{
 		return _var;
@@ -225,8 +230,7 @@ private:
 };
 
 
-class VariableNode: public ActionNode
-{
+class VariableNode : public ActionNode {
 public:
 	VariableNode(VariableDeclarationNode* decl);
 
@@ -236,25 +240,25 @@ public:
 	{
 		return _declaration;
 	}
+
 	const VariableDeclarationNode* Declaration() const
 	{
 		return _declaration;
 	}
+
 
 private:
 	VariableDeclarationNode* _declaration;
 };
 
 
-class NamedNode: public ActionNode
-{
+class NamedNode : public ActionNode {
 public:
 	NamedNode(const std::string& name);
 };
 
 
-class UnaryNode: public ActionNode
-{
+class UnaryNode : public ActionNode {
 public:
 	UnaryNode(const Token& token, ActionNode* child);
 
@@ -271,8 +275,7 @@ private:
 };
 
 
-class BinaryNode: public ActionNode
-{
+class BinaryNode : public ActionNode {
 public:
 	BinaryNode(const Token& token, ActionNode* left, ActionNode* right);
 
@@ -282,6 +285,7 @@ public:
 	{
 		return _left;
 	}
+
 	ActionNode* Right() const
 	{
 		return _right;
@@ -293,8 +297,7 @@ private:
 };
 
 
-class FunctionCallNode: public ActionNode
-{
+class FunctionCallNode : public ActionNode {
 public:
 	FunctionCallNode(FunctionDeclarationNode* root, std::vector<ActionNode*> arguments);
 
@@ -309,6 +312,7 @@ public:
 	{
 		return _root;
 	}
+
 	FunctionDeclarationNode* Root()
 	{
 		return _root;
@@ -321,8 +325,7 @@ private:
 };
 
 
-class FunctionSignature
-{
+class FunctionSignature {
 public:
 	FunctionSignature(const Token& token, const std::vector<VariableDeclarationNode*>& args = {});
 
@@ -335,6 +338,7 @@ public:
 	{
 		return _arguments;
 	}
+
 	const std::vector<VariableDeclarationNode*>& Args() const
 	{
 		return _arguments;
@@ -346,8 +350,7 @@ private:
 	std::vector<VariableDeclarationNode*> _arguments;
 };
 
-class FunctionDeclarationNode: public ActionNode
-{
+class FunctionDeclarationNode : public ActionNode {
 public:
 	FunctionDeclarationNode(const FunctionSignature& signature, ActionNode* body);
 
@@ -359,6 +362,7 @@ public:
 	{
 		return _factory;
 	}
+
 	const ActionNodeFactory& Factory() const
 	{
 		return _factory;
@@ -368,6 +372,7 @@ public:
 	{
 		return _signature;
 	}
+
 	const FunctionSignature& Signature() const
 	{
 		return _signature;
@@ -377,10 +382,12 @@ public:
 	{
 		return _body;
 	}
+
 	const ActionNode* Body() const
 	{
 		return _body;
 	}
+
 	void SetBody(ActionNode* body)
 	{
 		_body = body;

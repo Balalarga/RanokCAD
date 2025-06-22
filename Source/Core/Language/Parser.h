@@ -5,11 +5,9 @@
 #include "ActionTree.h"
 #include "Lexer.h"
 
-class Parser
-{
+class Parser {
 public:
-	struct Error
-	{
+	struct Error {
 		int line, column;
 		std::string text;
 	};
@@ -23,6 +21,7 @@ public:
 	{
 		return _errors;
 	}
+
 	bool HasErrors() const
 	{
 		return !_errors.empty();
@@ -62,15 +61,11 @@ protected:
 
 
 private:
-	enum class ReservedKeywordsTypes : uint8_t
-	{
-		ReturnStatement,
-		FunctionDef,
-		VariableDef
+	enum class ReservedKeywordsTypes : uint8_t {
+		ReturnStatement, FunctionDef, VariableDef
 	};
 
-	enum class ReservedFuncsTypes : uint8_t
-	{
+	enum class ReservedFuncsTypes : uint8_t {
 		MainFunc
 	};
 

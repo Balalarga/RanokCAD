@@ -5,27 +5,17 @@
 
 
 namespace Gpu {
-enum class BufferType: unsigned {
-	Array        = GL_ARRAY_BUFFER,
-	ElementArray = GL_ELEMENT_ARRAY_BUFFER,
-	CopyRead     = GL_COPY_READ_BUFFER,
-	CopyWrite    = GL_COPY_WRITE_BUFFER,
-	Texture      = GL_TEXTURE_BUFFER,
-	Uniform      = GL_UNIFORM_BUFFER,
-	Query        = GL_QUERY_BUFFER
-};
+	enum class BufferType: unsigned {
+		Array = GL_ARRAY_BUFFER, ElementArray = GL_ELEMENT_ARRAY_BUFFER, CopyRead = GL_COPY_READ_BUFFER
+		, CopyWrite = GL_COPY_WRITE_BUFFER, Texture = GL_TEXTURE_BUFFER, Uniform = GL_UNIFORM_BUFFER
+		, Query = GL_QUERY_BUFFER
+	};
 
-enum class BufferUsageMode: unsigned {
-	StreamDraw  = GL_STREAM_DRAW,
-	StreamRead  = GL_STREAM_READ,
-	StreamCopy  = GL_STREAM_COPY,
-	StaticDraw  = GL_STATIC_DRAW,
-	StaticRead  = GL_STATIC_READ,
-	StaticCopy  = GL_STATIC_COPY,
-	DynamicDraw = GL_DYNAMIC_DRAW,
-	DynamicRead = GL_DYNAMIC_READ,
-	DynamicCopy = GL_DYNAMIC_COPY
-};
+	enum class BufferUsageMode: unsigned {
+		StreamDraw = GL_STREAM_DRAW, StreamRead = GL_STREAM_READ, StreamCopy = GL_STREAM_COPY
+		, StaticDraw = GL_STATIC_DRAW, StaticRead = GL_STATIC_READ, StaticCopy = GL_STATIC_COPY
+		, DynamicDraw = GL_DYNAMIC_DRAW, DynamicRead = GL_DYNAMIC_READ, DynamicCopy = GL_DYNAMIC_COPY
+	};
 }
 
 
@@ -57,18 +47,22 @@ struct TransferDataPtr {
 
 	TransferDataPtr(void* ptr, unsigned count, unsigned itemSize);
 
-	template<class T>
-	explicit TransferDataPtr(const std::vector<T>& items): TransferDataPtr(
-		static_cast<void*>(items.data()),
-		items.size(),
-		sizeof(T)) {
+	template <class T>
+	explicit TransferDataPtr(const std::vector<T>& items)
+		: TransferDataPtr(
+			static_cast<void*>(items.data())
+			, items.size()
+			, sizeof(T))
+	{
 	}
 
-	template<class T>
-	TransferDataPtr(const std::initializer_list<T>& items): TransferDataPtr(
-		static_cast<void*>(&items[0]),
-		items.size(),
-		sizeof(T)) {
+	template <class T>
+	TransferDataPtr(const std::initializer_list<T>& items)
+		: TransferDataPtr(
+			static_cast<void*>(&items[0])
+			, items.size()
+			, sizeof(T))
+	{
 	}
 
 	void* Ptr;
@@ -77,7 +71,7 @@ struct TransferDataPtr {
 };
 
 
-class GpuBuffer: public GpuResource {
+class GpuBuffer : public GpuResource {
 public:
 	GpuBuffer(Gpu::BufferType type, Gpu::BufferUsageMode mode);
 
