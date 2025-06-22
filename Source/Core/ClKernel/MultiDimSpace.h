@@ -49,7 +49,7 @@ public:
 	}
 	size_t GetTotalPartition() const
 	{
-		return std::accumulate(_partition.begin(), _partition.end(), 1, std::multiplies());
+		return std::accumulate(_partition.begin(), _partition.end(), 1ull, std::multiplies());
 	}
 
 

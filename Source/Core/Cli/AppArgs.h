@@ -16,6 +16,12 @@ public:
 	static void SetAppName(const std::string& appName);
 	static bool Init(int argc, char** argv);
 
+	template <class T>
+	static std::optional<T> Value(const std::string_view argName)
+	{
+		return GetParser().present(argName);
+	}
+
 	static argparse::ArgumentParser& GetParser();
 
 

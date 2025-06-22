@@ -1,71 +1,67 @@
 {
-  "name": "ranok3",
-  "version-string": "1.0.0",
-  "builtin-baseline": "1cdb5e0b24c303b41fcac0dce00baf21881f6da2",
-  "dependencies": [
-    {
-      "name": "egl-registry",
-      "version>=": "2024-01-25"
-    },
-    {
-      "name": "glew",
-      "version>=": "2.2.0#3"
-    },
-    {
-      "name": "glfw3",
-      "version>=": "3.4"
-    },
-    {
-      "name": "imgui",
-      "features": [
-        "glfw-binding",
-        "opengl3-binding"
-      ],
-      "version>=": "1.90.7"
-    },
-    {
-      "name": "implot",
-      "version>=": "0.16"
-    },
-    {
-      "name": "nlohmann-json",
-      "version>=": "3.11.3#1"
-    },
-    {
-      "name": "opencl",
-      "version>=": "v2023.02.06#2"
-    },
-    {
-      "name": "opengl-registry",
-      "version>=": "2024-02-10#1"
-    },
-    {
-      "name": "opengl",
-      "version>=": "2022-12-04#3"
-    },
-    {
-      "name": "vcpkg-cmake-config",
-      "version>=": "2024-05-23"
-    },
-    {
-      "name": "vcpkg-cmake",
-      "version>=": "2024-04-23"
-    },
-    {
-      "name": "jinja2cpplight",
-      "version>=": "2018-05-08#3"
-    },
-    {
-      "name": "spdlog",
-      "version>=": "1.14.1"
-    },
-    {
-      "name": "glm",
-      "version>=": "1.0.1#3"
-    },
-    {
-      "name": "argparse",
-      "version>=": "3.0"
-    }
-  ]
+	"name": "ranok3",
+	"version-string": "1.0.0",
+	"builtin-baseline": "1cdb5e0b24c303b41fcac0dce00baf21881f6da2",
+	"dependencies": [
+		{
+			"name": "egl-registry",
+			"version>=": "2024-01-25"
+		},
+		{
+			"name": "glew",
+			"version>=": "2.2.0#3"
+		},
+		{
+			"name": "glfw3",
+			"version>=": "3.4"
+		},
+		{
+			"name": "imgui",
+			"features": [
+				"glfw-binding",
+				"opengl3-binding"
+			],
+			"version>=": "1.90.7"
+		},
+		{
+			"name": "implot",
+			"version>=": "0.16"
+		},
+		{
+			"name": "nlohmann-json",
+			"version>=": "3.11.3#1"
+		},
+		{
+			"name": "opencl",
+			"version>=": "v2023.02.06#2"
+		},
+		{
+			"name": "opengl-registry",
+			"version>=": "2024-02-10#1"
+		},
+		{
+			"name": "opengl",
+			"version>=": "2022-12-04#3"
+		},
+		{
+			"name": "vcpkg-cmake-config",
+			"version>=": "2024-05-23"
+		},
+		{
+			"name": "vcpkg-cmake",
+			"version>=": "2024-04-23"
+		},
+		{
+			"name": "spdlog",
+			"version>=": "1.14.1"
+		},
+		{
+			"name": "glm",
+			"version>=": "1.0.1#3"
+		},
+		{
+			"name": "argparse",
+			"version>=": "3.0"
+		}
+	]
 }
