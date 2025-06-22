@@ -54,7 +54,6 @@ bool Window::ShouldClose() const
 
 void Window::HandleEvents() const
 {
-	(void*)(this);
 	glfwPollEvents();
 }
 
@@ -66,9 +65,7 @@ void Window::SwapBuffers() const
 
 Window* Window::GetWindow(GLFWwindow* glfwWindow)
 {
-	auto window = glfwGetWindowUserPointer(glfwWindow);
-	assert(window);
-	if (window)
+	if (const auto window = glfwGetWindowUserPointer(glfwWindow))
 		return static_cast<Window*>(window);
 	return nullptr;
 }
@@ -87,17 +84,14 @@ void Window::GlfwWindowChangeSizeEvent(int width, int height)
 
 void Window::GlfwMouseMoveEvent(double xpos, double ypos)
 {
-	(void*)(this);
 }
 
 void Window::GlfwMouseButtonEvent(int button, int action, int mods)
 {
-	(void*)(this);
 }
 
 void Window::GlfwKeyboardButtonEvent(int key, int scancode, int action, int mods)
 {
-	static_cast<void*>(this);
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		Close();
 }
@@ -143,21 +137,6 @@ void Window::BindGlfwCallbacks() const
 		});
 }
 
-void Window::ImGuiInit()
-{
-	constexpr const char* imguiGlslVersion = "#version 130";
-
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls}
-	ImGui::StyleColorsDark();
-
-	ImGui_ImplGlfw_InitForOpenGL(_glfwWindow, true);
-	ImGui_ImplOpenGL3_Init(imguiGlslVersion);
-}
-
 void Window::GlfwInit()
 {
 	if (!glfwInit()) {
@@ -194,9 +173,23 @@ void Window::GlfwInit()
 	BindGlfwCallbacks();
 }
 
+void Window::ImGuiInit()
+{
+	constexpr const char* imguiGlslVersion = "#version 130";
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplGlfw_InitForOpenGL(_glfwWindow, true);
+	ImGui_ImplOpenGL3_Init(imguiGlslVersion);
+}
+
 void Window::BeginImGuiFrame() const
 {
-	(void*)(this);
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -204,7 +197,6 @@ void Window::BeginImGuiFrame() const
 
 void Window::EndImGuiFrame() const
 {
-	(void*)(this);
 	ImGui::Render();
 }
 

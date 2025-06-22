@@ -19,10 +19,10 @@ public:
 		, char** argv
 		, std::function<void(argparse::ArgumentParser&)>&& argsSetup);
 
-	template <class T>
+	template <class T = std::string>
 	static std::optional<T> Value(std::string_view argName)
 	{
-		return GetParser().present(argName);
+		return GetParser().present<T>(argName);
 	}
 
 	static bool Parse(std::string_view argName);

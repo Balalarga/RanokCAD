@@ -15,18 +15,12 @@
 
 int UiMode()
 {
-	auto& userConfig = ConfigManager::UserConfigManager();
-	// std::optional<WindowParams> windowParams = userConfig.TryRead<WindowParams>("WindowParams.json");
-	// if (windowParams.has_value()) {
-	// 	Window::SetParams(*windowParams);
-	// }
-
 	AppParams params;
 	params.windowParams = {.pos = {10, 10}};
+	params.fps = 165;
 	Application app(params);
 	app.Launch();
 
-	// userConfig.Save(Window::Get().GetParams(), "WindowParams.json");
 	return 0;
 }
 
@@ -37,7 +31,14 @@ int CliMode()
 	// initialize opengl context
 	Window window;
 
-	std::filesystem::path filepath = AppArgs::Value<std::string>("-filepath").value_or("");
+	auto filepathOpt = AppArgs::Value<std::string>("-filepath");
+
+	if (!filepathOpt.has_value()) {
+		spdlog::error("You should pass filepath\n{}", AppArgs::GetParser().help().str());
+		return 0;
+	}
+
+	std::filesystem::path filepath = filepathOpt.value();
 	if (!exists(filepath)) {
 		spdlog::error("File '{}' doesn't exists", filepath.string());
 		return -1;
@@ -154,7 +155,7 @@ bool SetupArgs(int argc, char** argv)
 		, argc
 		, argv
 		, [](argparse::ArgumentParser& parser) {
-			parser.add_argument("-uiMode").default_value(false).implicit_value(true);
+			parser.add_argument("-uiMode").implicit_value(true);
 			parser.add_argument("-filepath");
 			parser.add_argument("-depth").default_value(5);
 		});
@@ -165,7 +166,7 @@ int main(int argc, char** argv)
 	if (!SetupArgs(argc, argv))
 		return -1;
 
-	if (AppArgs::GetParser()["-uiMode"] == true)
+	if (AppArgs::Value<bool>("-uiMode").value_or(false) == true)
 		return UiMode();
 
 	return CliMode();

@@ -9,7 +9,7 @@
 
 
 struct WindowParams {
-	std::string title = "Ranok3";
+	std::string title = "Window";
 	glm::u16vec2 pos = {0, 0};
 	glm::u16vec2 size = {1280, 720};
 	bool fullscreen = false;
@@ -49,16 +49,20 @@ public:
 protected:
 	static Window* GetWindow(GLFWwindow* glfwWindow);
 
-	void ImGuiInit();
+	// Initialization
 	void GlfwInit();
+	void ImGuiInit();
 	void BindGlfwCallbacks() const;
+	// ~Initialization
 
+	// GLFW Events
 	void GlfwWindowChangeSizeEvent(int width, int height);
 
 	void GlfwMouseMoveEvent(double xpos, double ypos);
 	void GlfwMouseButtonEvent(int button, int action, int mods);
 
 	void GlfwKeyboardButtonEvent(int key, int scancode, int action, int mods);
+	// ~GLFW Events
 
 
 private:
